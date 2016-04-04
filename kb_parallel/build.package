@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+#http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
+
+my $vers = "20160322";
+
+my $package_dir = "parallel-$vers";
+my $package_tar = "parallel-$vers.tar.bz2";
+my $package_url = "http://ftp.gnu.org/gnu/parallel/$package_tar";
+
+if (! -s $package_tar)
+{
+    system("curl", "-o", $package_tar, "-L", $package_url);
+}
+
+system("rm", "-rf", $package_dir);
+system("tar", "xjfp", $package_tar);
+chdir($package_dir);
+system("./configure --prefix $dest");
+system("make -j $parallel");
+system("make install");

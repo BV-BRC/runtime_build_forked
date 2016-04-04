@@ -9,7 +9,7 @@ if [[ $# -ne 0 ]] ; then
         shift
 fi
 
-
+if [[ -x /usr/bin/apt-get ]] ; then
 apt-get update
 apt-get install -y build-essential
 apt-get install -y cmake
@@ -17,13 +17,16 @@ apt-get install -y libncurses5-dev
 apt-get install -y libncurses5
 apt-get install -y dh-autoreconf
 apt-get install -y pkg-config
+fi
 
 
 wget -q -o wget.log https://mosaik-aligner.googlecode.com/files/MOSAIK-2.2.3-Linux-x64.tar
+rm -rf MOSAIK-2.2.3-Linux-x64
 tar -xvf MOSAIK-2.2.3-Linux-x64.tar
 cp MOSAIK-2.2.3-Linux-x64/Mosaik* $target/bin
 
 # copy the pre-built neural nets to usr/local/bin
+rm -rf MOSAIK
 git clone https://github.com/wanpinglee/MOSAIK.git
 cd MOSAIK
 cp src/networkFile/*.ann $target/bin

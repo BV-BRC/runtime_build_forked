@@ -8,6 +8,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper;
 use Template;
+use File::Temp;
 
 my($help, $dest, $module_dat);
 my $rpm_name;
@@ -15,6 +16,7 @@ my $build_rpm;
 my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
 my @added_path;
+my @modules_to_build;
 GetOptions('h'    => \$help,
 	   'help' => \$help,
 	   'd=s'    => \$dest,
@@ -24,6 +26,7 @@ GetOptions('h'    => \$help,
 	   "rpm-version=s" => \$rpm_version,
 	   "rpm-sandbox=s" => \$rpm_sandbox,
 	   "path=s" => \@added_path,
+	   "modules=s" => \@modules_to_build,
     ) or pod2usage(0);
 
 pod2usage(-exitstatus => 0,
@@ -32,6 +35,8 @@ pod2usage(-exitstatus => 0,
           -noperldoc => 1,
     ) if (defined $help or (!defined $dest) or (!defined $module_dat));
 
+my %modules_to_build;
+$modules_to_build{$_} = 1 foreach @modules_to_build;
 
 if ($build_rpm)
 {
@@ -53,7 +58,43 @@ if ($build_rpm)
 $ENV{PATH} = join(":", "$dest/bin", @added_path, $ENV{PATH});
 $ENV{CPATH} = "$dest/include";
 $ENV{LIBRARY_PATH} = "$dest/lib";
-$ENV{LD_RUN_PATH} = "$dest/lib";
+
+my %target = (open => 0,
+	      open_read => 0,
+	      symlink => 1,
+	      fopen64 => 0,
+	      fopen64_read => 0,
+	      fopen => 0,
+	      fopen_read => 0,
+	      rename => 1,
+	      link => 1,
+	      creat => 0,
+	      chown => -1,
+	      fchmod => -1,
+	      ftruncate => -1,
+	      rmdir => -1,
+	      mkdir => -1,
+	      unlink => -1,
+	      chmod => -1,
+	     );
+my %rm_target = (open => -1,
+	      open_read => -1,
+	      symlink => -1,
+	      fopen64 => -1,
+	      fopen64_read => -1,
+	      fopen => -1,
+	      fopen_read => -1,
+	      rename => 0,
+	      link => -1,
+	      creat => -1,
+	      chown => -1,
+	      fchmod => -1,
+	      ftruncate => -1,
+	      rmdir => -1,
+	      mkdir => -1,
+	      unlink => 0,
+	      chmod => -1,
+	     );
 
 my $mbase = basename($module_dat);
 
@@ -85,6 +126,7 @@ my @modules;
 
 my %modules;
 my %attribs;
+my $module_attribs = {};
 
 while (<DAT>)
 {
@@ -94,6 +136,10 @@ while (<DAT>)
     {
 	$attribs{$1} = $2;
     }
+    if (/^\#\#\s+(\S+)\s+(.*)$/)
+    {
+	push(@{$module_attribs->{$1}}, $2);
+    }
     next if /^\#/;
     my($dir, $cmd) = split(/\s+/, $_, 2);
     die "error parsing $module_dat" unless ($dir && $cmd);
@@ -101,9 +147,10 @@ while (<DAT>)
     die "directory $dir is not executable" unless -e $dir;
     die "directory $dir is not writable" unless -w $dir;
 
-    my $rec = [$dir, $dir, $cmd];
+    my $rec = [$dir, $dir, $cmd, $module_attribs];
     push(@modules, $rec);
     push(@{$modules{$dir}}, $rec);
+    $module_attribs = {};
 }
 close(DAT);
 
@@ -115,7 +162,7 @@ $rpm_name = $attribs{'rpm-name'} if $attribs{'rpm-name'} && !$rpm_name;
 # directories that have more than one build record.
 #
 
-for my $dir (keys %modules)
+for my $dir (sort keys %modules)
 {
     my $l = $modules{$dir};
     if (@$l > 1)
@@ -128,56 +175,155 @@ for my $dir (keys %modules)
     }
 }
 
-# print Dumper(\@modules);
+# die Dumper(\@modules);
+
+my %belongs_to;
+my %uses;
+my %files_of;
 
 for my $mod (@modules)
 {
-    my($dir, $tag, $cmd) = @$mod;
+    my($dir, $tag, $cmd, $attribs) = @$mod;
 
-    if (-f "$log_dir/built.$tag")
+    if (!-f "$log_dir/built.$tag")
     {
-	print "$tag already built\n";
-	next;
+	warn "$tag not successfully built\n";
+	last;
     }
 
-    # my $to_run = "cd $dir; $cmd 2>&1";
-    my $to_run = "cd $dir; /tmp/x/bin/installwatch -o $log_dir/install_data.$tag $cmd 2>&1";
+    my $log = "$log_dir/install_data.$tag";
+
+    open(L, "<", $log) or die "Cannot open $log: $!";
+
+    #
+    # One pass to process writes, another to process
+    # reads to identify orphans.
+    #
+    while (<L>)
+    {
+	chomp;
+	my(@a) = split(/\t/);
+	my $err = pop @a;
+	if ($err ne '#success')
+	{
+	    next;
+	}
+	my $rc = shift @a;
+	my $cmd = shift @a;
+
+	my $tfield = $target{$cmd};
+	if (!defined($tfield))
+	{
+	    warn "No target defined for $cmd at $log:$.\n$_\n";
+	    next;
+	}
+	if ($tfield >= 0)
+	{
+	    my $target = $a[$tfield];
+	    
+	    if ($target =~ m/^$dest/)
+	    {
+		my $pkg = $belongs_to{$target};
+		if ($cmd !~ /read/)
+		{
+		    if ($pkg && $pkg ne $tag)
+		    {
+			warn "OVERWRITE: $tag overwrites $pkg: $target\n";
+		    }
+		    $belongs_to{$target} = $tag;
+		    # print "ADD $tag $target\n";
+		    $files_of{$tag}->{$target} = 1;
+		}
+	    }
+	}
+
+	my $rmfield = $rm_target{$cmd};
+	if ($rmfield >= 0)
+	{
+	    my $rmfile = $a[$rmfield];
+	    if ($rmfile =~ m/^$dest/)
+	    {
+		# print "DELETE $tag $rmfile\n";
+		delete $files_of{$tag}->{$rmfile};
+	    }
+	}
+    }
     
-    open(LOG, ">", "$log_dir/$tag") or die "Cannot open logfile $log_dir/$tag: $!";
-    open(RUN, "$to_run |") or die "Cannot open pipe $to_run: $!";
-
-    print LOG "$to_run\n";
-    print "$to_run\n";
-
-    while (<RUN>)
+    seek(L, 0, 0);
+    while (<L>)
     {
-	s/%/%%/g;
-	printf "%-10s $_", $tag;
-	print LOG $_;
-    }
-    if (!close(RUN))
-    {
-	if ($!)
+	chomp;
+	my(@a) = split(/\t/);
+	my $err = pop @a;
+	if ($err ne '#success')
 	{
-	    die "Error running $to_run: $!\n";
+	    next;
 	}
-	else
+	my $rc = shift @a;
+	my $cmd = shift @a;
+
+	my $tfield = $target{$cmd};
+	if (!defined($tfield))
 	{
-	    die "Command $to_run failed with nonzero status $?\n";
+	    warn "No target defined for $cmd at $log:$.\n$_\n";
+	    next;
+	}
+	next if $tfield < 0;
+	my $target = $a[$tfield];
+
+	next unless $target =~ m/^$dest/;
+
+	my $pkg = $belongs_to{$target};
+	if ($cmd =~ /read/)
+	{
+	    if ($pkg)
+	    {
+		if ($pkg ne $tag)
+		{
+		    $uses{$tag}->{$pkg}->{$target} = 1;
+		}
+	    }
+	    else
+	    {
+		# print "$tag uses orphan $target\n";
+	    }
 	}
     }
-    system("touch", "$log_dir/built.$tag");
-    close(LOG);
 }
 
-system("git describe --always --tags > $dest/VERSION") == 0 or die "could not write VERSION file to $dest";
+exit unless $build_rpm;
 
-&build_rpm if $build_rpm;
+my @alldeps;
+
+for my $mod (@modules)
+{
+    my($dir, $tag, $cmd, $attribs) = @$mod;
+
+    next if (@modules_to_build && !$modules_to_build{$tag});
+    my @uses = map { "$rpm_name-$_" } keys %{$uses{$tag}};
+    print "$tag uses @uses\n";
+
+    my $deps = $attribs->{'rpm-dep'} || [];
+    push(@uses, @$deps);
+
+    my @files = sort grep { -f $_ } keys %{$files_of{$tag}};
+
+    build_rpm($tag, "$rpm_name-$tag", \@uses, \@files);
+
+    push(@alldeps, "$rpm_name-$tag");
+}
+
+if (!@modules_to_build)
+{
+    build_rpm("rollup of all modules", $rpm_name, \@alldeps, []);
+}
 
 sub build_rpm
 {
+    my($tag, $this_rpm, $dependencies, $files) = @_;
+    
     my $spec_dir = "$rpm_sandbox/SPECS";
-    my $rpm_name_base = "$rpm_name-$rpm_version";
+    my $rpm_name_base = "$this_rpm-$rpm_version";
     my $rel;
     for my $p (<$spec_dir/$rpm_name_base*>)
     {
@@ -185,18 +331,25 @@ sub build_rpm
 	$rel = $r if ($r > $rel);
     }
     $rel++;
-    my $spec = "$spec_dir/$rpm_name-$rpm_version-$rel.spec";
+    my $spec = "$spec_dir/$this_rpm-$rpm_version-$rel.spec";
     print "Create $spec\n";
+
+    my $tmpfile = File::Temp->new();
+    print $tmpfile "$_\n" foreach @$files;
+    close($tmpfile);
 
     my $templ = Template->new(RELATIVE => 1);
 
     my $build_root = dirname($dest);
     my $base_name = basename($dest);
     my $vars = {
-	name => $rpm_name,
+	name => $this_rpm,
 	version => $rpm_version,
 	release => $rel,
-	summary => "Bootstrap build from $module_dat",
+	files => [],
+	file_list => "$tmpfile",
+	dependencies => $dependencies,
+	summary => "Bootstrap build for $tag from $module_dat",
 	root_path => $build_root,
 	base_name => $base_name,
     };

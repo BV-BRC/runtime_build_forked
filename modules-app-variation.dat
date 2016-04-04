@@ -1,0 +1,10 @@
+# rpm-name p3-app-runtime-variation
+# rpm-version 1.0
+kb_snpeff	./snpeff_build.sh
+kb_mosaik	./bootstrap.sh
+kb_samtools	./build.samtools
+kb_bwa	./build.package
+kb_freebayes	./bootstrap.sh
+kb_lastalign	./build.package
+kb_vcflib	./build.package
+kb_bcftools	./build.package

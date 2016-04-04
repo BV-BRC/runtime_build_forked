@@ -1,0 +1,3 @@
+# rpm-name p3-core-build-tools
+# rpm-version 1.0
+kb_gcc	      ./build.package --subdir build-tools

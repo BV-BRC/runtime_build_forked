@@ -35,3 +35,8 @@ mkdir -p $target/include/
 cp -r ./bin/* $target/bin/
 cp -r ./lib/* $target/lib/
 cp -r ./include/* $target/include/
+
+#
+# the bamtools build doesn't set rpath right.
+#
+chrpath -r $target/lib: $target/bin/bamtools

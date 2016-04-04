@@ -1,3 +1,4 @@
+CGI
 JSON::Schema
 MongoDB::MongoClient
 Moose

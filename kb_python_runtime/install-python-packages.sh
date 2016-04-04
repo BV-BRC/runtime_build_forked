@@ -21,6 +21,12 @@ if [ $# -gt 0 ] ; then
 	shift
 fi
 
+#
+# Set up for inclusion of runtime-installed dynamic libs.
+#
+export CFLAGS="-I$target/include"
+export LDFLAGS="-I$target/lib -Wl,-rpath,$target/lib"
+
 if [ -x $target/bin/python ] ; then
     python=$target/bin/python
 else
@@ -45,7 +51,7 @@ fi
 
 curl -k -L https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | $python
 
-curl -k -L https://raw.github.com/pypa/pip/master/contrib/get-pip.py | $python
+curl -k -L https://bootstrap.pypa.io/get-pip.py | $python
 
 if [ -x $target/bin/pip ] ; then
 	pip="$target/bin/pip"
