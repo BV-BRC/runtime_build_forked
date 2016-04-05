@@ -28,10 +28,12 @@ kb_python_runtime	./install-python-packages.sh
 ## rpm-dep java-1.8.0-openjdk-headless
 kb_java_runtime	./java_build.sh -u
 ## rpm-dep java-1.8.0-openjdk-devel
+## rpm-build-dep unzip
 kb_java_runtime	./java_package_build.sh
 kb_thrift_runtime	./thrift_build.sh
 kb_mongodb	./install-mongodb.sh
 kb_daemonize	./install-daemonize.sh
 kb_zmq3	./build.zmq3
+## rpm-buid-dep mysql-devel
 kb_sphinx_runtime	./sphinx_build.sh
 kb_parallel	./build.package

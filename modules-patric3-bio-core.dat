@@ -13,9 +13,11 @@ kb_clustalw		./build.clustalw
 kb_clustalw		./build.clustalw2
 kb_mafft	./build.mafft
 kb_ssed		./build.ssed
+## rpm-build-dep cmake
 kb_bamtools	./bootstrap.sh
 kb_bamutil 	./bootstrap.sh
 kb_circos	./build.circos
+## rpm-build-dep wget
 kb_bowtie	./install-bowtie1.sh
 kb_bowtie	./install-bowtie2.sh
 kb_rockhopper	./install_rockhopper.sh

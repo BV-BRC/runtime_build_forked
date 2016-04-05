@@ -1,3 +1,7 @@
 # rpm-name p3-core-build-tools
 # rpm-version 1.0
+# rpm-build-dep zip
+# rpm-build-dep texinfo
+# rpm-build-dep bzip2-devel
+# rpm-dep bzip2
 kb_gcc	      ./build.package --subdir build-tools

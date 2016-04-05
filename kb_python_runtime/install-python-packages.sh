@@ -71,6 +71,8 @@ else
 	have_mysql=0
 fi
 
+save_cflags=$CFLAGS
+save_ldflags=$LDFLAGS
 for P in `cat ./python-pip-list`; do
 	if [ $P = "MySQL-python" -a $have_mysql -eq 0 ] ; then
 		echo "Skipping $P: no mysql available"
@@ -86,8 +88,18 @@ for P in `cat ./python-pip-list`; do
 	    echo "Skipping $P - no R installed"
 	else
 
+               if [ $P = "numpy" ] ; then
+                       unset CFLAGS
+                       unset LDFLAGS
+               fi
+
 		echo "$pip installing $P"
 		$pip install $P --upgrade
+
+		export CFLAGS=$save_cflags
+                export LDFLAGS=$save_ldflags
+
+
 	fi
 done
 
