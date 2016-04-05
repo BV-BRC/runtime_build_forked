@@ -1,10 +1,12 @@
 # rpm-name p3-core-runtime
 # rpm-version 1.0
 # rpm-build-dep gcc
+# rpm-build-dep gcc-c++
 # rpm-build-dep make
 # rpm-build-dep git
 # rpm-dep openssl
 # rpm-build-dep openssl-devel
+# rpm-build-dep perl-Template-Toolkit
 kb_curl	      ./build.package
 ## rpm-dep gd
 ## rpm-dep libXpm
