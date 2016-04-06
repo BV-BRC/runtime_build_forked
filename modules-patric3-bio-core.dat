@@ -4,6 +4,7 @@
 kb_jellyfish	./jellyfish_build.sh
 kb_cdbfasta	./cdbfasta_build.sh
 kb_blat	./build.blat
+## rpm-build-dep tcsh
 kb_blast	./build.blast
 kb_amos	./build.amos
 ## rpm-dep libgomp
@@ -14,6 +15,7 @@ kb_clustalw		./build.clustalw2
 kb_mafft	./build.mafft
 kb_ssed		./build.ssed
 ## rpm-build-dep cmake
+## rpm-build-dep chrpath
 kb_bamtools	./bootstrap.sh
 kb_bamutil 	./bootstrap.sh
 kb_circos	./build.circos
