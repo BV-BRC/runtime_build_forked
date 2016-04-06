@@ -64,3 +64,5 @@ ipython
 pycolor
 requests_toolbelt
 pandas
+scipy
+sklearn
