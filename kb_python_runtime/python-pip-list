@@ -6,7 +6,6 @@ python-novaclient
 numpy
 biopython
 matplotlib
-mpi4py
 sphinx
 pyzmq
 tornado
@@ -64,5 +63,4 @@ ipython
 pycolor
 requests_toolbelt
 pandas
-scipy
 sklearn

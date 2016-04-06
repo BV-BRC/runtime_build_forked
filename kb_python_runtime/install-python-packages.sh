@@ -88,7 +88,7 @@ for P in `cat ./python-pip-list`; do
 	    echo "Skipping $P - no R installed"
 	else
 
-               if [ $P = "numpy" ] ; then
+               if [ $P = "numpy" -o $P = "scipy" ] ; then
                        unset CFLAGS
                        unset LDFLAGS
                fi
