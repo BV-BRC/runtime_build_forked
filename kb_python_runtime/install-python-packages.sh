@@ -76,15 +76,15 @@ save_ldflags=$LDFLAGS
 for P in `cat ./python-pip-list`; do
 	if [ $P = "MySQL-python" -a $have_mysql -eq 0 ] ; then
 		echo "Skipping $P: no mysql available"
-	elif [ $P = "mpi4py" -a $is_mac=1 ] ; then
+	elif [ $P = "mpi4py" -a $is_mac = 1 ] ; then
 	    echo "Skipping $P on mac"
-	elif [ $P = "matplotlib" -a $is_mac=1 ] ; then
+	elif [ $P = "matplotlib" -a $is_mac = 1 ] ; then
 	    echo "Skipping $P on mac"
-	elif [ $P = "scipy" -a $is_mac=1 ] ; then
+	elif [ $P = "scipy" -a $is_mac = 1 ] ; then
 	    echo "Skipping $P on mac"
-	elif [ $P = "pyzmq" -a $is_mac=1 ] ; then
+	elif [ $P = "pyzmq" -a $is_mac = 1 ] ; then
 	    echo "Skipping $P on mac"
-	elif [ $P = "rpy2" -a $have_r=0 ] ; then
+	elif [ $P = "rpy2" -a $have_r = 0 ] ; then
 	    echo "Skipping $P - no R installed"
 	else
 
