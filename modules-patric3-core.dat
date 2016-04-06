@@ -10,10 +10,12 @@
 kb_curl	      ./build.package
 ## rpm-dep gd
 ## rpm-dep libXpm
+## rpm-deb db4
 ## rpm-build-dep gd-devel
 ## rpm-build-dep libXpm-devel
 ## rpm-build-dep expat-devel
 ## rpm-build-dep libxml2-devel
+## rpm-build-dep db4-devel
 kb_perl_runtime	./build.runtime
 kb_golang_runtime	./install-golang.sh
 ## rpm-dep libxslt
