@@ -34,7 +34,7 @@ if (! -s $package_tar)
 run("rm", "-rf", $package_dir);
 run("tar", "xzfp", $package_tar);
 chdir($package_dir) or die "cannot chdir $package_dir: $!";
-run("./configure", "--prefix=$dest", "--with-png=$dest", "--with-jpeg=$dest", "--with-freetype=$dest");
+run("./configure", "--prefix=$dest", "--with-png=$dest", "--with-jpeg=$dest", "--with-freetype=$dest", "--disable-werror");
 run("make");
 run("make", "install");
 

@@ -1,5 +1,5 @@
 kb_libpng	./build.libpng
-p3_libjpeg	./build.package
+p3_jpeg	./build.package
 kb_freetype	./build.freetype
 p3_gd	./build.package
 # KERNEL_BITS 64
@@ -8,6 +8,7 @@ p3_openssl	./build.openssl
 #kb_r_runtime	./install-r.sh r-packages.R
 # MACOSX_DEPLOYMENT_TARGET 10.5
 kb_python_runtime	./build.python
+# PYTHONHTTPSVERIFY 0
 kb_python_runtime	./install-python-packages.sh
 # MACOSX_DEPLOYMENT_TARGET 10.5
 kb_perl_runtime	./build.perl
