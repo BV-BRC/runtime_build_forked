@@ -31,7 +31,8 @@ if (! -s $openssl_tar)
 system("rm", "-rf", $openssl_dir);
 system("tar", "xzfp", $openssl_tar);
 chdir($openssl_dir);
-$ENV{KERNEL_BITS} = 64;
+# mac64 
+# $ENV{KERNEL_BITS} = 64;
 system("./config", "--prefix=$dest", "--openssldir=$dest/ssl");
 system("make");
 system("make", "install");
