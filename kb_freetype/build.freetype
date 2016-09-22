@@ -17,7 +17,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-if (-d "/Library")
+if (-d "/Library" && $ENV{MAC_32BIT})
 {
     $ENV{CC} = "gcc -m32";
     $ENV{CXX} = "g++ -m32";
