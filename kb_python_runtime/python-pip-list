@@ -48,7 +48,6 @@ networkx
 pygments
 XStatic-MathJax
 pexpect
-readline
 pylxc
 virtualenv
 virtualenvwrapper
