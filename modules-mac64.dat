@@ -1,5 +1,7 @@
 kb_libpng	./build.libpng
+p3_libjpeg	./build.package
 kb_freetype	./build.freetype
+p3_gd	./build.package
 # KERNEL_BITS 64
 # MACOSX_DEPLOYMENT_TARGET 10.5
 p3_openssl	./build.openssl
