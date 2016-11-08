@@ -1,0 +1,43 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+# https://curl.haxx.se/download/curl-7.48.0.tar.gz
+
+my $ver = "7.48.0";
+my $location = "https://curl.haxx.se/download";
+my $file = "curl-$ver.tar.gz";
+my $dir= "curl-$ver";
+my $url = $location . "/" . $file;
+run("curl", "-o", $file, "-L", $url);
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $file);
+
+chdir $dir or die "could not chdir $dir: $!";
+run("./configure", "--prefix", $dest);
+run("make", "-j", "6");
+run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
