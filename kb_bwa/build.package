@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+# http://downloads.sourceforge.net/project/bio-bwa/bwa-0.7.12.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbio-bwa%2Ffiles%2F&ts=1459276259&use_mirror=liquidtelecom
+
+my $vers = "0.7.12";
+
+my $package_dir = "bwa-$vers";
+my $package_tar = "bwa-$vers.tar.bz2";
+my $package_url = "http://downloads.sourceforge.net/project/bio-bwa/$package_tar";
+
+if (! -s $package_tar)
+{
+    system("curl", "-o", $package_tar, "-L", $package_url);
+}
+
+run("rm", "-rf", $package_dir);
+run("tar", "xjfp", $package_tar);
+chdir($package_dir) or die "cannot chdir $package_dir: $!";
+run("make -j $parallel");
+run("cp", "bwa", "$dest/bin/bwa");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
