@@ -1,29 +1,35 @@
 # rpm-name p3-bio-runtime
 # rpm-version 1.0
-kb_qiime	./install-qiime.sh python-qiime-list
+#kb_qiime	./install-qiime.sh python-qiime-list
 kb_jellyfish	./jellyfish_build.sh
 kb_cdbfasta	./cdbfasta_build.sh
-kb_seed_kmers	./build.seed_kmers
-kb_prodigal	./build.prodigal
-kb_glimmer	./build.glimmer
-kb_elph	./build.elph
 kb_blat	./build.blat
+## rpm-build-dep tcsh
 kb_blast	./build.blast
-kb_search_for_rnas	./build.search_for_rnas
 kb_amos	./build.amos
-kb_circonspect	./build.circonspect
-kb_phispy_runtime	./build.phispy
-kb_prinseq_runtime	./build.prinseq
+## rpm-dep libgomp
 kb_blastplus	./build.blastplus
 kb_muscle		./build.muscle
 kb_clustalw		./build.clustalw
 kb_clustalw		./build.clustalw2
 kb_mafft	./build.mafft
 kb_ssed		./build.ssed
+## rpm-build-dep cmake
+## rpm-build-dep chrpath
 kb_bamtools	./bootstrap.sh
 kb_bamutil 	./bootstrap.sh
 kb_circos	./build.circos
+## rpm-build-dep wget
 kb_bowtie	./install-bowtie1.sh
 kb_bowtie	./install-bowtie2.sh
 kb_rockhopper	./install_rockhopper.sh
 kb_prok_tuxedo	./install_prok_tuxedo.sh
+kb_snpeff	./snpeff_build.sh
+kb_mosaik	./bootstrap.sh
+kb_samtools	./build.samtools
+kb_bwa	./build.package
+kb_freebayes	./bootstrap.sh
+## rpm-dep libmpc
+kb_lastalign	./build.package
+kb_vcflib	./build.package
+kb_bcftools	./build.package

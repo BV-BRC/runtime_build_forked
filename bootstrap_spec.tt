@@ -1,0 +1,45 @@
+Name:		[% name %]
+Version:	[% IF version %][% version %][% ELSE %]1.0[% END %]
+Release:	[% release %]%{?dist}
+Summary:	[% summary %]
+
+Group:		p3
+License:	PATRIC
+AutoReqProv: no
+
+[% FOR req IN dependencies -%]
+Requires: [% req %]
+[% END -%]
+
+%global __os_install_post %{nil}
+%define __jar_repack %{nil}
+%define _unpackaged_files_terminate_build 0
+
+%description
+
+
+%prep
+
+
+%build
+
+
+%install
+mkdir -p %{buildroot}[% root_path %]
+[% IF file_list -%]
+tar -C / -c --files-from [% file_list %] -f - | tar -C %{buildroot} -x -f -
+[% ELSE -%]
+rsync -ar [% root_path %]/[% base_name %] %{buildroot}[% root_path %]
+[% END -%]
+
+[% IF file_list -%]
+%files -f [% file_list %]
+[% ELSE -%]
+%files
+[% FOR f IN files -%]
+[% f %]
+[% END -%]
+[% END -%]
+
+%changelog
+

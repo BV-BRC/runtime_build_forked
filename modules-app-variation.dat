@@ -3,7 +3,6 @@
 kb_snpeff	./snpeff_build.sh
 kb_mosaik	./bootstrap.sh
 kb_samtools	./build.samtools
-kb_parallel	./build.package
 kb_bwa	./build.package
 kb_freebayes	./bootstrap.sh
 kb_lastalign	./build.package

@@ -6,7 +6,6 @@ python-novaclient
 numpy
 biopython
 matplotlib
-mpi4py
 sphinx
 pyzmq
 tornado
@@ -49,7 +48,6 @@ networkx
 pygments
 XStatic-MathJax
 pexpect
-readline
 pylxc
 virtualenv
 virtualenvwrapper
@@ -64,3 +62,4 @@ ipython
 pycolor
 requests_toolbelt
 pandas
+sklearn

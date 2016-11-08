@@ -73,7 +73,7 @@ print "Install all\n";
 install_modules(\@modules);
 
 install_statistics_pca();
-install_bioperl();
+#install_bioperl();
 
 if (@failures)
 {

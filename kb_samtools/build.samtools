@@ -26,7 +26,8 @@ run("tar",  "xvfj",  "samtools-" . $ver . ".tar.bz2");
 chdir "./samtools-" . $ver or die "could not chdir ./samtools-$ver";
 
 run("./configure", "--prefix=$dest", "--enable-plugins");
-run("make -j 6 all all-htslib");
+run("make -j 6 all");
+run("make -j 6 all-htslib");
 run("make install install-htslib");
 
 sub run

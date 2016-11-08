@@ -19,7 +19,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $python_url = "http://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz";
+my $python_url = "http://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz";
 
 my $python_tgz = basename($python_url);
 my $python_vers = basename($python_tgz, ".tgz");
@@ -43,7 +43,7 @@ chdir $python_vers;
 
 my @opts;
 
-if (-d "/Applications") 
+if (-d "/Applications" && $ENV{MAC_32BIT}) 
 {
     $ENV{CC} = "gcc -m32";
     $ENV{CXX} = "g++ -m32";

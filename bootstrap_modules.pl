@@ -14,6 +14,9 @@ my $rpm_name;
 my $build_rpm;
 my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
+=======
+
+my($help, $dest, $module_dat);
 my @added_path;
 GetOptions('h'    => \$help,
 	   'help' => \$help,
@@ -31,7 +34,6 @@ pod2usage(-exitstatus => 0,
           -verbose => 2,
           -noperldoc => 1,
     ) if (defined $help or (!defined $dest) or (!defined $module_dat));
-
 
 if ($build_rpm)
 {
@@ -100,9 +102,10 @@ while (<DAT>)
     die "directory $dir is not executable" unless -e $dir;
     die "directory $dir is not writable" unless -w $dir;
 
-    my $rec = [$dir, $dir, $cmd];
+    my $rec = [$dir, $dir, $cmd, { %attribs }];
     push(@modules, $rec);
     push(@{$modules{$dir}}, $rec);
+    %attribs = ();
 }
 close(DAT);
 
@@ -127,11 +130,13 @@ for my $dir (keys %modules)
     }
 }
 
-# print Dumper(\@modules);
+#die Dumper(\@modules);
+
+my %save = %ENV;
 
 for my $mod (@modules)
 {
-    my($dir, $tag, $cmd) = @$mod;
+    my($dir, $tag, $cmd, $attribs) = @$mod;
 
     if (-f "$log_dir/built.$tag")
     {
@@ -139,8 +144,22 @@ for my $mod (@modules)
 	next;
     }
 
-    # my $to_run = "cd $dir; $cmd 2>&1";
-    my $to_run = "cd $dir; /tmp/x/bin/installwatch -o $log_dir/install_data.$tag $cmd 2>&1";
+    %ENV = %save;
+    for my $env (keys %$attribs)
+    {
+	print "setenv $env = $attribs->{$env}\n";
+	$ENV{$env} = $attribs->{$env};
+    }
+
+    my $to_run;
+    if ($installwatch)
+    {
+	$to_run = "cd $dir; $installwatch -o $log_dir/install_data.$tag $cmd 2>&1";
+    }
+    else
+    {
+	$to_run = "cd $dir; $cmd 2>&1";
+    }
     
     open(LOG, ">", "$log_dir/$tag") or die "Cannot open logfile $log_dir/$tag: $!";
     open(RUN, "$to_run |") or die "Cannot open pipe $to_run: $!";

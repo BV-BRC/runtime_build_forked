@@ -23,21 +23,26 @@ rm -rf go
 curl -O -L $bootstrap
 tar xzfp $bootstrap_tar
 mv go go_bootstrap
+(cd go_bootstrap/src; ./all.bash)
 export GOROOT_BOOTSTRAP=$here/go_bootstrap
+export GOROOT_FINAL=$DIR/go
 
 curl -O -L $latest
 
-cd $DIR
 tar xzfp $here/$latest_tar
 
 cd go/src
 ./all.bash
 
-for B in `ls bin`; do
+cd $here
+rm -rf $DIR/go
+rsync -arv go $DIR
+
+for B in `ls $DIR/go/bin`; do
 	if [ -e ${DIR}/bin/$B ] ; then
 		rm ${DIR}/bin/$B
 	fi
-	ln -s `pwd`/bin/$B ${DIR}/bin
+	ln -s $DIR/go/bin/$B ${DIR}/bin
 done
 
 cd $here
@@ -47,7 +52,7 @@ if [ ! -e $GOPATH ]; then
 fi
 
 for P in `cat ./golang-packages`; do
-	go get -v $P
+	$DIR/bin/go get -v $P
 done
 
 
