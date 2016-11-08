@@ -39,7 +39,7 @@ if (-d "/Library")
 {
     run("perl", "-pi.bak", "-e", 's/CC = "g\+\+"/CC = "g++ -m32"/', "Makefile.PL");
 }
-run("$dest/bin/perl", "Makefile.PL");
+run("perl", "Makefile.PL");
 run("make");
 run("make", "test");
 run("make", "install");

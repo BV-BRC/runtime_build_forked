@@ -47,14 +47,29 @@ system("make", "-j$parallel", "BINDIR=$bindir", "MANDIR=$mandir");
 system("make", "BINDIR=$bindir", "MANDIR=$mandir", "install");
 
 chdir("../tRNAscan-SE-1.21");
-system("make", "-j$parallel", "PERLDIR=$dest/bin", "BINDIR=$bindir", "MANDIR=$mandir", "LIBDIR=$progdir/lib/tRNAscan-SE");
-system("make", "PERLDIR=$dest/bin", "BINDIR=$bindir", "MANDIR=$mandir", "LIBDIR=$progdir/lib/tRNAscan-SE", "install");
+
+#
+# find perl in path
+#
+my $perl;
+for my $p (split(/:/, $ENV{PATH}))
+{
+    if (-x "$p/perl")
+    {
+	$perl = $p;
+	last;
+    }
+}
+$perl or die "could not find perl executable in $ENV{PATH}";
+
+system("make", "-j$parallel", "PERLDIR=$perl", "BINDIR=$bindir", "MANDIR=$mandir", "LIBDIR=$progdir/lib/tRNAscan-SE");
+system("make", "PERLDIR=$perl", "BINDIR=$bindir", "MANDIR=$mandir", "LIBDIR=$progdir/lib/tRNAscan-SE", "install");
 
 my $prog = "$dest/search_for_rnas/search_for_rnas";
 chdir("../..");
 open(I, "<", "search_for_rnas.in") or die "cannot read search_for_rnas.in: $!";
 open(P, ">", $prog) or die "cannot write $prog: $!";
-print P "#!$dest/bin/perl\n\n";
+print P "#!$perl/perl\n\n";
 while (<I>)
 {
     print P $_;

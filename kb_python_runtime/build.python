@@ -19,7 +19,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $python_url = "http://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz";
+my $python_url = "http://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz";
 
 my $python_tgz = basename($python_url);
 my $python_vers = basename($python_tgz, ".tgz");
@@ -49,9 +49,10 @@ if (-d "/Applications")
     $ENV{CXX} = "g++ -m32";
 }
 
-run("./configure", "--prefix", $dest, @opts);
+run("./configure", "--prefix", $dest, @opts, "--enable-shared");
 
 run("make", $parallel);
+exit;
 run("make install > $here/install.out 2>&1");
 
 sub run

@@ -14,20 +14,22 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-my $ver = "1.3";
-my $location = "http://downloads.sourceforge.net/project/samtools/samtools/$ver";
-my $file = "samtools-$ver.tar.bz2";
+# https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz
+
+my $ver = "1.5";
+my $location = "https://github.com/stedolan/jq/releases/download/jq-$ver";
+my $file = "jq-$ver.tar.gz";
+my $dir= "jq-$ver";
 my $url = $location . "/" . $file;
 run("curl", "-o", $file, "-L", $url);
 
-system("rm", "-rf", "samtools-" . $ver);
-run("tar",  "xvfj",  "samtools-" . $ver . ".tar.bz2");
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $file);
 
-chdir "./samtools-" . $ver or die "could not chdir ./samtools-$ver";
-
-run("./configure", "--prefix=$dest", "--enable-plugins");
-run("make -j 6 all all-htslib");
-run("make install install-htslib");
+chdir $dir or die "could not chdir $dir: $!";
+run("./configure", "--prefix", $dest);
+run("make", "-j", "6");
+run("make", "install");
 
 sub run
 {
@@ -38,3 +40,4 @@ sub run
 	die "Command failed with rc=$rc: @cmd\n";
     }
 }
+

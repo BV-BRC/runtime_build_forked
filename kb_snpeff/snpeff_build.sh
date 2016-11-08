@@ -22,6 +22,7 @@ dst=$target/data
 # unzip snpEff_latest_core.zip
 
 wget https://sourceforge.net/projects/snpeff/files/snpEff_v4_0_core.zip
+rm -rf snpEff
 unzip snpEff_v4_0_core.zip
 
 cp -r snpEff $target 
