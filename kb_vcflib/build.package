@@ -11,6 +11,17 @@ if (@ARGV)
 {
     $dest = shift;
 }
+
+my $build_tools = "$dest/build-tools/bin";
+if (-d $build_tools)
+{
+        $ENV{PATH} = "$build_tools:$ENV{PATH}";
+}
+else
+{
+        warn "No build tools in $build_tools\n";
+}
+
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 

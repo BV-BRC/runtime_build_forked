@@ -15,7 +15,18 @@ if (@ARGV)
     print STDERR "Overriding destination to $dest\n";
 }
 
-my $vers = "2.3.0";
+
+my $build_tools = "$dest/build-tools/bin";
+if (-d $build_tools)
+{
+	$ENV{PATH} = "$build_tools:$ENV{PATH}";
+}
+else
+{
+	warn "No build tools in $build_tools\n";
+}
+
+my $vers = "2.5.0";
 my $tar = "ncbi-blast-${vers}+-src.tar.gz";
 my $dir = "ncbi-blast-${vers}+-src";
 my $url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$vers/$tar";
