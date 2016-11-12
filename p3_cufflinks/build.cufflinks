@@ -29,10 +29,11 @@ my $hash = "753c109e31818dcf7aa8a2c8ecdac4fa43d2ab9b";
 
 my $cuff_dir = "cufflinks";
 system("rm", "-rf", $cuff_dir);
-run("git", "clone", 'https://github.com/cole-trapnell-lab/cufflinks.git');
+run("git", "clone", 'https://github.com/aswarren/cufflinks');
+#run("git", "clone", 'https://github.com/cole-trapnell-lab/cufflinks.git');
 
 chdir($cuff_dir) || die "cannot chdir $cuff_dir: $!";
-run("git", "checkout", $hash);
+#run("git", "checkout", $hash);
 run("./autogen.sh");
 run("./configure", "--with-bam=$dest/samtools", "--prefix=$dest", 
 	#"--with-boost-thread=$build_tools/lib/libboost_thread-mt.so", 

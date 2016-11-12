@@ -184,3 +184,4 @@ Text::Format
 Statistics::Basic
 CHI
 Bio-EUtilities
+IPC::Run3

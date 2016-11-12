@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+#!/disks/patric-common/runtime/bin/perl
+#!/usr/bin/perl
+=======
 #!/usr/bin/env perl
+>>>>>>> origin/master
 
 use File::Basename;
 use strict;
@@ -7,7 +12,10 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper;
 use Template;
+<<<<<<< HEAD
+=======
 use File::Temp;
+>>>>>>> origin/master
 
 my($help, $dest, $module_dat);
 my $rpm_name;
@@ -15,7 +23,10 @@ my $build_rpm;
 my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
 my @added_path;
+<<<<<<< HEAD
+=======
 my @modules_to_build;
+>>>>>>> origin/master
 GetOptions('h'    => \$help,
 	   'help' => \$help,
 	   'd=s'    => \$dest,
@@ -25,7 +36,10 @@ GetOptions('h'    => \$help,
 	   "rpm-version=s" => \$rpm_version,
 	   "rpm-sandbox=s" => \$rpm_sandbox,
 	   "path=s" => \@added_path,
+<<<<<<< HEAD
+=======
 	   "modules=s" => \@modules_to_build,
+>>>>>>> origin/master
     ) or pod2usage(0);
 
 pod2usage(-exitstatus => 0,
@@ -34,8 +48,11 @@ pod2usage(-exitstatus => 0,
           -noperldoc => 1,
     ) if (defined $help or (!defined $dest) or (!defined $module_dat));
 
+<<<<<<< HEAD
+=======
 my %modules_to_build;
 $modules_to_build{$_} = 1 foreach @modules_to_build;
+>>>>>>> origin/master
 
 if ($build_rpm)
 {
@@ -76,6 +93,8 @@ my %target = (open => 0,
 	      unlink => -1,
 	      chmod => -1,
 	     );
+<<<<<<< HEAD
+=======
 my %rm_target = (open => -1,
 	      open_read => -1,
 	      symlink => -1,
@@ -94,6 +113,7 @@ my %rm_target = (open => -1,
 	      unlink => 0,
 	      chmod => -1,
 	     );
+>>>>>>> origin/master
 
 my $mbase = basename($module_dat);
 
@@ -125,7 +145,10 @@ my @modules;
 
 my %modules;
 my %attribs;
+<<<<<<< HEAD
+=======
 my $module_attribs = {};
+>>>>>>> origin/master
 
 while (<DAT>)
 {
@@ -135,10 +158,13 @@ while (<DAT>)
     {
 	$attribs{$1} = $2;
     }
+<<<<<<< HEAD
+=======
     if (/^\#\#\s+(\S+)\s+(.*)$/)
     {
 	push(@{$module_attribs->{$1}}, $2);
     }
+>>>>>>> origin/master
     next if /^\#/;
     my($dir, $cmd) = split(/\s+/, $_, 2);
     die "error parsing $module_dat" unless ($dir && $cmd);
@@ -146,10 +172,16 @@ while (<DAT>)
     die "directory $dir is not executable" unless -e $dir;
     die "directory $dir is not writable" unless -w $dir;
 
+<<<<<<< HEAD
+    my $rec = [$dir, $dir, $cmd];
+    push(@modules, $rec);
+    push(@{$modules{$dir}}, $rec);
+=======
     my $rec = [$dir, $dir, $cmd, $module_attribs];
     push(@modules, $rec);
     push(@{$modules{$dir}}, $rec);
     $module_attribs = {};
+>>>>>>> origin/master
 }
 close(DAT);
 
@@ -161,7 +193,11 @@ $rpm_name = $attribs{'rpm-name'} if $attribs{'rpm-name'} && !$rpm_name;
 # directories that have more than one build record.
 #
 
+<<<<<<< HEAD
+for my $dir (keys %modules)
+=======
 for my $dir (sort keys %modules)
+>>>>>>> origin/master
 {
     my $l = $modules{$dir};
     if (@$l > 1)
@@ -174,7 +210,11 @@ for my $dir (sort keys %modules)
     }
 }
 
+<<<<<<< HEAD
+# print Dumper(\@modules);
+=======
 # die Dumper(\@modules);
+>>>>>>> origin/master
 
 my %belongs_to;
 my %uses;
@@ -182,7 +222,11 @@ my %files_of;
 
 for my $mod (@modules)
 {
+<<<<<<< HEAD
+    my($dir, $tag, $cmd) = @$mod;
+=======
     my($dir, $tag, $cmd, $attribs) = @$mod;
+>>>>>>> origin/master
 
     if (!-f "$log_dir/built.$tag")
     {
@@ -194,6 +238,8 @@ for my $mod (@modules)
 
     open(L, "<", $log) or die "Cannot open $log: $!";
 
+<<<<<<< HEAD
+=======
     #
     # One pass to process writes, another to process
     # reads to identify orphans.
@@ -249,6 +295,7 @@ for my $mod (@modules)
     }
     
     seek(L, 0, 0);
+>>>>>>> origin/master
     while (<L>)
     {
 	chomp;
@@ -272,6 +319,31 @@ for my $mod (@modules)
 
 	next unless $target =~ m/^$dest/;
 
+<<<<<<< HEAD
+	if ($cmd =~ /read/)
+	{
+	    my $pkg = $belongs_to{$target};
+	    if ($pkg)
+	    {
+		$uses{$tag} = $pkg;
+	    }
+	    else
+	    {
+		"$tag uses orphan $target\n";
+	    }
+	}
+	else
+	{
+	    $belongs_to{$target} = $tag;
+	    $files_of{$tag}->{$target} = 1;
+	}
+    }
+}
+
+for my $tag (keys %files_of)
+{
+    build_rpm();
+=======
 	my $pkg = $belongs_to{$target};
 	if ($cmd =~ /read/)
 	{
@@ -315,14 +387,21 @@ for my $mod (@modules)
 if (!@modules_to_build)
 {
     build_rpm("rollup of all modules", $rpm_name, \@alldeps, []);
+>>>>>>> origin/master
 }
 
 sub build_rpm
 {
+<<<<<<< HEAD
+    my($files_of, $belongs_to, $uses) @_;
+    my $spec_dir = "$rpm_sandbox/SPECS";
+    my $rpm_name_base = "$rpm_name-$rpm_version";
+=======
     my($tag, $this_rpm, $dependencies, $files) = @_;
     
     my $spec_dir = "$rpm_sandbox/SPECS";
     my $rpm_name_base = "$this_rpm-$rpm_version";
+>>>>>>> origin/master
     my $rel;
     for my $p (<$spec_dir/$rpm_name_base*>)
     {
@@ -330,6 +409,11 @@ sub build_rpm
 	$rel = $r if ($r > $rel);
     }
     $rel++;
+<<<<<<< HEAD
+    my $spec = "$spec_dir/$rpm_name-$rpm_version-$rel.spec";
+    print "Create $spec\n";
+
+=======
     my $spec = "$spec_dir/$this_rpm-$rpm_version-$rel.spec";
     print "Create $spec\n";
 
@@ -337,11 +421,18 @@ sub build_rpm
     print $tmpfile "$_\n" foreach @$files;
     close($tmpfile);
 
+>>>>>>> origin/master
     my $templ = Template->new(RELATIVE => 1);
 
     my $build_root = dirname($dest);
     my $base_name = basename($dest);
     my $vars = {
+<<<<<<< HEAD
+	name => $rpm_name,
+	version => $rpm_version,
+	release => $rel,
+	summary => "Bootstrap build from $module_dat",
+=======
 	name => $this_rpm,
 	version => $rpm_version,
 	release => $rel,
@@ -349,6 +440,7 @@ sub build_rpm
 	file_list => "$tmpfile",
 	dependencies => $dependencies,
 	summary => "Bootstrap build for $tag from $module_dat",
+>>>>>>> origin/master
 	root_path => $build_root,
 	base_name => $base_name,
     };

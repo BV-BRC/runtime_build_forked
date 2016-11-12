@@ -1,4 +1,5 @@
-#!/usr/bin/env perl
+#!/disks/patric-common/runtime/bin/perl
+#!/usr/bin/perl
 
 use File::Basename;
 use strict;
@@ -6,6 +7,14 @@ use Cwd qw(abs_path getcwd);
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper;
+use Template;
+
+my($help, $dest, $module_dat);
+my $rpm_name;
+my $build_rpm;
+my $rpm_sandbox = "rpm-sandbox";
+my $rpm_version;
+=======
 
 my($help, $dest, $module_dat);
 my @added_path;
@@ -13,6 +22,10 @@ GetOptions('h'    => \$help,
 	   'help' => \$help,
 	   'd=s'    => \$dest,
 	   'm=s'    => \$module_dat,
+	   "build-rpm" => \$build_rpm,
+	   "rpm-name=s" => \$rpm_name,
+	   "rpm-version=s" => \$rpm_version,
+	   "rpm-sandbox=s" => \$rpm_sandbox,
 	   "path=s" => \@added_path,
     ) or pod2usage(0);
 
@@ -22,13 +35,26 @@ pod2usage(-exitstatus => 0,
           -noperldoc => 1,
     ) if (defined $help or (!defined $dest) or (!defined $module_dat));
 
+if ($build_rpm)
+{
+    if (! -d $rpm_sandbox)
+    {
+	die "RPM sandbox directory $rpm_sandbox does not exist\n";
+    }
+    $rpm_sandbox = abs_path($rpm_sandbox);
+
+    for my $p (qw(BUILD RPMS SOURCES SPECS SRPMS))
+    {
+	if (! -d "$rpm_sandbox/$p")
+	{
+	    mkdir($p) or die "Cannot mkdir $p: $!\n";
+	}
+    }
+}
+
 $ENV{PATH} = join(":", "$dest/bin", @added_path, $ENV{PATH});
 $ENV{CPATH} = "$dest/include";
 $ENV{LIBRARY_PATH} = "$dest/lib";
-$ENV{LD_RUN_PATH} = "$dest/lib";
-
-#my $installwatch = "installwatch";
-my $installwatch = "";
 
 my $mbase = basename($module_dat);
 
@@ -82,6 +108,9 @@ while (<DAT>)
     %attribs = ();
 }
 close(DAT);
+
+$rpm_version = $attribs{'rpm-version'} if $attribs{'rpm-version'} && !$rpm_version;
+$rpm_name = $attribs{'rpm-name'} if $attribs{'rpm-name'} && !$rpm_name;
 
 #
 # Rewrite dir-tag element ($rec[1]) for the
@@ -160,6 +189,52 @@ for my $mod (@modules)
 }
 
 system("git describe --always --tags > $dest/VERSION") == 0 or die "could not write VERSION file to $dest";
+
+&build_rpm if $build_rpm;
+
+sub build_rpm
+{
+    my $spec_dir = "$rpm_sandbox/SPECS";
+    my $rpm_name_base = "$rpm_name-$rpm_version";
+    my $rel;
+    for my $p (<$spec_dir/$rpm_name_base*>)
+    {
+	my($r) = $p =~ /$rpm_name_base-(\d+)/;
+	$rel = $r if ($r > $rel);
+    }
+    $rel++;
+    my $spec = "$spec_dir/$rpm_name-$rpm_version-$rel.spec";
+    print "Create $spec\n";
+
+    my $templ = Template->new(RELATIVE => 1);
+
+    my $build_root = dirname($dest);
+    my $base_name = basename($dest);
+    my $vars = {
+	name => $rpm_name,
+	version => $rpm_version,
+	release => $rel,
+	summary => "Bootstrap build from $module_dat",
+	root_path => $build_root,
+	base_name => $base_name,
+    };
+    $templ->process("bootstrap_spec.tt", $vars, $spec);
+
+    my @cmd = ("rpmbuild",
+	       -D => "_topdir $rpm_sandbox",
+	       -D => "_builddir $rpm_sandbox/BUILD",
+	       -D => "_rpmdir $rpm_sandbox/RPMS",
+	       -D => "_sourcedir $rpm_sandbox/SOURCES",
+	       -D => "_specdir $rpm_sandbox/SPECS",
+	       -D => "_srcrpmdir $rpm_sandbox/SRPMS",
+	       '-bb', $spec);
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Error $rc building RPM  with @cmd\n";
+    }
+}
 
 =pod
 
