@@ -7,14 +7,20 @@ use Cwd qw(abs_path getcwd);
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper;
-use Template;
+
+our $have_template;
+eval {
+	require Template;
+	$have_template++;
+};
 
 my($help, $dest, $module_dat);
 my $rpm_name;
 my $build_rpm;
 my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
-=======
+
+my $installwatch;
 
 my($help, $dest, $module_dat);
 my @added_path;
@@ -197,6 +203,8 @@ sub build_rpm
     my $spec_dir = "$rpm_sandbox/SPECS";
     my $rpm_name_base = "$rpm_name-$rpm_version";
     my $rel;
+
+    die "RPM build requires a perl with Template installed\n" unless $have_template;
     for my $p (<$spec_dir/$rpm_name_base*>)
     {
 	my($r) = $p =~ /$rpm_name_base-(\d+)/;
