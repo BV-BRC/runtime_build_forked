@@ -52,7 +52,6 @@ if (-d "/Applications" && $ENV{MAC_32BIT})
 run("./configure", "--prefix", $dest, @opts, "--enable-shared");
 
 run("make", $parallel);
-exit;
 run("make install > $here/install.out 2>&1");
 
 sub run
