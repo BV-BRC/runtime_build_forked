@@ -1,0 +1,49 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+$ENV{PATH} = "$dest/build-tools/bin:$ENV{PATH}";
+
+# https://nodejs.org/dist/v6.9.1/node-v6.9.1.tar.gz
+
+my $ver = "v6.9.1";
+my $location = "https://nodejs.org/dist/$ver";
+my $file = "node-$ver.tar.gz";
+my $dir= "node-$ver";
+my $url = $location . "/" . $file;
+
+if (! -s $file)
+{
+    run("curl", "-o", $file, "-L", $url);
+}
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $file);
+
+chdir $dir or die "could not chdir $dir: $!";
+run("./configure", "--prefix", $dest, "--fully-static");
+run("make", "-j", "6");
+run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
