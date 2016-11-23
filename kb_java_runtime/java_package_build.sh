@@ -50,7 +50,7 @@ fi
 ln -s $target/apache-maven-3.3.9/bin/mvn $target/bin/mvn
 
 echo "Install tomcat"
-v=7.0.72
+v=7.0.73
 curl -f -O "ftp://apache.cs.utah.edu/apache.org/tomcat/tomcat-7/v$v/bin/apache-tomcat-$v.tar.gz"
 rm -rf $target/tomcat*
 tar zxvf apache-tomcat-$v.tar.gz -C $target
