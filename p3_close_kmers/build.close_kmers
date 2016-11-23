@@ -6,9 +6,7 @@ use Carp;
 use File::Basename;
 use Cwd 'abs_path';
 
-my @parallel = ("-j", 8);
-
-my $build_tools = $ENV{BUILD_TOOLS} || "/disks/patric-common/runtime/gcc-4.9.3";
+my @parallel = ("-j", 4);
 
 my $dest = $ENV{TARGET} || "/kb/runtime";
 
@@ -17,6 +15,7 @@ if (@ARGV)
     $dest = shift;
     print STDERR "Overriding destination to $dest\n";
 }
+my $build_tools = $ENV{BUILD_TOOLS} || "$dest/build-tools";
 
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
