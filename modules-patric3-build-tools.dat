@@ -1,11 +1,11 @@
-# rpm-name p3-core-build-tools
-# rpm-version 1.0
-# rpm-build-dep zip
-# rpm-build-dep texinfo
-# rpm-build-dep bzip2-devel
-# rpm-build-dep mpfr-devel 
-# rpm-build-dep gmp-devel
-# rpm-build-dep libmpc-devel
-# rpm-dep bzip2
+## rpm-name p3-core-build-tools
+## rpm-version 1.0
+## rpm-build-dep zip
+## rpm-build-dep texinfo
+## rpm-build-dep bzip2-devel
+## rpm-build-dep mpfr-devel 
+## rpm-build-dep gmp-devel
+## rpm-build-dep libmpc-devel
+## rpm-dep bzip2
 kb_gcc	      ./build.package --subdir build-tools
 p3_tbb	./build.tbb

@@ -1,5 +1,5 @@
-# rpm-name p3-bio-runtime
-# rpm-version 1.0
+## rpm-name p3-bio-runtime
+## rpm-version 1.0
 #kb_qiime	./install-qiime.sh python-qiime-list
 kb_jellyfish	./jellyfish_build.sh
 kb_cdbfasta	./cdbfasta_build.sh

@@ -1,5 +1,5 @@
-# rpm-name p3-anno-runtime
-# rpm-version 1.0
+## rpm-name p3-anno-runtime
+## rpm-version 1.0
 kb_seed_kmers	./build.seed_kmers
 kb_prodigal	./build.prodigal
 kb_glimmer	./build.glimmer
