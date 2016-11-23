@@ -16,6 +16,7 @@ kb_curl	      ./build.package
 ## rpm-build-dep expat-devel
 ## rpm-build-dep libxml2-devel
 ## rpm-build-dep db4-devel
+## rpm-build-dep uuid-devel
 kb_perl_runtime	./build.runtime
 kb_golang_runtime	./install-golang.sh
 ## rpm-dep libxslt

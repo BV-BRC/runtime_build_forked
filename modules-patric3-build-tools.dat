@@ -8,3 +8,4 @@
 # rpm-build-dep libmpc-devel
 # rpm-dep bzip2
 kb_gcc	      ./build.package --subdir build-tools
+p3_tbb	./build.tbb
