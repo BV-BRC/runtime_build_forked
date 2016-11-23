@@ -7,7 +7,7 @@ mkdir -p $dest
 # downlownload version
 
 rm -rf bowtie-1.0.0*
-wget  "http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.0/bowtie-1.0.0-src.zip"
+curl -O -L  "http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.0.0/bowtie-1.0.0-src.zip"
 unzip bowtie-1.0.0-src.zip
 pushd bowtie-1.0.0
 make
