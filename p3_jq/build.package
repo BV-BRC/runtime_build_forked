@@ -27,7 +27,7 @@ system("rm", "-rf", $dir);
 run("tar",  "xvfz",  $file);
 
 chdir $dir or die "could not chdir $dir: $!";
-run("./configure", "--prefix", $dest);
+run("./configure", "--prefix", $dest, "--disable-maintainer-mode");
 run("make", "-j", "6");
 run("make", "install");
 
