@@ -6,6 +6,7 @@ if [[ $# != 1 ]] ; then
 fi
 
 subscription-manager repos --enable rhel-6-server-eus-optional-rpms 
+yum -y update ca-certificates
 curl -O -L https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 rpm -ivh epel-release-latest-6.noarch.rpm
 
