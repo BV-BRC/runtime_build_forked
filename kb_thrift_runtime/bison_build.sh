@@ -14,5 +14,5 @@ tar xvf bison-2.5.1.tar.gz
 cd bison-2.5.1
 ./configure --prefix=$target
 make
-sudo make install
+make install
 cd ..
