@@ -18,6 +18,9 @@ if (@ARGV)
 
 my $build_tools = $ENV{BUILD_TOOLS} || "$dest/build-tools";
 
+system("mkdir", "-p", "$build_tools/lib");
+system("mkdir", "-p", "$build_tools/bin");
+
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
