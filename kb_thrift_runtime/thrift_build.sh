@@ -32,10 +32,18 @@ export THRIFT_HOME=$target/thrift
 export PATH=${JAVA_HOME}/bin:${ANT_HOME}/bin:$target/bin:${THRIFT_HOME}/bin:${PATH}
 export PY_PREFIX=$target
 
+#install bison
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+$DIR/bison_build.sh $target
+if [[ $? != 0 ]] ; then
+  echo "bison_build.sh failed with exit value $?"
+fi
+
 #vers=0.8.0
 #url=http://www.kbase.us/docs/build/thrift-$vers.tar.gz
 
-vers=0.9.1
+#vers=0.9.1
+vers=0.9.3
 url=http://apache.spinellicreations.com/thrift/$vers/thrift-$vers.tar.gz
 
 tar=thrift-$vers.tar.gz
