@@ -32,23 +32,55 @@ print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 my $dir;
+## module load ##
+if(!system("bash", "-c", "module avail > /dev/null 2>&1")) {
+  my $cmd = "./gcc_module.sh";
+  my $modules = `$cmd`;
+  my @gccs;
+  foreach my $line (split /[\n\s]+/, $modules) {
+    $line =~ s/\(default\)//;
+    push @gccs, $1 if $line =~ /(gcc\S+)/i;
+  }
 
-$dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.gz", $dest);
-build_tool($dir, $dest);
+  my @vers;
+  foreach my $gcc (@gccs) {
+    my $ver = find_ver($gcc);
+    push @vers, $ver;
+    print $gcc, "is at ver ", $ver, "\n";
+  }
 
-$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+  my $latest = find_latest(@vers);
+  my @module = grep /$latest/, @gccs;
+  my $cmd = "./gcc_load.sh \"$module[0]\"";
+  my $paths = `$cmd` or die;
+  my @paths = split /[\s\n]+/, $paths;
+  foreach (@paths) {
+    my $base = basename($_);
+    run("mkdir", "-p", "$dest/bin");
+    run("ln",  "-s",  "$_", "$dest/bin/$base");
+  }
+  exit;
+} ## end module load ##
 
-do_chdir($cwd);
-$dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz", $dest);
-mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
-do_chdir("gcc-build");
-run("../$dir/configure", "--prefix", $dest, "--disable-multilib");
-run("make", "-j", 6);
-run("make", "install");
+else {
+  $dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.gz", $dest);
+  build_tool($dir, $dest);
 
-do_chdir($cwd);
-$dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
-build_tool($dir, $dest);
+  $ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+  do_chdir($cwd);
+  $dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz", $dest);
+  mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
+  do_chdir("gcc-build");
+  run("../$dir/configure", "--prefix", $dest, "--disable-multilib");
+  run("make", "-j", 6);
+  run("make", "install");
+
+  do_chdir($cwd);
+  $dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
+  build_tool($dir, $dest);
+
+}
 
 do_chdir($cwd);
 $dir = download_tool("http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2");
@@ -117,3 +149,25 @@ sub run
 	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
     }
 }
+
+
+# subs for module load
+sub find_ver {
+  my $r = $1 if $_[0] =~ /([\d\.]+)/;
+  warn "could not find_ver" unless $r;
+  return $r;
+}
+
+sub find_latest {
+  my $latest = 0;
+  my $highest;
+  foreach my $ver (@_) {
+    my $num = $ver;
+    $num =~ s/\.//g;
+    if ($latest < $num) {
+      $highest = $num;
+      $latest = $ver;
+    }
+  }
+}
+# end subs for module load
