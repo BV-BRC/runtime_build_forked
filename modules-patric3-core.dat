@@ -43,3 +43,4 @@ kb_zmq3	./build.zmq3
 kb_sphinx_runtime	./sphinx_build.sh
 kb_parallel	./build.package
 p3_jq	./build.package
+p3_nginx	./nginx_build.sh
