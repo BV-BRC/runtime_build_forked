@@ -12,10 +12,11 @@ fi
 
 wget http://www.openssl.org/source/openssl-1.0.2f.tar.gz
 tar -zxf openssl-1.0.2f.tar.gz
-cd openssl-1.0.2f
+pushd openssl-1.0.2f
 ./config --prefix=$target
 make
 make install
+popd
 
 wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.39.tar.gz
 tar -zxf pcre-8.39.tar.gz
@@ -26,7 +27,7 @@ tar -zxf zlib-1.2.8.tar.gz
 wget http://nginx.org/download/nginx-1.11.6.tar.gz
 tar zxf nginx-1.11.6.tar.gz
 
-cd nginx-1.11.6
+pushd nginx-1.11.6
 
 ./configure		\
 	--prefix=$target/nginx		\
@@ -36,3 +37,8 @@ cd nginx-1.11.6
 	--with-ld-opt="-L $target/lib"	\
 	--with-stream			\
 	--with-mail=dynamic
+
+make
+make install
+
+popd
