@@ -73,10 +73,15 @@ if [ $? -ne 0 ] ; then
 	exit 1
 fi
 
-#jackson=jackson-all-1.9.11.jar
-#
-#echo "Install jackson"
-#rm -rf $target/lib/jackson-all*
+jackson=jackson-all-1.9.11.jar
+
+echo "Install jackson"
+rm -rf $target/lib/jackson-all*
+curl -O -L http://java2s.com/Code/JarDownload/jackson-all/$jackson.zip
+unzip $jackson.zip
+mv $jackson $target/lib/$jackson
+ln -s $target/lib/$jackson $target/lib/jackson-all.jar
+
 #curl -o $target/lib/$jackson http://jackson.codehaus.org/1.9.11/$jackson
 #ln -s $target/lib/$jackson $target/lib/jackson-all.jar
 #
