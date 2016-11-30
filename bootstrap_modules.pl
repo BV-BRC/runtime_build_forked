@@ -305,6 +305,8 @@ The modules.dat file contains a space delimited set of module directories and bu
 
 =item -m Name of the modules.dat file
 
+=item --install-build-dependencies When specified, this will install rpms specified in the modules.dat file.
+
 =back
 
 =head1  AUTHORS
