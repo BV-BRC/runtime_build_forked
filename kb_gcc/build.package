@@ -57,9 +57,9 @@ if(!system("bash", "-c", "module avail > /dev/null 2>&1")) {
   foreach (@paths) {
     my $base = basename($_);
     run("mkdir", "-p", "$dest/bin");
+    unlink "$dest/bin/$base" if -e "$dest/bin/$base";
     run("ln",  "-s",  "$_", "$dest/bin/$base");
   }
-  exit;
 } ## end module load ##
 
 else {
