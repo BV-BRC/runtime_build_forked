@@ -24,7 +24,7 @@ fi
 
 
 rm -rf freebayes
-git clone --recursive git://github.com/ekg/freebayes.git
+git clone --recursive https://github.com/ekg/freebayes.git
 
 pushd freebayes
 make
