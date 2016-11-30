@@ -32,6 +32,7 @@ print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 my $dir;
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
 ## module load ##
 if(!system("bash", "-c", "module avail > /dev/null 2>&1")) {
   my $cmd = "./gcc_module.sh";
@@ -65,8 +66,6 @@ if(!system("bash", "-c", "module avail > /dev/null 2>&1")) {
 else {
   $dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.gz", $dest);
   build_tool($dir, $dest);
-
-  $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
   do_chdir($cwd);
   $dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz", $dest);
