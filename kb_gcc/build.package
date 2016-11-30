@@ -158,15 +158,16 @@ sub find_ver {
 }
 
 sub find_latest {
-  my $latest = 0;
-  my $highest;
+  my $latest = 0; # latest is numerical representation of ver
+  my $highest;    # highest is the highest version
   foreach my $ver (@_) {
     my $num = $ver;
     $num =~ s/\.//g;
     if ($latest < $num) {
-      $highest = $num;
-      $latest = $ver;
+      $latest = $num;
+      $highest = $ver;
     }
   }
+  return $highest;
 }
 # end subs for module load

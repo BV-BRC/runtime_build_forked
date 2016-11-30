@@ -8,7 +8,7 @@ kb_blat	./build.blat
 kb_blast	./build.blast
 kb_amos	./build.amos
 ## rpm-dep libgomp
-kb_blastplus	./build.blastplus
+#kb_blastplus	./build.blastplus
 kb_muscle		./build.muscle
 kb_clustalw		./build.clustalw
 kb_clustalw		./build.clustalw2
@@ -16,15 +16,15 @@ kb_mafft	./build.mafft
 kb_ssed		./build.ssed
 ## rpm-build-dep cmake
 ## rpm-build-dep chrpath
-kb_bamtools	./bootstrap.sh
-kb_bamutil 	./bootstrap.sh
+#kb_bamtools	./bootstrap.sh	ERROR ON chrpath which is not installed on all systems
+#kb_bamutil 	./bootstrap.sh
 kb_circos	./build.circos
 ## rpm-build-dep wget
 kb_bowtie	./install-bowtie1.sh
 kb_bowtie	./install-bowtie2.sh
 kb_rockhopper	./install_rockhopper.sh
 kb_prok_tuxedo	./install_prok_tuxedo.sh
-kb_snpeff	./snpeff_build.sh
+# kb_snpeff	./snpeff_build.sh
 kb_mosaik	./bootstrap.sh
 kb_samtools	./build.samtools
 kb_bwa	./build.package
