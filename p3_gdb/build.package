@@ -1,0 +1,122 @@
+#!/usr/bin/env perl
+
+#
+# GDB for modern gcc toolchain.
+#
+
+use strict;
+use File::Basename;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd qw(abs_path getcwd);
+my $cwd = getcwd();
+
+use Getopt::Long::Descriptive;
+
+my($opt, $usage) = describe_options("%c %o [target]",
+				    ["subdir=s", "Install into this subdirectory of the target", { default => "build-tools" }],
+				    ["help|h", "Show this usage message"]);
+print($usage->text), exit if $opt->help;
+die($usage->text) if @ARGV > 1;
+
+my $top_dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $top_dest = shift;
+}
+
+my $dest = $top_dest;
+$dest .= "/" . $opt->subdir if $opt->subdir;
+
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+my $dir;
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+$dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
+build_tool($dir, $dest, 
+#	"--with-isl=$cwd/../p3_gcc/gcc-build/isl",
+	"--with-gmp=$cwd/../p3_gcc/gcc-build/gmp",
+	"--with-mpc=$cwd/../p3_gcc/gcc-build/mpc",
+	"--with-mpfr=$cwd/../p3_gcc/gcc-build/mpfr");
+
+sub download_tool
+{
+    my($url, $dest) = @_;
+
+    my $file = basename($url);
+    my($dir,$comp) = $file =~ /^(.*)\.(tar\.gz|tgz|tar\.bz2)$/;
+
+    my %comp_option = ('tar.gz' => 'z',
+		       'tgz' => 'z',
+		       'tar.bz2' => 'j');
+    my $comp_option = $comp_option{$comp};
+
+    if (! -s $file)
+    {
+	run("curl", "-o", $file, "-L", $url);
+    }
+
+    system("rm", "-rf", $dir);
+    run("tar",  "xf$comp_option",  $file);
+
+    -d $dir or die "$dir not found after extraction";
+    return $dir;
+}
+
+sub build_tool
+{
+    my($dir, $dest, @configure_flags) = @_;
+
+    chdir $dir or die "could not chdir $dir: $!";
+
+    run("./configure", "--prefix", $dest, @configure_flags);
+	
+    run("make", "-j", "6");
+    run("make", "install");
+}
+    
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
+
+
+# subs for module load
+sub find_ver {
+  my $r = $1 if $_[0] =~ /([\d\.]+)/;
+  warn "could not find_ver" unless $r;
+  return $r;
+}
+
+sub find_latest {
+  my $latest = 0; # latest is numerical representation of ver
+  my $highest;    # highest is the highest version
+  foreach my $ver (@_) {
+    my $num = $ver;
+    $num =~ s/\.//g;
+    if ($latest < $num) {
+      $latest = $num;
+      $highest = $ver;
+    }
+  }
+  return $highest;
+}
+# end subs for module load
