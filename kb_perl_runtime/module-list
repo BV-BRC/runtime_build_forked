@@ -118,7 +118,6 @@ Text::NSP::Measures::2D::Fisher::twotailed
 String::CamelCase
 IPC::Shareable
 Plack::Middleware::CrossOrigin
-Cairo
 Contextual::Return
 Math::Cephes
 Math::Cephes::Matrix
@@ -183,5 +182,4 @@ Regexp::Common
 Text::Format
 Statistics::Basic
 CHI
-Bio-EUtilities
 IPC::Run3
