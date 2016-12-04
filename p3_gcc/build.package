@@ -35,7 +35,8 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
-$dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz", $dest);
+my $vers = "4.9.4";
+$dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-$vers/gcc-$vers.tar.gz", $dest);
 mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
 do_chdir($dir);
 run("../$dir/contrib/download_prerequisites");
