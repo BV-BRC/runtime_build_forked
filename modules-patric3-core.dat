@@ -23,6 +23,8 @@ kb_golang_runtime	./install-golang.sh
 ## rpm-dep atlas
 ## rpm-dep lapack
 ## rpm-dep readline
+#Note - on RHEL6.4 we don't need atlas-devel / lappack-devel - atlas + lapack 
+#alone work properly.
 ## rpm-build-dep libxslt-devel
 ## rpm-build-dep atlas-devel
 ## rpm-build-dep lapack-devel
