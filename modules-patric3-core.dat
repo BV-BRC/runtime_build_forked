@@ -2,6 +2,7 @@
 ## rpm-version 1.0
 ## rpm-build-dep gcc
 ## rpm-build-dep gcc-c++
+## rpm-build-dep gcc-gfortran
 ## rpm-build-dep make
 ## rpm-build-dep git
 ## rpm-dep openssl

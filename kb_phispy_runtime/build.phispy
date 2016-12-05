@@ -16,10 +16,11 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $phispy_url = "http://downloads.sourceforge.net/project/phispy/phiSpyNov11_v2.2.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fphispy%2F%3Fsource%3Ddlp&ts=1358898652&use_mirror=iweb";
+my $phispy_url = "http://downloads.sourceforge.net/project/phispy/phiSpyNov11_v2.3.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fphispy%2Ffiles%2F&ts=1480893659&use_mirror=superb-sea2";
+#my $phispy_url = "http://downloads.sourceforge.net/project/phispy/phiSpyNov11_v2.3.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fphispy%2F%3Fsource%3Ddlp&ts=1358898652&use_mirror=iweb";
 
 my $phispy_zip = "phispy.zip";
-my $phispy_dir = "phiSpyNov11_v2.2";
+my $phispy_dir = "phiSpyNov11_v2.3";
 
 if (! -s $phispy_zip)
 {
