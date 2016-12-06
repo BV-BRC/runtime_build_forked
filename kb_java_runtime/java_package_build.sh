@@ -44,7 +44,7 @@ curl -f -O http://apache.cs.utah.edu/maven/maven-3/3.3.9/binaries/apache-maven-3
 rm -rf $target/apache-maven*
 tar zxvf apache-maven-3.3.9-bin.tar.gz -C $target
 if [ $? -ne 0 ] ; then
-	echo "Failed to unpack ivy" 1>&2
+	echo "Failed to unpack maven" 1>&2
 	exit 1
 fi
 ln -s $target/apache-maven-3.3.9/bin/mvn $target/bin/mvn
@@ -73,10 +73,15 @@ if [ $? -ne 0 ] ; then
 	exit 1
 fi
 
-#jackson=jackson-all-1.9.11.jar
-#
-#echo "Install jackson"
-#rm -rf $target/lib/jackson-all*
+jackson=jackson-all-1.9.11.jar
+
+echo "Install jackson"
+rm -rf $target/lib/jackson-all*
+curl -O -L http://java2s.com/Code/JarDownload/jackson-all/$jackson.zip
+unzip $jackson.zip
+mv $jackson $target/lib/$jackson
+ln -s $target/lib/$jackson $target/lib/jackson-all.jar
+
 #curl -o $target/lib/$jackson http://jackson.codehaus.org/1.9.11/$jackson
 #ln -s $target/lib/$jackson $target/lib/jackson-all.jar
 #

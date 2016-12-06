@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 #
-# We build a whole modern GCC toolchain here.
+# GDB for modern gcc toolchain.
 #
 
 use strict;
@@ -14,7 +14,7 @@ my $cwd = getcwd();
 use Getopt::Long::Descriptive;
 
 my($opt, $usage) = describe_options("%c %o [target]",
-				    ["subdir=s", "Install into this subdirectory of the target"],
+				    ["subdir=s", "Install into this subdirectory of the target", { default => "build-tools" }],
 				    ["help|h", "Show this usage message"]);
 print($usage->text), exit if $opt->help;
 die($usage->text) if @ARGV > 1;
@@ -33,64 +33,13 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
-## module load ##
-if(!system("bash", "-c", "module avail > /dev/null 2>&1")) {
-  my $cmd = "./gcc_module.sh";
-  my $modules = `$cmd`;
-  my @gccs;
-  foreach my $line (split /[\n\s]+/, $modules) {
-    $line =~ s/\(default\)//;
-    push @gccs, $1 if $line =~ /(gcc\S+)/i;
-  }
 
-  my @vers;
-  foreach my $gcc (@gccs) {
-    my $ver = find_ver($gcc);
-    push @vers, $ver;
-    print $gcc, "is at ver ", $ver, "\n";
-  }
-
-  my $latest = find_latest(@vers);
-  my @module = grep /$latest/, @gccs;
-  my $cmd = "./gcc_load.sh \"$module[0]\"";
-  my $paths = `$cmd` or die;
-  my @paths = split /[\s\n]+/, $paths;
-  foreach (@paths) {
-    my $base = basename($_);
-    run("mkdir", "-p", "$dest/bin");
-    unlink "$dest/bin/$base" if -e "$dest/bin/$base";
-    run("ln",  "-s",  "$_", "$dest/bin/$base");
-  }
-} ## end module load ##
-
-else {
-  $dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.gz", $dest);
-  build_tool($dir, $dest);
-
-  do_chdir($cwd);
-  $dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.gz", $dest);
-  mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
-  do_chdir("gcc-build");
-  run("../$dir/configure", "--prefix", $dest, "--disable-multilib");
-  run("make", "-j", 6);
-  run("make", "install");
-
-  do_chdir($cwd);
-  $dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
-  build_tool($dir, $dest);
-
-}
-
-do_chdir($cwd);
-$dir = download_tool("http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2");
-$dir = abs_path($dir);
-do_chdir($dir);
-do_chdir("tools/build");
-run("./bootstrap.sh");
-run("./b2", "install", "--prefix=$dest");
-do_chdir($dir);
-run("b2", "-j", 6, "toolset=gcc", "stage");
-run("b2", "toolset=gcc", "--prefix=$dest", "install");
+$dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
+build_tool($dir, $dest, 
+#	"--with-isl=$cwd/../p3_gcc/gcc-build/isl",
+	"--with-gmp=$cwd/../p3_gcc/gcc-build/gmp",
+	"--with-mpc=$cwd/../p3_gcc/gcc-build/mpc",
+	"--with-mpfr=$cwd/../p3_gcc/gcc-build/mpfr");
 
 sub download_tool
 {
@@ -118,11 +67,11 @@ sub download_tool
 
 sub build_tool
 {
-    my($dir, $dest) = @_;
+    my($dir, $dest, @configure_flags) = @_;
 
     chdir $dir or die "could not chdir $dir: $!";
 
-    run("./configure", "--prefix", $dest);
+    run("./configure", "--prefix", $dest, @configure_flags);
 	
     run("make", "-j", "6");
     run("make", "install");

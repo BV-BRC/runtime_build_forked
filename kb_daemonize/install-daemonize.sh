@@ -9,7 +9,7 @@ fi
 IDIR=$target
 
 # download and install daemonize
-git clone git://github.com/bmc/daemonize.git
+git clone https://github.com/bmc/daemonize.git
 pushd daemonize
 ./configure --prefix=$IDIR
 make || exit 1

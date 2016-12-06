@@ -1,0 +1,4 @@
+#!/bin/bash
+
+module avail 2>&1 | grep gcc
+

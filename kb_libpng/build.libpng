@@ -23,7 +23,7 @@ if (-d "/Library" && $ENV{MAC_32BIT})
     $ENV{CXX} = "g++ -m32";
 }
 
-my $vers = "1.6.25";
+my $vers = "1.6.26";
 my $libpng_dir = "libpng-$vers";
 my $libpng_tar = "libpng-${vers}.tar.gz";
 my $libpng_url = "ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng16/$libpng_tar";

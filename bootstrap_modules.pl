@@ -21,6 +21,7 @@ my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
 
 my $installwatch;
+my $install_build_dependencies;
 
 my($help, $dest, $module_dat);
 my @added_path;
@@ -33,6 +34,7 @@ GetOptions('h'    => \$help,
 	   "rpm-version=s" => \$rpm_version,
 	   "rpm-sandbox=s" => \$rpm_sandbox,
 	   "path=s" => \@added_path,
+	   "install-build-dependencies" => \$install_build_dependencies,
     ) or pod2usage(0);
 
 pod2usage(-exitstatus => 0,
@@ -92,6 +94,7 @@ my @modules;
 
 my %modules;
 my %attribs;
+my %meta;
 
 while (<DAT>)
 {
@@ -101,6 +104,11 @@ while (<DAT>)
     {
 	$attribs{$1} = $2;
     }
+    elsif (/^\#\#\s+(\S+)\s+(.*?)\s*$/)
+    {
+	push(@{$meta{$1}}, $2);
+    }
+
     next if /^\#/;
     my($dir, $cmd) = split(/\s+/, $_, 2);
     die "error parsing $module_dat" unless ($dir && $cmd);
@@ -108,15 +116,16 @@ while (<DAT>)
     die "directory $dir is not executable" unless -e $dir;
     die "directory $dir is not writable" unless -w $dir;
 
-    my $rec = [$dir, $dir, $cmd, { %attribs }];
+    my $rec = [$dir, $dir, $cmd, { %attribs }, { %meta }];
     push(@modules, $rec);
     push(@{$modules{$dir}}, $rec);
     %attribs = ();
+    %meta = ();
 }
 close(DAT);
 
-$rpm_version = $attribs{'rpm-version'} if $attribs{'rpm-version'} && !$rpm_version;
-$rpm_name = $attribs{'rpm-name'} if $attribs{'rpm-name'} && !$rpm_name;
+$rpm_version = $meta{'rpm-version'} if $meta{'rpm-version'} && !$rpm_version;
+$rpm_name = $meta{'rpm-name'} if $meta{'rpm-name'} && !$rpm_name;
 
 #
 # Rewrite dir-tag element ($rec[1]) for the
@@ -136,13 +145,27 @@ for my $dir (keys %modules)
     }
 }
 
-#die Dumper(\@modules);
+if ($install_build_dependencies)
+{
+    my @deps = map { my($dir, $tag, $cmd, $attribs, $meta) = @$_; 
+		     my $b = $meta->{"rpm-build-dep"};
+		     ref($b) ? @$b : () } @modules;
+    if (@deps)
+    {
+	print STDERR "Installing dependent RPMs @deps\n";
+	my @cmd = ("sudo", "yum", "-y", "install", @deps);
+	my $rc = system(@cmd);
+	$rc == 0 or die "Failed to install deps: @cmd\n";
+    }
+}
+
+
 
 my %save = %ENV;
 
 for my $mod (@modules)
 {
-    my($dir, $tag, $cmd, $attribs) = @$mod;
+    my($dir, $tag, $cmd, $attribs, $meta) = @$mod;
 
     if (-f "$log_dir/built.$tag")
     {
@@ -281,6 +304,8 @@ The modules.dat file contains a space delimited set of module directories and bu
 =item -d Destination target for runtime (ie /kb/runtime)
 
 =item -m Name of the modules.dat file
+
+=item --install-build-dependencies When specified, this will install rpms specified in the modules.dat file.
 
 =back
 

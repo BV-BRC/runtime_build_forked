@@ -21,9 +21,15 @@ if (@ARGV)
 
 my $vers = "0.7.12";
 
+my $mirror = "";
+if ($ENV{SF_MIRROR})
+{
+	$mirror = "?use_mirror=$ENV{SF_MIRROR}";
+}
+
 my $package_dir = "bwa-$vers";
 my $package_tar = "bwa-$vers.tar.bz2";
-my $package_url = "http://downloads.sourceforge.net/project/bio-bwa/$package_tar";
+my $package_url = "http://downloads.sourceforge.net/project/bio-bwa/$package_tar$mirror";
 
 if (! -s $package_tar)
 {

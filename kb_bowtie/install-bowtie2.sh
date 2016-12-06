@@ -7,7 +7,7 @@ mkdir -p $dest
 # downlownload version
 VERSION='2.2.6'
 rm -rf bowtie2-${VERSION}*
-wget "http://sourceforge.net/projects/bowtie-bio/files/bowtie2/${VERSION}/bowtie2-${VERSION}-source.zip"
+curl -O -L "http://sourceforge.net/projects/bowtie-bio/files/bowtie2/${VERSION}/bowtie2-${VERSION}-source.zip"
 unzip bowtie2-${VERSION}-source.zip
 
 # compile and copy binaries

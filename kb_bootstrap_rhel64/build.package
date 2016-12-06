@@ -5,9 +5,17 @@ if [[ $# != 1 ]] ; then
 	exit 1
 fi
 
-pkg_list=$1
+subscription-manager repos --enable rhel-6-server-eus-optional-rpms 
+yum -y update ca-certificates
+curl -O -L https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+rpm -ivh epel-release-latest-6.noarch.rpm
 
-for pkg in `cat $pkg_list` ; do
-	echo "install $pkg"
-	yum -y install $pkg
-done
+pkg_list=$1
+packages=`cat $pkg_list`
+echo "Install $packages"
+yum -y install $packages
+
+#for pkg in `cat $pkg_list` ; do
+#	echo "install $pkg"
+#	yum -y install $pkg
+#done

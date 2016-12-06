@@ -14,6 +14,7 @@ fi
 RLIB=$1
 RURL="http://cran.r-project.org/src/base/R-3/"
 RBASE="R-3.1.0"
+export PATH=$dest/bin:$PATH
 TPAGE=`which tpage`
 
 if [[ -x /usr/bin/apt-get ]] ; then
@@ -36,7 +37,7 @@ tar zxf $RBASE".tar.gz"
 
 echo "###### installing $RBASE ######"
 pushd $RBASE
-conf_opts="--enable-R-shlib --with-tcltk --prefix=$dest"
+conf_opts="--enable-R-shlib --with-x=no --prefix=$dest"
 
 #
 # On the mac we want a straight non-framework build
@@ -65,6 +66,8 @@ fi
 popd
 #rm $RBASE".tar.gz"
 #rm -rf $RBASE
+
+mkdir -p $dest/lib/R/library
 
 echo "###### installing R libraries ######"
 echo "update.packages(checkBuilt=TRUE, ask=FALSE)" | $dest/bin/R --vanilla --slave

@@ -1,0 +1,140 @@
+#!/usr/bin/env perl
+
+#
+# Build gcc for modern build toolchain.
+#
+
+use strict;
+use File::Basename;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd qw(abs_path getcwd);
+my $cwd = getcwd();
+
+use Getopt::Long::Descriptive;
+
+my($opt, $usage) = describe_options("%c %o [target]",
+				    ["subdir=s", "Install into this subdirectory of the target",
+					{ default => "build-tools" }],
+				    ["help|h", "Show this usage message"]);
+print($usage->text), exit if $opt->help;
+die($usage->text) if @ARGV > 1;
+
+my @parallel = ("-j", 8);
+
+my $top_dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $top_dest = shift;
+}
+
+my $dest = $top_dest;
+$dest .= "/" . $opt->subdir if $opt->subdir;
+
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+my $dir;
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+my $vers = "tbb44_20150728oss";
+my $tarfile = "${vers}_src.tgz";
+my $url = "https://www.threadingbuildingblocks.org/sites/default/files/software_releases/source/$tarfile";
+
+my $dir = download_tool($url, $dest);
+chdir($dir);
+my $build_prefix;
+open(P, "-|", "make", "info") or die "Cannot open make pipe: $!";
+while (<P>)
+{
+    print;
+    if (/tbb_build_prefix=(.*)/)
+    {
+	$build_prefix = $1;
+    }
+}
+close(P) or die "Error running make pipe: $!";
+$build_prefix or die "Could not find build prefix\n";
+
+run("make", @parallel);
+
+run("cp", "-v", <build/${build_prefix}_release/lib*.so*>, "$dest/lib/");
+run("cp", "-v", <build/${build_prefix}_debug/lib*.so*>, "$dest/lib/");
+run("rsync", "-arv", "include/serial", "include/tbb", "$dest/include/");
+
+sub download_tool
+{
+    my($url, $dest) = @_;
+
+    my $file = basename($url);
+    my($dir,$comp) = $file =~ /^(.*)\.(tar\.gz|tgz|tar\.bz2)$/;
+
+    my %comp_option = ('tar.gz' => 'z',
+		       'tgz' => 'z',
+		       'tar.bz2' => 'j');
+    my $comp_option = $comp_option{$comp};
+
+    if (! -s $file)
+    {
+	run("curl", "-o", $file, "-L", $url);
+    }
+
+    my @dirs_before = grep { -d $_ } <*>;
+    system("rm", "-rf", $dir);
+    run("tar",  "xf$comp_option",  $file);
+    my @dirs_after = grep { -d $_ } <*>;
+    my %dirs_before = map { $_ => 1 } @dirs_before;
+    my @dirs_new = grep { ! exists $dirs_before{$_} } @dirs_after;
+    if (@dirs_new == 1)
+    {
+	if ($dirs_new[0]  ne $dir )
+	{
+	    print STDERR "Download went to $dirs_new[0]\n";
+	    $dir = $dirs_new[0];
+	}
+    }
+    elsif (@dirs_new == 0)
+    {
+	print STDERR " ? no new dir created\n";
+    }
+    else
+    {
+	print STDERR "? more than one new dir created\n";
+    }
+
+    -d $dir or die "$dir not found after extraction";
+    return $dir;
+}
+
+sub build_tool
+{
+    my($dir, $dest) = @_;
+
+    chdir $dir or die "could not chdir $dir: $!";
+
+    run("./configure", "--prefix", $dest);
+	
+    run("make", "-j", "6");
+    run("make", "install");
+}
+    
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}

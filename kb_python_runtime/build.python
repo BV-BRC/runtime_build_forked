@@ -5,6 +5,14 @@ use strict;
 use Carp;
 use File::Basename;
 use Cwd 'abs_path';
+use Getopt::Long;
+
+my($help, $use_shared);
+GetOptions('use-shared' => \$use_shared,
+           'help' => \$help,
+	   );
+my $usage = "$0 [--use-shared] [destination]\n";
+print($usage), exit 0 if $help;
 
 my $parallel = "-j4";
 
@@ -48,9 +56,11 @@ if (-d "/Applications" && $ENV{MAC_32BIT})
     $ENV{CC} = "gcc -m32";
     $ENV{CXX} = "g++ -m32";
 }
-
-run("./configure", "--prefix", $dest, @opts, "--enable-shared");
-
+if ($use_shared)
+{
+    push(@opts, "--enable-shared");
+}
+run("./configure", "--prefix", $dest, @opts);
 run("make", $parallel);
 run("make install > $here/install.out 2>&1");
 

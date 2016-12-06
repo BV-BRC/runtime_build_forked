@@ -62,7 +62,6 @@ DBD::mysql --notest
 Sphinx::Search
 Exception::Class
 String::Random
-URI::Dispatch
 CGI::PSGI
 Parse::Eyapp
 Object::Tiny::RW
@@ -118,7 +117,6 @@ Text::NSP::Measures::2D::Fisher::twotailed
 String::CamelCase
 IPC::Shareable
 Plack::Middleware::CrossOrigin
-Cairo
 Contextual::Return
 Math::Cephes
 Math::Cephes::Matrix
@@ -127,6 +125,7 @@ Text::SimpleTable
 Statistics::Descriptive
 Math::Random::MT::Perl
 Getopt::Declare
+CJFIELDS/BioPerl-1.6.924.tar.gz --notest
 Bio::Tools::Run::TigrAssembler	--notest
 File::Sort
 XML::Twig
@@ -160,7 +159,6 @@ Graph::Undirected::Components
 File::Touch
 IPC::System::Simple
 Data::Structure::Util
-UUID
 HTML::Strip
 HTTP::Request::StreamingUpload
 DBD::Pg
@@ -183,5 +181,4 @@ Regexp::Common
 Text::Format
 Statistics::Basic
 CHI
-Bio-EUtilities
 IPC::Run3
