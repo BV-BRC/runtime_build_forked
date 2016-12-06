@@ -46,7 +46,7 @@ sub install_plugin
 {
     my($base) = @_;
     my $repo = "https://github.com/PATRIC3/p3_solr.git";
-    my $branch = "lucene_solr_5_3";
+    my $branch = "lucene-solr_5.5.0_PATRIC";
     my $top = getcwd;
 
     run("git", "clone", $repo);

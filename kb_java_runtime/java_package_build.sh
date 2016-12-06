@@ -15,7 +15,7 @@ echo "using $target as runtime"
 mkdir -p $target/lib
 
 echo "Install Ant"
-v=1.9.6
+v=1.9.7
 curl -O http://apache.cs.utah.edu//ant/binaries/apache-ant-$v-bin.tar.gz
 
 rm -rf $target/apache-ant*
@@ -39,7 +39,7 @@ fi
 ln -s $target/apache-ivy-2.4.0/ivy-2.4.0.jar $target/ant/lib/.
 
 echo "Install Maven"
-curl -f -O http://www.carfab.com/apachesoftware/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+curl -f -O http://apache.cs.utah.edu/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 # curl -O http://apache.mirrorcatalogs.com/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 rm -rf $target/apache-maven*
 tar zxvf apache-maven-3.3.9-bin.tar.gz -C $target
@@ -50,7 +50,7 @@ fi
 ln -s $target/apache-maven-3.3.9/bin/mvn $target/bin/mvn
 
 echo "Install tomcat"
-v=7.0.68
+v=7.0.73
 curl -f -O "ftp://apache.cs.utah.edu/apache.org/tomcat/tomcat-7/v$v/bin/apache-tomcat-$v.tar.gz"
 rm -rf $target/tomcat*
 tar zxvf apache-tomcat-$v.tar.gz -C $target

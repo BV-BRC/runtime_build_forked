@@ -41,3 +41,4 @@ kb_zmq3	./build.zmq3
 ## rpm-build-dep mysql-devel
 kb_sphinx_runtime	./sphinx_build.sh
 kb_parallel	./build.package
+p3_jq	./build.package
