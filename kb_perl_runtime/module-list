@@ -182,3 +182,4 @@ Text::Format
 Statistics::Basic
 CHI
 IPC::Run3
+HTTP::Async
