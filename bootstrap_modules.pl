@@ -20,6 +20,26 @@ my $build_rpm;
 my $rpm_sandbox = "rpm-sandbox";
 my $rpm_version;
 
+#
+# Determine OS release and version if possible.
+#
+my($distro, $version) = find_distro();
+
+
+my($build_dep_tool, $build_dep_key);
+if ($distro eq "CentOS")
+{
+    $build_dep_tool = "yum install";
+    $build_dep_key = "rpm-build-dep";
+}
+elsif ($distro eq "Ubuntu")
+{
+    $build_dep_tool = "apt-get install";
+    $build_dep_key = "apt-build-dep";
+}
+
+print STDERR "Building for distro $distro version $version\n";
+
 my $installwatch;
 my $install_build_dependencies;
 
@@ -167,6 +187,12 @@ for my $mod (@modules)
 {
     my($dir, $tag, $cmd, $attribs, $meta) = @$mod;
 
+    if ($meta->{"os-skip"}->[0] eq $distro)
+    {
+	print "Skipping build of $tag on $distro\n";
+	next;
+    }
+
     if (-f "$log_dir/built.$tag")
     {
 	print "$tag already built\n";
@@ -265,6 +291,43 @@ sub build_rpm
     {
 	die "Error $rc building RPM  with @cmd\n";
     }
+}
+
+sub find_distro
+{
+    my $lsb_release = find_in_path("lsb_release");
+    if ($lsb_release)
+    {
+	my $distro = `$lsb_release -i -s`;
+	if (!defined($distro))
+	{
+	    warn "$lsb_release -i -s failed with $!; setting using Unknown distro\n";
+	    return("Unknown", "Unknown");
+	}
+	chomp $distro;
+	my $version = `$lsb_release -r -s`;
+	if (!defined($version))
+	{
+	    warn "$lsb_release -r -s failed with $!; setting using Unknown version\n";
+	    return($distro, "Unknown");
+	}
+	chomp $version;
+	return($distro, $version);
+    }
+    return("Unknown", "Unknown");
+}
+	
+sub find_in_path
+{
+    my($cmd) = @_;
+    for my $p (split(/:/, $ENV{PATH}))
+    {
+	if (-x "$p/$cmd")
+	{
+	    return "$p/$cmd";
+	}
+    }
+    return undef;
 }
 
 =pod
