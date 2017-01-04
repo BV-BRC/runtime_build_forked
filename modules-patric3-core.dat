@@ -8,6 +8,7 @@
 ## rpm-dep openssl
 ## rpm-build-dep openssl-devel
 ## rpm-build-dep perl-Template-Toolkit
+## os-skip Ubuntu
 kb_curl	      ./build.package
 ## rpm-dep gd
 ## rpm-dep libXpm
