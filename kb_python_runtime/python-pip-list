@@ -64,3 +64,4 @@ requests_toolbelt
 pandas
 sklearn
 yapsy
+treeinterpreter
