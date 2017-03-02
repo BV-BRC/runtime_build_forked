@@ -44,7 +44,7 @@ my $package_url = "https://capnproto.org/$package_tar";
 
 my $dir = download_tool($package_url, $dest);
 $ENV{CXXFLAGS} = '-static-libstdc++';
-$ENV{LDFLAGS} = "-Wl,-rpath -Wl,$dest/lib -static-libstdc++";
+$ENV{LDFLAGS} = "-Wl,-rpath -Wl,$dest/lib64 -Wl,-rpath -Wl,$dest/lib -static-libstdc++";
 chdir($dir) or die "cannot chdir $package_dir: $!";
 run("./configure", "--prefix=$dest");
 run("make", @parallel);

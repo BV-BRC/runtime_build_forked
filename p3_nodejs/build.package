@@ -18,7 +18,7 @@ $ENV{PATH} = "$dest/build-tools/bin:$ENV{PATH}";
 
 # https://nodejs.org/dist/v6.9.1/node-v6.9.1.tar.gz
 
-my $ver = "v6.9.1";
+my $ver = "v6.10.0";
 my $location = "https://nodejs.org/dist/$ver";
 my $file = "node-$ver.tar.gz";
 my $dir= "node-$ver";
@@ -33,8 +33,9 @@ system("rm", "-rf", $dir);
 run("tar",  "xvfz",  $file);
 
 chdir $dir or die "could not chdir $dir: $!";
-run("./configure", "--prefix", $dest, "--fully-static");
-run("make", "-j", "6");
+#run("./configure", "--prefix", $dest);
+run("./configure", "--prefix", $dest, "--partly-static");
+run("make", "-j", "16");
 run("make", "install");
 
 sub run
