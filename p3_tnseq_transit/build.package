@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my @parallel = ("-j", 4);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my @cmd = ("$dest/bin/pip", "install", "tnseq-transit");
+my $rc = system(@cmd);
+if ($rc != 0)
+{
+    die "Error $rc installing: @cmd\n";
+}
