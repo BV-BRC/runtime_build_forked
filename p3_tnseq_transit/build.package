@@ -18,7 +18,9 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my @cmd = ("$dest/bin/pip", "install", "tnseq-transit");
+my $package = "git+https://github.com/aswarren/transit";
+
+my @cmd = ("$dest/bin/pip", "install", $package);
 my $rc = system(@cmd);
 if ($rc != 0)
 {
