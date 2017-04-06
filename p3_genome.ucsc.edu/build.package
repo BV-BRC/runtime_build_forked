@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $zip = "jksrc.v346.zip";
+my $url = "http://hgdownload.soe.ucsc.edu/admin/$zip";
+my $dir = "kent";
+
+my $top = getcwd() . "/$dir";
+
+system("rm", "-rf", $dir);
+
+run("curl", "-o", $zip, "-L", $url);
+run("unzip", $zip);
+chdir("$top/src") or die "Cannot chdir $top/src: $!";
+open(MK, ">", "inc/localEnvironment.mk") or die "Cannot write inc/localEnvironment.mk: $!";
+my $bin = "$dest/bin";
+for my $tag (qw(SCRIPTS CGI_BIN BINDIR ENCODE_PIPELINE_BIN))
+{
+    print MK "$tag=$bin\n";
+}
+my $td = "/tmp/tmpdir.$$";
+mkdir($td) or die "cannot mkdir $td: $!";
+print MK "DOCUMENTROOT=$td\n";
+# Eliminate a dependency on mysqlclient
+print MK "MYSQLLIBS=-DTHISDOESNTMEANANYTHING\n";
+
+close(MK);
+
+run("make", "-j12", "libs");
+chdir("$top/src/utils") or die "Cannot chdir $top/src/utils: $!";
+run("make", "wigToBigWig.all");
+system("rm", "-rf", $td);
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
