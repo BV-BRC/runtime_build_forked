@@ -16,9 +16,9 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $tar = "mafft-7.130-with-extensions-src.tgz";
+my $tar = "mafft-7.310-with-extensions-src.tgz";
 my $url = "http://mafft.cbrc.jp/alignment/software/$tar";
-my $dir = "mafft-7.130-with-extensions";
+my $dir = "mafft-7.310-with-extensions";
 
 if (! -s $tar)
 {
