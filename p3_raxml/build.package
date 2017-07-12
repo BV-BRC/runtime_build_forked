@@ -1,0 +1,45 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $repo = "https://github.com/olsonanl/standard-RAxML.git";
+
+my $dir = "raxml";
+
+system("rm", "-rf", $dir);
+run("git", "clone", $repo, $dir);
+chdir($dir) or die "Cannot chdir $dir: $!";
+run("rm -f *.o");
+run("make", "-f", "Makefile.SSE3.gcc");
+run("/bin/cp", "raxmlHPC-SSE3", "$dest/bin/raxmlHPC-SSE3");
+symlink("raxmlHPC-SSE3", "$dest/bin/raxmlHPC") or die "Cannot symlink raxmlHPC-SSE3 to $dest/bin/raxmlHPC: $!";
+run("rm -f *.o");
+run("make", "-f", "Makefile.SSE3.PTHREADS.gcc");
+run("/bin/cp", "raxmlHPC-PTHREADS-SSE3", "$dest/bin/raxmlHPC-PTHREADS-SSE3");
+symlink("raxmlHPC-PTHREADS-SSE3", "$dest/bin/raxmlHPC-PTHREADS") or die "Cannot symlink raxmlHPC-PTHREADS-SSE3 to $dest/bin/raxmlHPC-PTHREADS: $!";
+#for my $prog (qw(FastTree_WAG FastTree_LG FastTree_JTT))
+#{
+#    run("/bin/cp", $prog, "$dest/bin/$prog");
+#}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}

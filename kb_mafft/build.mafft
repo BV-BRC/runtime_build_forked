@@ -31,13 +31,13 @@ run("tar xzfp $tar");
 chdir $dir or die "cannot chdir $dir: $!";
 
 chdir "core" or die "cannot chdir core: $!";
-run("make clean");
-run("make PREFIX=$dest");
-run("make install PREFIX=$dest");
+run("make", "clean");
+run("make", "-j", 8, "PREFIX=$dest");
+run("make", "install", "PREFIX=$dest");
 chdir "../extensions" or die "cannot chdir ../extensions: $!";
-run("make clean");
-run("make PREFIX=$dest");
-run("make install PREFIX=$dest");
+run("make", "clean");
+run("make", "-j", 8, "PREFIX=$dest");
+run("make", "install", "PREFIX=$dest");
 
 sub run
 {

@@ -65,3 +65,4 @@ pandas
 sklearn
 yapsy
 treeinterpreter
+bayesian-optimization
