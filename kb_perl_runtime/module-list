@@ -186,3 +186,4 @@ HTTP::Async
 CGI::FormBuilder::Multi
 Filesys::DfPortable
 AI::Genetic
+Redis::Client
