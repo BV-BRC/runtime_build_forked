@@ -1,0 +1,52 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $parallel = 4;
+
+my $vers = "1.1.3";
+
+# https://github.com/loneknightpy/idba/releases/download/1.1.3/idba-1.1.3.tar.gz
+
+my $package_dir = "idba-${vers}";
+my $package_tar = "$package_dir.tar.gz";
+my $package_url = "https://github.com/loneknightpy/idba/releases/download/${vers}/$package_tar";
+
+if (! -s $package_tar)
+{
+print "get $package_url\n";
+    system("curl", "-o", $package_tar, "-L", $package_url);
+}
+
+run("rm", "-rf", $package_dir);
+run("tar", "xzfp", $package_tar);
+chdir($package_dir) or die "cannot chdir $package_dir: $!";
+
+run("./configure", "--prefix", $dest);
+run("make", "-j$parallel");
+
+#
+# Install doesn't copy everything so just grab what we want.
+#
+for my $bin (qw(idba idba_ud idba_tran idba_hybrid fq2fa))
+{
+    run("cp", "bin/$bin", "$dest/bin/$bin");
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
