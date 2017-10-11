@@ -16,11 +16,13 @@ if (@ARGV)
 my $parallel = 4;
 
 my $build_tools = "$dest/build-tools";
-$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+if (-d $build_tools)
+{
+    $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
-$ENV{CC} = "$build_tools/bin/gcc";
-$ENV{CXX} = "$build_tools/bin/g++";
-system("printenv");
+    $ENV{CC} = "$build_tools/bin/gcc";
+    $ENV{CXX} = "$build_tools/bin/g++";
+}
 my $vers = "3.11.1";
 $dest = "$dest/spades-$vers";
 
