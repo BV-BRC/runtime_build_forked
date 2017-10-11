@@ -187,3 +187,4 @@ CGI::FormBuilder::Multi
 Filesys::DfPortable
 AI::Genetic
 Redis::Client
+File::Spec::Link
