@@ -188,3 +188,4 @@ Filesys::DfPortable
 AI::Genetic
 Redis::Client
 File::Spec::Link
+Getopt::Long::Descriptive
