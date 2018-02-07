@@ -1,0 +1,46 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $repo = "https://github.com/wanpinglee/MOSAIK.git";
+
+my $dir = "MOSAIK";
+
+my $here = abs_path(".");
+
+system("rm", "-rf", $dir);
+run("git", "clone", $repo, $dir);
+chdir($dir) or die "Cannot chdir $dir: $!";
+run("git", "checkout", "e04c806");
+chdir("src") or die "Cannot chdir src: $!";
+run("make");
+
+chdir($here) or die "Cannot chdir $here: $!";
+
+my @output = qw(MosaikAligner  MosaikBuild  MosaikJump  MosaikText);
+for my $file (@output)
+{
+    run("cp", "$dir/bin/$file", "$dest/bin/$file");
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
