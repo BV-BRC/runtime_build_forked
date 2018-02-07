@@ -189,3 +189,7 @@ AI::Genetic
 Redis::Client
 File::Spec::Link
 Getopt::Long::Descriptive
+DateTime
+DateTime::Format::ISO8601
+DateTime::Format::Strptime
+Proc::ProcessTable
