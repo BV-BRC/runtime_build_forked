@@ -1,0 +1,37 @@
+## rpm-name p3-core-runtime
+## rpm-version 1.0
+## rpm-build-dep gcc
+## rpm-build-dep gcc-c++
+## rpm-build-dep gcc-gfortran
+## rpm-build-dep make
+## rpm-build-dep git
+## rpm-dep openssl
+## rpm-build-dep openssl-devel
+## rpm-build-dep perl-Template-Toolkit
+## os-skip Ubuntu
+kb_curl	      ./build.package
+## rpm-dep gd
+## rpm-dep libXpm
+## rpm-deb db4
+## rpm-build-dep gd-devel
+## rpm-build-dep libXpm-devel
+## rpm-build-dep expat-devel
+## rpm-build-dep libxml2-devel
+## rpm-build-dep db4-devel
+## rpm-build-dep uuid-devel
+kb_perl_runtime	./build.runtime
+## rpm-dep libxslt
+## rpm-dep atlas
+## rpm-dep lapack
+## rpm-dep readline
+#Note - on RHEL6.4 we don't need atlas-devel / lappack-devel - atlas + lapack 
+#alone work properly.
+## rpm-build-dep libxslt-devel
+## rpm-build-dep atlas-devel
+## rpm-build-dep lapack-devel
+## rpm-build-dep readline-devel
+## rpm-build-dep patch
+kb_python_runtime	./build.python
+kb_python_runtime	./install-python-packages.sh
+kb_parallel	./build.package
+p3_jq	./build.package

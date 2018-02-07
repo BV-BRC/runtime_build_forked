@@ -9,7 +9,7 @@ kb_bowtie	./install-bowtie2.sh
 kb_rockhopper	./install_rockhopper.sh
 kb_prok_tuxedo	./install_prok_tuxedo.sh
 kb_snpeff	./snpeff_build.sh
-kb_mosaik	./bootstrap.sh
+p3_mosaik	./build.package
 kb_samtools	./build.samtools
 kb_bwa	./build.package
 kb_freebayes	./bootstrap.sh
