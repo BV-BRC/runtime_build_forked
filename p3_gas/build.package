@@ -34,7 +34,7 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
-$dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.26.tar.gz", $dest);
+$dir = download_tool("http://ftp.gnu.org/gnu/binutils/binutils-2.30.tar.gz", $dest);
 build_tool($dir, $dest);
 
 sub download_tool
@@ -69,7 +69,7 @@ sub build_tool
 
     run("./configure", "--prefix", $dest);
 	
-    run("make", "-j", "6");
+    run("make", "-j", "16");
     run("make", "install");
 }
     

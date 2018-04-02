@@ -32,7 +32,7 @@ print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
-my $dir = download_tool("http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2");
+my $dir = download_tool("http://downloads.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.bz2");
 $dir = abs_path($dir);
 do_chdir($dir);
 do_chdir("tools/build");

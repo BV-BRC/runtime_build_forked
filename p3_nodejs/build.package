@@ -2,6 +2,7 @@
 
 use strict;
 use File::Find;
+use File::Basename;
 use File::Path qw(make_path);
 use Cwd;
 my $cwd = getcwd();
@@ -18,25 +19,47 @@ $ENV{PATH} = "$dest/build-tools/bin:$ENV{PATH}";
 
 # https://nodejs.org/dist/v6.9.1/node-v6.9.1.tar.gz
 
-my $ver = "v6.10.0";
-my $location = "https://nodejs.org/dist/$ver";
-my $file = "node-$ver.tar.gz";
-my $dir= "node-$ver";
-my $url = $location . "/" . $file;
+my $ver6 = "v6.13.0";
+my $ver8 = "v8.10.0";
 
-if (! -s $file)
+chdir $cwd;
+build($ver6);
+chdir $cwd;
+build($ver8);
+
+sub build
 {
-    run("curl", "-o", $file, "-L", $url);
+    my($ver) = @_;
+    my $location = "https://nodejs.org/dist/$ver";
+    my $file = "node-$ver.tar.gz";
+    my $dir= "node-$ver";
+    my $url = $location . "/" . $file;
+
+    my($major) = $ver =~ /^(v\d+)/;
+    $major or die "cannot determine major version from $ver\n";
+
+    if (! -s $file)
+    {
+	run("curl", "-o", $file, "-L", $url);
+    }
+
+    system("rm", "-rf", $dir);
+    run("tar",  "xvfz",  $file);
+
+    chdir $dir or die "could not chdir $dir: $!";
+
+    my $node_dest = "$dest/node-$ver";
+
+    run("./configure", "--prefix", $node_dest, "--partly-static");
+    run("make", "-j", "24");
+    run("make", "install");
+
+    for my $bin (<$node_dest/bin/*>)
+    {
+	my $f = basename($bin);
+	symlink($bin, "$dest/bin/$f-$major") or die "Cannot symlink $bin to $dest/bin/$f-$major: $!";
+    }
 }
-
-system("rm", "-rf", $dir);
-run("tar",  "xvfz",  $file);
-
-chdir $dir or die "could not chdir $dir: $!";
-#run("./configure", "--prefix", $dest);
-run("./configure", "--prefix", $dest, "--partly-static");
-run("make", "-j", "16");
-run("make", "install");
 
 sub run
 {

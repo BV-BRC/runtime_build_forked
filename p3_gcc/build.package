@@ -35,6 +35,9 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
+$ENV{AS} = "$dest/bin/as";
+$ENV{AS_FOR_TARGET} = "$dest/bin/as";
+
 my $vers = "4.9.4";
 $dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-$vers/gcc-$vers.tar.gz", $dest);
 mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
@@ -44,7 +47,7 @@ run("../$dir/contrib/download_prerequisites");
 do_chdir($cwd);
 do_chdir("gcc-build");
 run("../$dir/configure", "--prefix", $dest, "--disable-multilib");
-run("make", "-j", 6);
+run("make", "-j", 20);
 run("make", "install");
 
 sub download_tool
@@ -79,7 +82,7 @@ sub build_tool
 
     run("./configure", "--prefix", $dest);
 	
-    run("make", "-j", "6");
+    run("make", "-j", "20");
     run("make", "install");
 }
     
