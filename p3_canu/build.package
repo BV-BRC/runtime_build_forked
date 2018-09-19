@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Basename;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+$ENV{PATH} = "$dest/gcc-4.9.4/bin:$dest/bin:$ENV{PATH}";
+
+# https://github.com/marbl/canu/archive/v1.7.1.tar.gz
+
+my $ver = "1.7.1";
+
+build($ver);
+
+sub build
+{
+    my($ver) = @_;
+    my $location = "https://github.com/marbl/canu/archive";
+    my $file = "v$ver.tar.gz";
+    my $dir= "canu-$ver";
+    my $url = $location . "/" . $file;
+
+    if (! -s $file)
+    {
+	run("curl", "-o", $file, "-L", $url);
+    }
+
+    system("rm", "-rf", $dir);
+    run("tar",  "xvfz",  $file);
+
+    chdir $dir or die "could not chdir $dir: $!";
+    chdir "src" or die "could not chdir src: $!";
+
+    run("make", "-j", "16");
+
+    mkdir "$dest/$dir";
+    chdir("..");
+    run("rsync", "-arv", "Linux-amd64/.", "$dest/$dir/.");
+    symlink("../$dir/bin/canu", "$dest/bin/canu");
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
