@@ -15,7 +15,8 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-$ENV{PATH} = "$dest/gcc-4.9.4/bin:$dest/bin:$ENV{PATH}";
+my $gcc_path="$dest/gcc-4.9.4";
+$ENV{PATH} = "$gcc_path/bin:$dest/bin:$ENV{PATH}";
 
 # https://github.com/marbl/canu/archive/v1.7.1.tar.gz
 
@@ -41,6 +42,7 @@ sub build
 
     chdir $dir or die "could not chdir $dir: $!";
     chdir "src" or die "could not chdir src: $!";
+    run("sed", "-e", "1iLDFLAGS+=-Wl,-rpath,$gcc_path/lib64", "-i.bak", "Makefile");
 
     run("make", "-j", "16");
 
