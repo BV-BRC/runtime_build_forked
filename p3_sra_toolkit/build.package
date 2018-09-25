@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+# http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.2/sratoolkit.2.9.2-centos_linux64.tar.gz
+
+my $ver = "2.9.2";
+my $dir= "sratoolkit.$ver-centos_linux64";
+my $file = "$dir.tar.gz";
+my $location = "http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/$ver";
+my $url = $location . "/" . $file;
+run("curl", "-o", $file, "-L", $url);
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $file);
+
+chdir $dir or die "could not chdir $dir: $!";
+my $destdir = "$dest/sratoolkit-$ver";
+mkdir($destdir);
+run("rsync", "-arv", ".", "$destdir/.");
+opendir(D, "$destdir/bin") or die "cannot opendir $destdir/bin: $!";
+while (my $x = readdir(D))
+{
+    next unless -f "$destdir/bin/$x";
+    if ($x =~ /^(\S+)\.$ver/)
+    {
+	symlink("../sratoolkit-$ver/bin/$1", "$dest/bin/$1");
+    }
+}
+#run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
