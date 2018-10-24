@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Copy;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+
+my $gcc = "/disks/patric-common/runtime/gcc-4.9.4";
+$ENV{PATH} = "$gcc/bin:$ENV{PATH}";
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+my $url = "https://github.com/BenLangmead/bowtie2";
+my $tag = "v2.3.4.3";
+
+my $dir = "bowtie2";
+
+run("rm", "-rf", $dir);
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "could not chdir $dir: $!";
+run("git", "checkout", $tag);
+run("make", "LDFLAGS=-Wl,-rpath,$gcc/lib64 -Wl,-rpath,$gcc/lib");
+
+run("make", "prefix=$dest", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
