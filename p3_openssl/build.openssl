@@ -17,7 +17,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $vers = "1.0.1u";
+my $vers = "1.0.2r";
 
 my $openssl_dir = "openssl-$vers";
 my $openssl_tar = "openssl-$vers.tar.gz";
@@ -33,6 +33,6 @@ system("tar", "xzfp", $openssl_tar);
 chdir($openssl_dir);
 # mac64 
 # $ENV{KERNEL_BITS} = 64;
-system("./config", "--prefix=$dest", "--openssldir=$dest/ssl");
+system("./config", "--prefix=$dest", "--openssldir=$dest/ssl", "shared");
 system("make");
 system("make", "install");
