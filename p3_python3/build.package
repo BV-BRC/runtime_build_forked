@@ -1,0 +1,72 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+use Getopt::Long;
+
+my($help, $use_shared);
+GetOptions('use-shared' => \$use_shared,
+           'help' => \$help,
+	   );
+my $usage = "$0 [--use-shared] [destination]\n";
+print($usage), exit 0 if $help;
+
+my $parallel = "-j12";
+
+my $here = abs_path(".");
+my $dest = $ENV{TARGET} ? $ENV{TARGET} : "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+#
+# The internal install of openssl requires LD_LIBRARY_PATH to be set.
+#
+
+$ENV{LD_LIBRARY_PATH} = "$dest/lib64";
+$ENV{LDFLAGS} = "-L$dest/lib64 -L$dest/lib";
+$ENV{CPPFLAGS} = "-I$dest/include -I$dest/include/openssl";
+
+my $python_url = "https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz";
+
+my $python_tgz = basename($python_url);
+my $python_vers = basename($python_tgz, ".tgz");
+print "tgz=$python_tgz vers=$python_vers\n";
+
+if (! -f $python_tgz)
+{
+    run("curl", "-o", $python_tgz, "-L", $python_url);
+}
+if (! -f $python_tgz)
+{
+    die "could not get python\n";
+}
+
+if (! -d $python_vers)
+{
+    run("tar", "xzf", $python_tgz);
+}
+
+chdir $python_vers;
+
+my @opts;
+
+run("./configure", "--prefix=$dest", "--with-openssl=$dest", @opts);
+run("make", $parallel);
+run("make install > $here/install.out 2>&1");
+
+sub run
+{
+    my(@cmd) = @_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    $rc == 0 or croak "Failed with rc=$rc: @cmd";
+}
