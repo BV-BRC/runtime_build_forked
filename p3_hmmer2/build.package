@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+run("rm", "-rf", "hmmer-2.3.2");
+run("curl", "-O", "-L", "http://eddylab.org/software/hmmer/hmmer-2.3.2.tar.gz");
+run("tar", "xpfvz", "hmmer-2.3.2.tar.gz");
+chdir("hmmer-2.3.2") or die "cannot chdir hmmer-2.3.2: $!";;
+run("./configure");
+run("make", "-j", $parallel);
+
+for my $exe (qw(hmmalign hmmbuild hmmcalibrate hmmconvert hmmemit
+	        hmmfetch hmmindex hmmpfam hmmsearch))
+{
+    run("cp", "src/$exe", "$dest/bin/${exe}2");
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
