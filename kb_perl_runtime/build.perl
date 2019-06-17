@@ -22,7 +22,7 @@ if (@ARGV)
 #my $perl_url = "http://www.cpan.org/src/perl-5.12.4.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.16.2.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.20.2.tar.gz";
-my $perl_url = "http://www.cpan.org/src/5.0/perl-5.26.1.tar.gz";
+my $perl_url = "http://www.cpan.org/src/5.0/perl-5.30.0.tar.gz";
 
 my $perl_tgz = basename($perl_url);
 my $perl_vers = basename($perl_tgz, ".tar.gz");
