@@ -17,7 +17,8 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $blast_url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy/2.2.26/ncbi.tar.gz";
+#my $blast_url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy/2.2.26/ncbi.tar.gz";
+my $blast_url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/ncbi.tar.gz";
 my $blast_tar = "ncbi.tar.gz";
 
 if (! -s $blast_tar)
