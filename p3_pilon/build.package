@@ -1,0 +1,102 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Basename;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd qw(abs_path getcwd);
+my $cwd = getcwd();
+
+my @parallel = ("-j", 8);
+
+my $top_dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $top_dest = shift;
+}
+
+my $dest = $top_dest;
+
+my $url = "https://github.com/broadinstitute/pilon/releases/download/v1.23/pilon-1.23.jar";
+
+make_path("$dest/lib");
+run("curl", "-L", "-o", "$dest/lib/pilon-1.23.jar", $url);
+run("rm", "-f", "$dest/lib/pilon.jar");
+run("ln", "-s", "pilon-1.23.jar", "$dest/lib/pilon.jar");
+
+sub download_tool
+{
+    my($url, $dest) = @_;
+
+    my $file = basename($url);
+    my($dir,$comp) = $file =~ /^(.*)\.(tar\.gz|tgz|tar\.bz2)$/;
+
+    my %comp_option = ('tar.gz' => 'z',
+		       'tgz' => 'z',
+		       'tar.bz2' => 'j');
+    my $comp_option = $comp_option{$comp};
+
+    if (! -s $file)
+    {
+	run("curl", "-o", $file, "-L", $url);
+    }
+
+    my @dirs_before = grep { -d $_ } <*>;
+    system("rm", "-rf", $dir);
+    run("tar",  "xf$comp_option",  $file);
+    my @dirs_after = grep { -d $_ } <*>;
+    my %dirs_before = map { $_ => 1 } @dirs_before;
+    my @dirs_new = grep { ! exists $dirs_before{$_} } @dirs_after;
+    if (@dirs_new == 1)
+    {
+	if ($dirs_new[0]  ne $dir )
+	{
+	    print STDERR "Download went to $dirs_new[0]\n";
+	    $dir = $dirs_new[0];
+	}
+    }
+    elsif (@dirs_new == 0)
+    {
+	print STDERR " ? no new dir created\n";
+    }
+    else
+    {
+	print STDERR "? more than one new dir created\n";
+    }
+
+    -d $dir or die "$dir not found after extraction";
+    return $dir;
+}
+
+sub build_tool
+{
+    my($dir, $dest) = @_;
+
+    chdir $dir or die "could not chdir $dir: $!";
+
+    run("./configure", "--prefix", $dest);
+	
+    run("make", "-j", "6");
+    run("make", "install");
+}
+    
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
