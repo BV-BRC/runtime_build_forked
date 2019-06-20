@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+my $build_tools = "$p3/build-tools";
+
+my $vers = "v0.4.7";
+my $url = "https://github.com/rrwick/Unicycler";
+
+$ENV{PATH} = "$p3/build-tools/bin:$p3/bin:$ENV{PATH}";
+my $rpath = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
+
+my $dir = "Unicycler";
+
+-d $dest || mkdir $dest;
+my $app_dest = "$dest/Unicycler-$vers";
+
+run("rm", "-rf", $dir, $app_dest);
+
+run("$p3/bin/python3", "-m", "venv", $app_dest);
+
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "cannot chdir $dir: $!";
+run("git", "checkout", $vers);
+run("perl", "-pi.bak", "-e", "/^LDFLAGS/ and s!\$! $rpath!", "Makefile");
+run("which", "python3");
+run("$app_dest/bin/python3", "setup.py", "install");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
