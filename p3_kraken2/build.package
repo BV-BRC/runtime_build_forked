@@ -33,7 +33,7 @@ $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
 
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
-my $app_dest = "$dest/$tag";
+my $app_dest = "$dest/kraken2-$tag";
 system ("mkdir", "-p", $app_dest) unless -e $app_dest;
 
 my $dir;

@@ -34,7 +34,7 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
-$dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-7.11.tar.gz");
+$dir = download_tool("http://mirror.team-cymru.org/gnu/gdb/gdb-8.1.tar.gz");
 build_tool($dir, $dest, 
 #	"--with-isl=$cwd/../p3_gcc/gcc-build/isl",
 	"--with-gmp=$cwd/../p3_gcc/gcc-build/gmp",

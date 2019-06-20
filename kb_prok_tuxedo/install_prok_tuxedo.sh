@@ -8,9 +8,10 @@ fi
 
 #wget --no-check-certificate -P ${target}/bin https://github.com/aswarren/Prok-tuxedo/raw/master/prok_tuxedo.py
 rm -rf Prok-tuxedo
-git clone https://github.com/aswarren/Prok-tuxedo.git
+git clone https://github.com/olsonanl/Prok-tuxedo.git
+#git clone https://github.com/aswarren/Prok-tuxedo.git
 cd Prok-tuxedo
-git checkout contrasts
+#git checkout contrasts
 cp prok_tuxedo.py ${target}/bin/
 cp cuffdiff_to_genematrix.py ${target}/bin/
 

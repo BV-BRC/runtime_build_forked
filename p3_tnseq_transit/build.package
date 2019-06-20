@@ -18,11 +18,34 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $package = "git+https://github.com/aswarren/transit";
+#my $package = "git+https://github.com/aswarren/transit";
 
-my @cmd = ("$dest/bin/pip", "install", $package);
-my $rc = system(@cmd);
-if ($rc != 0)
+my $repo = "https://github.com/aswarren/transit";
+my $commit = "8d97abaedfbdbc7d69b41a2707910d39181e8bf5";
+
+run("rm", "-rf", "transit");
+run("git", "clone", $repo);
+do_chdir("transit");
+run("git", "checkout", $commit);
+run("$dest/bin/python", "setup.py", "install");
+    
+sub do_chdir
 {
-    die "Error $rc installing: @cmd\n";
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
 }

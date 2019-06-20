@@ -23,7 +23,8 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $vers = "0.67-7";
+my $vers = "0.69-6";
+#my $vers = "0.67-7";
 
 my $circos_dir = "circos-$vers";
 my $circos_tar = "circos-$vers.tgz";

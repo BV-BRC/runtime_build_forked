@@ -29,7 +29,12 @@ my $hash = "753c109e31818dcf7aa8a2c8ecdac4fa43d2ab9b";
 
 my $cuff_dir = "cufflinks";
 system("rm", "-rf", $cuff_dir);
-run("git", "clone", 'https://github.com/aswarren/cufflinks');
+
+#
+# Use bob's changes that fix threading 
+# 
+run("git", "clone", 'https://github.com/olsonanl/cufflinks');
+#run("git", "clone", 'https://github.com/aswarren/cufflinks');
 #run("git", "clone", 'https://github.com/cole-trapnell-lab/cufflinks.git');
 
 chdir($cuff_dir) || die "cannot chdir $cuff_dir: $!";

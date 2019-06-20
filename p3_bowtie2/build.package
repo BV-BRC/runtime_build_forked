@@ -16,10 +16,14 @@ if (@ARGV)
 my $gcc = "/disks/patric-common/runtime/gcc-4.9.4";
 $ENV{PATH} = "$gcc/bin:$ENV{PATH}";
 print "using $dest as installation directory\n";
-system ("mkdir", "-p", $dest) unless -e $dest;
 
 my $url = "https://github.com/BenLangmead/bowtie2";
-my $tag = "v2.3.4.3";
+#my $tag = "v2.3.4.3";
+my $tag = "v2.2.9";
+
+my $app_dest = "$dest/bowtie2-$tag";
+make_path($app_dest);
+
 
 my $dir = "bowtie2";
 
@@ -28,9 +32,10 @@ run("git", "clone", $url, $dir);
 
 chdir $dir or die "could not chdir $dir: $!";
 run("git", "checkout", $tag);
-run("make", "LDFLAGS=-Wl,-rpath,$gcc/lib64 -Wl,-rpath,$gcc/lib");
+my $rp_flags = "-Wl,-rpath,$gcc/lib64 -Wl,-rpath,$gcc/lib";
+run("make", "LDFLAGS=$rp_flags", "EXTRA_FLAGS=$rp_flags");
 
-run("make", "prefix=$dest", "install");
+run("make", "prefix=$app_dest", "install");
 
 sub run
 {
