@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+make_path("$dest/bin");
+
+my $url = "https://github.com/rrwick/Bandage/releases/download/v0.8.1/Bandage_CentOS_static_v0_8_1.zip";
+my $dir = "bandage";
+my $file = basename($url);
+
+run("curl", "-L", "-o", $file, $url);
+
+my $top = getcwd() . "/$dir";
+
+system("rm", "-rf", $dir);
+make_path($dir);
+chdir($dir) or die "cannot chdir $dir: $!";
+run("unzip", "../$file");
+
+-x "Bandage" or die "failed to unpack\n";
+run("cp", "Bandage", "$dest/bin/Bandage");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
