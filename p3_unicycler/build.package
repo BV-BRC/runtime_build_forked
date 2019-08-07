@@ -46,6 +46,14 @@ run("perl", "-pi.bak", "-e", "/^LDFLAGS/ and s!\$! $rpath!", "Makefile");
 run("which", "python3");
 run("$app_dest/bin/python3", "setup.py", "install");
 
+for my $bin (<$app_dest/bin/unicycler*>)
+{
+    my $f = basename($bin);
+    my $dfile = "$dest/bin/$f";
+    unlink($dfile);
+    symlink($bin, $dfile);
+}
+
 sub run
 {
     print "@_\n";
