@@ -61,8 +61,3 @@ sklearn
 yapsy
 treeinterpreter
 bayesian-optimization
-sphinx
-recommonmark
-sphinx_rtd_theme
-sphinxcontrib-newsfeed
-sphinxcontrib-spelling
