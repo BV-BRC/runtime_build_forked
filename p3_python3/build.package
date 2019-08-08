@@ -37,7 +37,7 @@ if (@ARGV)
 
 $ENV{LDFLAGS} = "-L$dest/lib64 -Wl,-rpath,$dest/lib64 -Wl,-rpath,$dest/lib";
 
-my $python_url = "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz";
+my $python_url = "https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz";
 
 my $python_tgz = basename($python_url);
 my $python_vers = basename($python_tgz, ".tgz");

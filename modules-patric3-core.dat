@@ -34,6 +34,7 @@ kb_golang_runtime	./install-golang.sh
 ## rpm-build-dep patch
 kb_python_runtime	./build.python
 kb_python_runtime	./install-python-packages.sh
+p3_python3	./build.package
 ## rpm-dep java-1.8.0-openjdk-headless
 # this is oracle jdk; license needed. can we get away with openjdk? # kb_java_runtime	./java_build.sh -u
 ## rpm-build-dep java-1.8.0-openjdk-devel
