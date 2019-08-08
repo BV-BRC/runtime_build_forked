@@ -16,9 +16,9 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $blat_url = "http://users.soe.ucsc.edu/~kent/src/blatSrc35.zip";
+my $blat_url = "http://users.soe.ucsc.edu/~kent/src/blatSrc36.zip";
 
-my $blat_zip = "blatSrc35.zip";
+my $blat_zip = "blatSrc36.zip";
 my $blat_dir = "blatSrc";
 
 $ENV{C_INCLUDE_PATH} = "$dest/include";
