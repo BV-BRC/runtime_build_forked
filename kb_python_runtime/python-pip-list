@@ -7,7 +7,6 @@ numpy
 biopython
 matplotlib
 sphinx
-pyzmq
 tornado
 rpy2
 beautifulsoup
