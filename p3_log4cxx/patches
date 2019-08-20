@@ -1,0 +1,31 @@
+--- ./src/main/cpp/inputstreamreader.cpp~	2008-03-31 17:34:09.000000000 -0500
++++ ./src/main/cpp/inputstreamreader.cpp	2017-07-20 15:53:06.839225000 -0500
+@@ -20,6 +20,7 @@
+ #include <log4cxx/helpers/exception.h>
+ #include <log4cxx/helpers/pool.h>
+ #include <log4cxx/helpers/bytebuffer.h>
++#include <string.h>
+ 
+ using namespace log4cxx;
+ using namespace log4cxx::helpers;
+--- ./src/main/cpp/socketoutputstream.cpp~	2008-03-31 17:34:09.000000000 -0500
++++ ./src/main/cpp/socketoutputstream.cpp	2017-07-20 15:54:05.600266000 -0500
+@@ -19,6 +19,7 @@
+ #include <log4cxx/helpers/socketoutputstream.h>
+ #include <log4cxx/helpers/socket.h>
+ #include <log4cxx/helpers/bytebuffer.h>
++#include <string.h>
+ 
+ using namespace log4cxx;
+ using namespace log4cxx::helpers;
+--- ./src/examples/cpp/console.cpp~	2008-03-31 17:34:52.000000000 -0500
++++ ./src/examples/cpp/console.cpp	2017-07-20 15:54:56.934436000 -0500
+@@ -16,6 +16,8 @@
+  */
+ 
+ #include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
+ #include <log4cxx/logger.h>
+ #include <log4cxx/consoleappender.h>
+ #include <log4cxx/simplelayout.h>

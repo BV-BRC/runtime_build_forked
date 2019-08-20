@@ -1,0 +1,47 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd qw(getcwd abs_path);
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+# https://www.apache.org/dyn/closer.cgi/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.tar.gz
+# http://mirror.cc.columbia.edu/pub/software/apache/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.tar.gz
+
+my $ver = "0.10.0";
+my $location = "http://mirror.cc.columbia.edu/pub/software/apache/logging/log4cxx/$ver";
+my $file = "apache-log4cxx-$ver.tar.gz";
+my $dir= "apache-log4cxx-$ver";
+my $url = $location . "/" . $file;
+run("curl", "-o", $file, "-L", $url);
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $file);
+my $abs = abs_path($dir);
+
+chdir $dir or die "could not chdir $dir: $!";
+run("patch -p0 < ../patches");
+
+run("./configure", "--prefix", $dest);
+run("make", "-j", "6");
+run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
