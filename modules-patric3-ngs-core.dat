@@ -8,7 +8,7 @@ p3_tnseq_transit	./build.package
 p3_kma	./build.package
 p3_krona	./build.package
 p3_bowtie2	./build.package
-p3_srst2	./build.package
+#p3_srst2	./build.package
 p3_samtools_v0.1.18	./build.package
 p3_fasttree_stock	./build.package
 p3_fasttree	./build.package

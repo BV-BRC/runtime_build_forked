@@ -26,6 +26,9 @@ run("tar",  "xvfz",  "$dir.tar.gz");
 chdir $dir or die "could not chdir $dir: $!";
 run("make", "-j", "6");
 run("make", "install", "PREFIX=$dest");
+run("make", "clean");
+run("make", "-f", "Makefile-libbz2_so", "-j", "6");
+run("rsync", "-arv", "libbz2.so.1.0.6", "libbz2.so.1.0", "$dest/lib");
 
 sub run
 {

@@ -13,9 +13,12 @@ fi
 
 RLIB=$1
 RURL="http://cran.r-project.org/src/base/R-3/"
-RBASE="R-3.1.0"
+RBASE="R-3.6.1"
 export PATH=$dest/bin:$PATH
 TPAGE=`which tpage`
+
+export CPPFLAGS="-I$dest/include"
+export LDFLAGS="-L$dest/lib"
 
 if [[ -x /usr/bin/apt-get ]] ; then
 	echo "###### purge system R ######"
