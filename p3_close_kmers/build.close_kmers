@@ -6,7 +6,7 @@ use Carp;
 use File::Basename;
 use Cwd 'abs_path';
 
-my @parallel = ("-j", 4);
+my @parallel = ("-j", 12);
 
 my $dest = $ENV{TARGET} || "/kb/runtime";
 
@@ -22,29 +22,15 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
 -d $dest || mkdir $dest;
 
-my $kmc_dir = "KMC";
-system("rm", "-rf", $kmc_dir);
-run("git", "clone", 'https://github.com/marekkokot/KMC', $kmc_dir);
-chdir($kmc_dir);
-
-#
-# don't build with -static.
-#
-run("sed", "-i.bak", "-e", "s/-static//g", "makefile");
-run("make", @parallel);
-run("cp", "bin/kmc", "$dest/bin/kmc");
-run("cp", "bin/kmc_dump", "$dest/bin/kmc_dump");
-run("cp", "bin/kmc_tools", "$dest/bin/kmc_tools");
-
-chdir("..");
-
 my $kmer_dir = "close_kmers";
 system("rm", "-rf", $kmer_dir);
 run("git", "clone", "-b", "mem_dev_1", 'https://github.com/TheSEED/close_kmers.git', $kmer_dir);
 
 chdir($kmer_dir);
 
-run("make", @parallel, "BUILD_TOOLS=$build_tools", "OPT=-O3", "kser", "kmerge");
+run("make", @parallel, "BUILD_TOOLS=$build_tools", "OPT=-O3", 
+    "KMC_LIB=$dest/lib/libkmc_api.a", "KMC_INC=-I$dest/include/kmc_api", 
+    "kser", "kmerge");
 run("cp", "kser", "$dest/bin/kser");
 run("cp", "kmerge", "$dest/bin/kmerge");
 
