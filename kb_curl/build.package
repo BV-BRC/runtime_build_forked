@@ -16,7 +16,7 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 
 # https://curl.haxx.se/download/curl-7.48.0.tar.gz
 
-my $ver = "7.48.0";
+my $ver = "7.65.0";
 my $location = "https://curl.haxx.se/download";
 my $file = "curl-$ver.tar.gz";
 my $dir= "curl-$ver";
