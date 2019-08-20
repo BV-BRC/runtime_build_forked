@@ -1,5 +1,5 @@
-#!/disks/patric-common/runtime/bin/perl
 #!/usr/bin/perl
+#!/disks/patric-common/runtime/bin/perl
 
 use File::Basename;
 use strict;

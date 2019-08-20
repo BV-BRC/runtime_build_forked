@@ -34,17 +34,18 @@ kb_golang_runtime	./install-golang.sh
 ## rpm-build-dep patch
 kb_python_runtime	./build.python
 kb_python_runtime	./install-python-packages.sh
+p3_python3	./build.package
 ## rpm-dep java-1.8.0-openjdk-headless
-kb_java_runtime	./java_build.sh -u
+# this is oracle jdk; license needed. can we get away with openjdk? # kb_java_runtime	./java_build.sh -u
 ## rpm-build-dep java-1.8.0-openjdk-devel
 ## rpm-build-dep unzip
-kb_java_runtime	./java_package_build.sh
-kb_thrift_runtime	./thrift_build.sh
-kb_mongodb	./install-mongodb.sh
+# not needed # kb_java_runtime	./java_package_build.sh
+# not needed # kb_thrift_runtime	./thrift_build.sh
+# not needed # kb_mongodb	./install-mongodb.sh
 kb_daemonize	./install-daemonize.sh
-kb_zmq3	./build.zmq3
+# not needed # kb_zmq3	./build.zmq3
 ## rpm-build-dep mysql-devel
-kb_sphinx_runtime	./sphinx_build.sh
+# not needed # kb_sphinx_runtime	./sphinx_build.sh
 kb_parallel	./build.package
-p3_jq	./build.package
-p3_nginx	./nginx_build.sh
+# not needed for centos # p3_jq	./build.package
+# not needed # p3_nginx	./nginx_build.sh

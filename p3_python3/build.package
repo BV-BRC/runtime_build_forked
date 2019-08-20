@@ -27,17 +27,29 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-#
-# The internal install of openssl requires LD_LIBRARY_PATH to be set.
-#
+my @opts;
 
-#$ENV{LD_LIBRARY_PATH} = "$dest/lib64";
-#$ENV{LDFLAGS} = "-L$dest/lib64 -L$dest/lib";
-#$ENV{CPPFLAGS} = "-I$dest/include -I$dest/include/openssl";
+my $os_rel = `cat /etc/redhat-release`;
+if ($os_rel =~ /CentOS release 6/)
+{
+    #
+    # Use internal openssl
+    #
+	
+    push(@opts, "--with-openssl=$dest");
 
-$ENV{LDFLAGS} = "-L$dest/lib64 -Wl,-rpath,$dest/lib64 -Wl,-rpath,$dest/lib";
+    #
+    # The internal install of openssl requires LD_LIBRARY_PATH to be set.
+    #
 
-my $python_url = "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz";
+    #$ENV{LD_LIBRARY_PATH} = "$dest/lib64";
+    #$ENV{LDFLAGS} = "-L$dest/lib64 -L$dest/lib";
+    #$ENV{CPPFLAGS} = "-I$dest/include -I$dest/include/openssl";
+
+    $ENV{LDFLAGS} = "-L$dest/lib64 -Wl,-rpath,$dest/lib64 -Wl,-rpath,$dest/lib";
+}
+
+my $python_url = "https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz";
 
 my $python_tgz = basename($python_url);
 my $python_vers = basename($python_tgz, ".tgz");
@@ -59,9 +71,8 @@ if (! -d $python_vers)
 
 chdir $python_vers;
 
-my @opts;
 
-run("./configure", "--prefix=$dest", "--with-openssl=$dest", @opts);
+run("./configure", "--prefix=$dest", @opts);
 run("make", $parallel);
 run("make install > $here/install.out 2>&1");
 

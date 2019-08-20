@@ -7,7 +7,6 @@ numpy
 biopython
 matplotlib
 sphinx
-pyzmq
 tornado
 rpy2
 beautifulsoup
@@ -61,8 +60,3 @@ sklearn
 yapsy
 treeinterpreter
 bayesian-optimization
-sphinx
-recommonmark
-sphinx_rtd_theme
-sphinxcontrib-newsfeed
-sphinxcontrib-spelling
