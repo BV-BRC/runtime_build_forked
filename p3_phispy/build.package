@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+# https://github.com/linsalrob/PhiSpy
+
+my $url = "https://github.com/linsalrob/PhiSpy";
+
+$dir = "PhiSpy";
+
+system("rm", "-rf", $dir);
+
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "could not chdir $dir: $!";
+run("make");
+
+#
+# We install by copying the generated directory into the runtime, and
+# set a symbolic link.
+#
+
+chdir("..");
+system("rsync", "-arv", $phispy_dir, $dest);
+symlink($phispy_dir, "$dest/phispy");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+

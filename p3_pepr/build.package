@@ -1,0 +1,68 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+my $repo = "https://github.com/enordber/pepr.git";
+#my $repo = "https://github.com/PATRIC3/pepr.git";
+
+my $dir = "pepr";
+
+system("rm", "-rf", $dir);
+run("git", "clone", $repo, $dir);
+chdir($dir) or die "Cannot chdir $dir: $!";
+
+system("find", ".", "-name", "*.class", "-print", "-exec", "rm", "{}", ";");
+
+run("ant", "compile");
+run("ant", "dist");
+
+#
+# Install goes into $dest/pepr by copying the dist created above.
+# Before doing that, however, we must remove the programs from
+# bin that do not work on the 64-bit CentOS systems.
+#
+# We will also need to arrange for any client code using pepr to
+# put pepr's bin directory into the path before any other tool
+# so that it finds the proper version.
+#
+
+my $dist = "dist/pepr";
+my @to_keep = qw(FastTree_WAG  hmmbuild  hmmsearch  mcl  raxmlHPC  raxmlHPC-PTHREADS) ;
+my %keep = map { $_ => 1 } @to_keep;
+
+opendir(D, "$dist/bin") or die "Cannot opendir $dist/bin: $!";
+for my $f (sort { $a cmp $b } grep { -f "$dist/bin/$_" && ! /^\./ } readdir(D))
+{
+    if (!$keep{$f})
+    {
+	print STDERR "Remove $dist/bin/$f\n";
+	unlink "$dist/bin/$f" or die "Error removing $dist/bin/$f: $!";
+    }
+}
+
+run("chmod", "+x", "$dist/scripts/pepr.sh");
+run("rsync", "--delete", "-arv", "$dist/.", "$dest/pepr");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}

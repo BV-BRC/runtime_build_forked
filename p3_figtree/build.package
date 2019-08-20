@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+
+my $version = '1.4.3';
+my $file = "FigTree_v$version.tgz";
+my $dir = "FigTree_v$version";
+my $url = 'http://tree.bio.ed.ac.uk/download.php?id=96&num=3';
+
+system("rm", "-rf", $dir);
+
+if (! -s $file)
+{
+    run("curl", "-o", $file, $url);
+}
+
+run("tar", "xfp", $file);
+
+#
+# Installation is simply copying the folder to the runtime.
+# We do need to change the relative path in the figtree
+# wrapper to be absolute.
+#
+
+-d $dir or die "Did not find $dir in the tarfile\n";
+
+my $fdest = "$dest/$dir";
+make_path($fdest);
+run("rsync", "-arv", "$dir/.", "$fdest/.");
+
+open(IN, "<", "$dir/bin/figtree") or die "Cannot read $dir/bin/figtree: $!";
+open(OUT, ">", "$fdest/bin/figtree") or die "Cannot write $fdest/bin/figtree: $!";
+while (<IN>)
+{
+    s,lib/figtree.jar,"$fdest/lib/figtree.jar",e;
+    print OUT;
+}
+close(IN);
+chmod(0755, \*OUT);
+close(OUT);
+
+unlink("$dest/bin/figtree");
+symlink("$fdest/bin/figtree", "$dest/bin/figtree") or die "Cannot symlink $fdest/bin/figtree to $dest/bin/figtree: $!";
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
