@@ -20,7 +20,7 @@ if (@ARGV)
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 $ENV{CFLAGS} = "-I$dest/include";
-$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
+$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -lrt";
 
 -d $dest || mkdir $dest;
 
@@ -33,14 +33,14 @@ system("rm", "-rf", $cuff_dir);
 #
 # Use bob's changes that fix threading 
 # 
-run("git", "clone", 'https://github.com/olsonanl/cufflinks');
+run("git", "clone", 'https://github.com/olsonanl/cufflinks-original', 'cufflinks');
 #run("git", "clone", 'https://github.com/aswarren/cufflinks');
 #run("git", "clone", 'https://github.com/cole-trapnell-lab/cufflinks.git');
 
 chdir($cuff_dir) || die "cannot chdir $cuff_dir: $!";
 #run("git", "checkout", $hash);
 run("./autogen.sh");
-run("./configure", "--with-bam=$dest/samtools", "--prefix=$dest", 
+run("./configure", "--with-bam=$dest/samtools-1.9", "--prefix=$dest", 
 	#"--with-boost-thread=$build_tools/lib/libboost_thread-mt.so", 
 	"--with-boost=$build_tools", "--with-boost-libdir=$build_tools/lib");
 run("make", @parallel);

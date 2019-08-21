@@ -30,7 +30,7 @@ my $build_tools = "$dest/build-tools";
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
 my $app_dest = "$dest/samtools-$tag";
-make_path("$app_dest/bin");
+make_path("$app_dest/bin", "$app_dest/include/bam");
 
 my $dir = "samtools-$tag";
 
@@ -42,6 +42,7 @@ chdir($dir) or die "Cannot chdir $dir: $!";
 run("./configure", "--prefix", $app_dest);
 run("make", @parallel, "all", "all-htslib");
 run("make", @parallel, "install", "install-htslib");
+system("cp *.h $app_dest/include/bam/.");
 
 sub download_tool
 {
