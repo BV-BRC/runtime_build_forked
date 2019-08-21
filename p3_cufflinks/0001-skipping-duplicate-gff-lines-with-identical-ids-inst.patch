@@ -1,0 +1,26 @@
+From e692e9049a5536c8f3f6ede2f4151409c4398c42 Mon Sep 17 00:00:00 2001
+From: RNA-Rocket <pathporthelp@vbi.edu>
+Date: Fri, 7 Oct 2016 14:24:42 -0400
+Subject: [PATCH] skipping duplicate gff lines with identical ids instead of dying
+
+---
+ src/gff.cpp |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/src/gff.cpp b/src/gff.cpp
+index d485aae..6b59020 100644
+--- a/src/gff.cpp
++++ b/src/gff.cpp
+@@ -1137,7 +1137,8 @@ void GffReader::readAll(bool keepAttr, bool mergeCloseExons, bool noExonAttr) {
+ 						//overlapping with same ID not allowed
+ 						GMessage("GFF Error: duplicate/invalid '%s' feature ID=%s\n", gffline->ftype, gffline->ID);
+ 						//validation_errors = true;
+-						if (gff_warns) {
++						bool skip = true;
++						if (gff_warns || skip) {
+ 							delete gffline;
+ 							gffline=NULL;
+ 							continue;
+-- 
+1.7.1
+
