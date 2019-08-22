@@ -14,6 +14,12 @@ my($opt, $usage) = describe_options("%c %o [target]",
 print($usage->text), exit if $opt->help;
 die($usage->text) if @ARGV > 1;
 
+my $cmake = "cmake";
+if (-x "/usr/bin/cmake3")
+{
+    $cmake = "/usr/bin/cmake3";
+}
+
 my @parallel = ("-j", 8);
 
 my $top_dest = $ENV{TARGET} || "/kb/runtime";
@@ -46,7 +52,7 @@ chdir($dir) or die "cannot chdir $dir: $!";
 run("git", "checkout", $tag);
 run("mkdir", "build");
 chdir("build") or die "cannot chdir build: $!";
-run("cmake", "..");
+run($cmake, "..");
 run("make", @parallel);
 run("cp", "diamond", "$dest/bin/diamond");
 

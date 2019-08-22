@@ -17,6 +17,12 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
+my $cmake = "cmake";
+if (-x "/usr/bin/cmake3")
+{
+    $cmake = "/usr/bin/cmake3";
+}
+
 my $module = "racon";
 my $tag = "1.4.3";
 
@@ -56,7 +62,7 @@ run("git", "checkout", $tag) if $tag;
 make_path("build");
 chdir("build") or die "cannot chdir build: $!";
 
-run("cmake", "-DCMAKE_BUILD_TYPE=Release", "..");
+run($cmake, "-DCMAKE_BUILD_TYPE=Release", "..");
 run("make", @parallel);
 
 run("cp", "bin/racon", "$dest/bin/racon");
