@@ -18,9 +18,17 @@ if (@ARGV)
 my $dest = $top_dest;
 
 my $module = "racon";
-my $tag = "1.3.3";
+my $tag = "1.4.3";
 
 my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Cannot find $p3\n";
+    }
+}
 my $build_tools = "$p3/build-tools";
 
 $ENV{PATH} = "$build_tools/bin:$p3/bin:$ENV{PATH}";

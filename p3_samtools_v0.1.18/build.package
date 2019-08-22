@@ -37,7 +37,7 @@ my $build_tools = "$dest/build-tools";
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
 my $app_dest = "$dest/samtools-$tag";
-make_path("$app_dest/bin");
+make_path("$app_dest/bin", "$app_dest/include/bam");
 
 my $dir;
 
@@ -68,6 +68,8 @@ for my $exe (qw(samtools bcftools/bcftools), <misc/*>)
 	run("cp", $exe, "$app_dest/bin/$base");
     }
 }
+system("cp *.h $app_dest/include/bam/.");
+
 
 sub download_tool
 {

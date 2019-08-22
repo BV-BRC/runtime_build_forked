@@ -15,7 +15,7 @@ if (@ARGV)
 
 my $parallel = 4;
 
-my $vers = "5.0.0";
+my $vers = "5.0.2";
 
 #https://downloads.sourceforge.net/project/quast/quast-4.5.tar.gz
 

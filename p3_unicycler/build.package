@@ -21,9 +21,17 @@ if (@ARGV)
 }
 
 my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Can't find $p3\n";
+    }
+}
 my $build_tools = "$p3/build-tools";
 
-my $vers = "v0.4.7";
+my $vers = "v0.4.8";
 my $url = "https://github.com/rrwick/Unicycler";
 
 $ENV{PATH} = "$p3/build-tools/bin:$p3/bin:$ENV{PATH}";

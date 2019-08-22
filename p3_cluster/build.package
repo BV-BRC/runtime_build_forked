@@ -17,9 +17,9 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-# http://bonsai.hgc.jp/~mdehoon/software/cluster/cluster-1.52a.tar.gz
+# http://bonsai.hgc.jp/~mdehoon/software/cluster/cluster-1.58.tar.gz
 
-my $vers = "1.52a";
+my $vers = "1.58";
 
 my $package_dir = "cluster-$vers";
 my $package_tar = "cluster-$vers.tar.gz";
