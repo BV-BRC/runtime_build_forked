@@ -1,9 +1,9 @@
-p3_cmake	./build.package
+# use system cmake3 (from epel) # p3_cmake	./build.package
 kb_bwa	./build.package
 p3_samtools	./build.package
 p3_samtools_v0.1.18	./build.package
 # what samtools for this p3_samstat	./build.package
-#need fixed python3 ssl p3_cutadapt	./build.package
+p3_cutadapt	./build.package
 p3_trimgalore	./build.package
 p3_eigen	./build.eigen
 p3_cufflinks	./build.cufflinks
@@ -27,7 +27,7 @@ p3_unicycler	./build.package
 p3_bandage	./build.package
 p3_pilon	./build.package
 p3_racon	./build.package
-#need fixed python3 ssl p3_antismash	./build.package
+p3_antismash	./build.package
 p3_hmmer2	./build.package
 p3_hmmer3	./build.package
 kb_mafft	./build.mafft
