@@ -33,7 +33,7 @@ system("rm", "-rf", $cuff_dir);
 #
 # Use bob's changes that fix threading 
 # 
-run("git", "clone", 'https://github.com/olsonanl/cufflinks');
+run("git", "clone", 'https://github.com/olsonanl/cufflinks-original', 'cufflinks');
 #run("git", "clone", 'https://github.com/aswarren/cufflinks');
 #run("git", "clone", 'https://github.com/cole-trapnell-lab/cufflinks.git');
 
