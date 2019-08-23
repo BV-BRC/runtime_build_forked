@@ -69,12 +69,29 @@ if (! -d $python_vers)
     run("tar", "xzf", $python_tgz);
 }
 
+
+my @pips;
+if (open(PIP, "<", "pip-list"))
+{
+    while (<PIP>)
+    {
+	chomp;
+	s/^\s+//;
+	s/\s+$//;
+	push(@pips, $_);
+    }
+    close(PIP);
+}
+
+
 chdir $python_vers;
 
 
 run("./configure", "--prefix=$dest", @opts);
 run("make", $parallel);
 run("make install > $here/install.out 2>&1");
+chdir "..";
+run("$dest/bin/pip3", "install", @pips);
 
 sub run
 {
