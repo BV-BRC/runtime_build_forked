@@ -12,7 +12,7 @@ my $parallel = 4;
 #
 # This tool needs a modern C++ compiler.
 #
-my $build_tools = "$dest/build-tools";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 -d $build_tools or die "Need to find a usable modern C++ compiler - $build_tools does not exist\n";
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 #$ENV{LD_RUN_PATH} = "$build_tools/lib64:$build_tools/lib";

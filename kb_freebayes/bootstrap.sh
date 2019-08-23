@@ -39,7 +39,7 @@ cp scripts/freebayes-parallel $target/bin/freebayes-parallel
 chmod +x $target/bin/freebayes-parallel
 cp scripts/fasta_generate_regions.py $target/bin/fasta_generate_regions.py
 chmod +x $target/bin/fasta_generate_regions.py
-cp vcflib/bin/vcffirstheader $target/bin/vcffirstheader
+cp vcflib/scripts/vcffirstheader $target/bin/vcffirstheader
 chmod +x $target/bin/vcffirstheader
 
 popd
