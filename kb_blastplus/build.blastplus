@@ -7,7 +7,7 @@ use File::Basename;
 use Cwd 'abs_path';
 
 my $dest = $ENV{TARGET} || "/kb/runtime";
-my $parallel = 4;
+my $parallel = 12;
 
 if (@ARGV)
 {

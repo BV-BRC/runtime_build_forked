@@ -23,6 +23,7 @@ p3_spades	./build.package.3.12
 p3_canu	./build.package
 p3_sra_toolkit	./build.package
 p3_diamond	./build.package
+p3_minimap2	./build.package
 p3_unicycler	./build.package
 p3_bandage	./build.package
 p3_pilon	./build.package
