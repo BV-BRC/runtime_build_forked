@@ -1,0 +1,88 @@
+#!/usr/bin/env perl
+
+#
+# Build a minimal SEED for PATRIC use
+#
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd qw(getcwd abs_path);
+
+my @parallel = ("-j", 12);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+-d $dest || mkdir $dest;
+
+my $runtime = $ENV{KB_RUNTIME} // $dest;
+
+$ENV{CVSROOT} = ':pserver:anonymous@biocvs.mcs.anl.gov:/disks/cvs/bio';
+
+my @modules = qw(FigCommon FigCSS FigKernelPackages FigKernelScripts PPO  ReleaseTools  Sprout);
+
+my $app_dest = "$dest/patric-seed";
+if (-d $app_dest)
+{
+    die "Not overwriting existing $app_dest\n";
+}
+
+my $top = getcwd();
+make_path($app_dest);
+do_chdir($app_dest);
+
+make_path("env");
+make_path("env", "FIG/Tmp");
+open(C, ">", "$app_dest/env/bio-config") or die "cannot write $app_dest/env/bio-config: $!";
+print C "x86_64\t$runtime\n";
+close(C);
+
+run("cp", "-r", "$top/BLASTMAT", $app_dest);
+
+make_path("dist/releases/anon");
+open(D, ">", "$app_dest/DEFAULT_RELEASE") or die "cannot write $app_dest/DEFAULT_RELEASE: $!";
+print D "anon\n";
+close(D);
+
+do_chdir("dist/releases/anon");
+for my $mod (@modules)
+{
+    run("cvs", "co", $mod);
+}
+
+run("cp", "ReleaseTools/Makefile.top", "Makefile");
+run("cp", "FigCommon/configure", "$app_dest/configure");
+
+do_chdir($app_dest);
+
+run("./configure", "bio-config");
+
+open(F, ">>", "config/FIG_Config.pm") or die "cannot append config/FIG_Config.pm: $!";
+print F "require FIG_Config_PATRIC;";
+close(F);
+
+run("cp", "$top/FIG_Config_PATRIC.pm", "config/FIG_Config_PATRIC.pm");
+
+sub do_chdir
+{
+    my($dest) = @_;
+    chdir($dest) or die "cannot chdir $dest: $!";
+}
+    
+sub run
+{
+    my(@cmd) = @_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    $rc == 0 or die "Cmd failed with rc=$rc: @cmd\n";
+}

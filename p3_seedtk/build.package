@@ -1,0 +1,79 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my @parallel = ("-j", 12);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+-d $dest || mkdir $dest;
+
+my $runtime = $ENV{KB_RUNTIME} // $dest;
+
+my $seedtk_git = "https://github.com/SEEDtk";
+my $dev_container_git = "https://github.com/olsonanl/dev_container";
+
+my @modules = qw(ERDB kernel p3_seedtk RASTtk tbltools utils);
+my %module_repo = (p3_seedtk => "https://github.com/olsonanl");
+
+my %module_versions = (ERDB => '6f0b606e464c04833e6c70aca0d83722989e528c',
+		       kernel => '8b73b810b86781848d8e331c8f9858a8d8fa7c63',
+#		       p3_seedtk => 'daee709114caf84655d963a6a6d93af9ce78695e',
+		       RASTtk => '5a1d2bdaa7a8cf94da3146d300cd3ea196b68545',
+		       tbltools => '1712f4149bc53236f9a44371a9777fb173c2a20f',
+		       utils => '202ccfc8cc32bcdbc879d0faf489a9d4c9a5ad88');
+
+my $app_dest = "$dest/seedtk";
+
+make_path("$dest/bin", "$dest/include", "$dest/lib");
+
+if (-d $app_dest)
+{
+    die "Not overwriting existing $app_dest\n";
+}
+
+run("git", "clone", $dev_container_git, $app_dest);
+
+for my $mod (@modules)
+{
+    do_chdir("$app_dest/modules");
+    my $vers = $module_versions{$mod};
+    my $git = $module_repo{$mod} // $seedtk_git;
+    run("git", "clone", "$git/$mod");
+    if ($vers)
+    {
+	do_chdir($mod);
+	run("git", "checkout", $vers);
+    }
+}
+
+do_chdir($app_dest);
+run("./bootstrap", $runtime);
+run("bash", "-c", "source user-env.sh; make");
+
+sub do_chdir
+{
+    my($dest) = @_;
+    chdir($dest) or die "cannot chdir $dest: $!";
+}
+    
+sub run
+{
+    my(@cmd) = @_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    $rc == 0 or die "Cmd failed with rc=$rc: @cmd\n";
+}
