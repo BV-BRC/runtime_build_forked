@@ -11,3 +11,5 @@ kb_circonspect	./build.circonspect
 kb_phispy_runtime	./build.phispy
 kb_prinseq_runtime	./build.prinseq
 p3_close_kmers	./build.close_kmers
+p3_seedtk	./build.package
+p3_seed	./build.package
