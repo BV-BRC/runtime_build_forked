@@ -16,7 +16,7 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 
 # http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.2/sratoolkit.2.9.2-centos_linux64.tar.gz
 
-my $ver = "2.9.2";
+my $ver = "2.10.0";
 my $dir= "sratoolkit.$ver-centos_linux64";
 my $file = "$dir.tar.gz";
 my $location = "http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/$ver";
@@ -36,7 +36,8 @@ while (my $x = readdir(D))
     next unless -f "$destdir/bin/$x";
     if ($x =~ /^(\S+)\.$ver/)
     {
-	symlink("../sratoolkit-$ver/bin/$1", "$dest/bin/$1");
+    	unlink("$dest/bin/$1");
+	symlink("../sratoolkit-$ver/bin/$x", "$dest/bin/$1");
     }
 }
 #run("make", "install");
