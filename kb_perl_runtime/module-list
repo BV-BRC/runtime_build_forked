@@ -1,4 +1,4 @@
-inc::Module::Package
+Module::Install
 CGI
 JSON::Schema
 MongoDB::MongoClient
@@ -203,3 +203,4 @@ Plack::Middleware::LogStderr
 Plack::Middleware::Access
 Plack::Middleware::ReverseProxy
 DBIx::Class
+Text::Table::Tiny
