@@ -24,7 +24,10 @@ fi
 
 
 rm -rf freebayes
-git clone --recursive https://github.com/ekg/freebayes.git
+#
+# Use the PATRIC for since it fixes paths in freebayes-parallel
+#
+git clone --recursive https://github.com/PATRIC3/freebayes.git
 
 pushd freebayes
 make

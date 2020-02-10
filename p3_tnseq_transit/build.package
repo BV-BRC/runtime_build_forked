@@ -23,11 +23,17 @@ if (@ARGV)
 my $repo = "https://github.com/aswarren/transit";
 my $commit = "8d97abaedfbdbc7d69b41a2707910d39181e8bf5";
 
+#
+# The latest pillow dep forces python3
+#
+run("$dest/bin/pip2", "install", 'Pillow<7');
+
 run("rm", "-rf", "transit");
 run("git", "clone", $repo);
 do_chdir("transit");
 run("git", "checkout", $commit);
-run("$dest/bin/python", "setup.py", "install");
+run("$dest/bin/python", "setup.py", "build");
+#run("$dest/bin/python", "setup.py", "install");
     
 sub do_chdir
 {
