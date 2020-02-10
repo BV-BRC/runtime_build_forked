@@ -56,6 +56,11 @@ END
 
 chmod(0755, "$dest/bin/tRNAscan-SE") or die "chmod failed: $!";
 
+#
+# Need a recursive chmod since some folders didn't end up with proper x perms.
+#
+system("find", $app_path, "-type", "d", "-exec", "chmod", "a+x", "{}", ';');
+
 sub run
 {
     my(@cmd) =@_;
