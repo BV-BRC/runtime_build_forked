@@ -22,6 +22,10 @@ else
         warn "No build tools in $build_tools\n";
 }
 
+
+$ENV{CC} = "$build_tools/bin/gcc";
+$ENV{CXX} = "$build_tools/bin/g++";
+
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
