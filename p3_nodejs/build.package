@@ -57,6 +57,7 @@ sub build
     for my $bin (<$node_dest/bin/*>)
     {
 	my $f = basename($bin);
+	unlink("$dest/bin/$f-$major");
 	symlink($bin, "$dest/bin/$f-$major") or die "Cannot symlink $bin to $dest/bin/$f-$major: $!";
     }
 }
