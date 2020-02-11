@@ -33,7 +33,7 @@ run("git", "clone", $repo);
 do_chdir("transit");
 run("git", "checkout", $commit);
 run("$dest/bin/python", "setup.py", "build");
-#run("$dest/bin/python", "setup.py", "install");
+run("$dest/bin/python", "setup.py", "install");
     
 sub do_chdir
 {
