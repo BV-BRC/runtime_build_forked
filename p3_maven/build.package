@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my @parallel = ("-j", 4);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $here = getcwd;
+
+my $vers = "3.6.3";
+my $dir = "apache-maven-$vers";
+my $url = "https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-$vers-bin.tar.gz";
+run("curl", "-f", "-O", "-L", $url);
+
+do_chdir($dest);
+run("rm", "-rf", $dir);
+run("tar", "xzfpv", "$here/apache-maven-$vers-bin.tar.gz");
+
+do_chdir("$dir/bin");
+my $edir = getcwd;
+for my $exe (<*>)
+{
+    unlink("$dest/bin/$exe");
+    symlink("$edir/$exe", "$dest/bin/$exe");
+}
+
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
