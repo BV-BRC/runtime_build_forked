@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $vers;
+my $url = "https://github.com/CDCgov/SARS-CoV-2_Sequencing";
+
+$ENV{PATH} = "$runtime/build-tools/bin:$runtime/bin:$ENV{PATH}";
+
+my $dir = "SARS-CoV-2_Sequencing";
+
+-d $dest || mkdir $dest;
+
+run("rm", "-rf", $dir);
+
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "cannot chdir $dir: $!";
+run("git", "checkout", $vers) if $vers;
+for my $pl (<protocols/CDC-Comprehensive/scripts/*pl>)
+{
+    my $b = basename($pl);
+    open(F, "<", $pl) or die "cannot read $pl: $!";
+    open(T, ">", "$dest/bin/$b") or die "Cannot write $dest/bin/$b: $!";
+    $_ = <F>;
+    print T "#!$dest/bin/perl\n";
+    print T qq(\$ENV{PATH} = "$dest/samtools-1.9/bin:$dest/bcftools-1.9/bin:\$ENV{PATH}";\n);
+    print T $_ while (<F>);
+    close(T);
+    close(F);
+    chmod 0755, "$dest/bin/$b" or die "cannot chmod $dest/bin/$b: $!";
+}
+
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
