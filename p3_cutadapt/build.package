@@ -15,10 +15,16 @@ if (@ARGV)
     $top_dest = shift;
 }
 
+my $tag = "v2.2";
+if (@ARGV)
+{
+    $tag = shift;
+    print "set tag to $tag\n";
+}
+
 my $dest = $top_dest;
 
 my $module = "cutadapt";
-my $tag = "v2.2";
 
 my $build_tools = "$dest/build-tools";
 
