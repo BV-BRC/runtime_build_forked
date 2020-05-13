@@ -32,6 +32,7 @@ do_chdir("nanopolish");
 run("git", "checkout", $commit);
 
 run("make");
+run("cp", "nanopolish", "$dest/bin/nanopolish");
 
 sub do_chdir
 {
