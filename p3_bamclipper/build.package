@@ -1,0 +1,91 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+run("curl", "-o", "bamclipper.zip", "-L", "https://github.com/tommyau/bamclipper/zipball/master");
+
+open(P, "-|", "unzip", "-v", "bamclipper.zip") or die "Cannot unzip bamclipper.zip: $!";
+my $path;
+while (<P>)
+{
+    print;
+    last if /^---/;
+}
+while (<P>)
+{
+    if (m,Stored.*?(\S+)/\s*,)
+    {
+	$path = $1;
+	print "Found unzipped path $path\n";
+	last;
+    }
+}
+close(P);
+$path or die "could not find path\n";
+
+run("rm", "-rf", $path);
+run("unzip", "bamclipper.zip");
+
+#
+# Install needs to modify this
+#VERSION=1.1.1
+#NTHREAD=1
+#SAMTOOLS="samtools"
+#PARALLEL="parallel"
+#UPSTREAM=1
+#DOWNSTREAM=5
+#SAMTOOLS_VERSION_REQUIRED=1.3.1
+#PARALLEL_VERSION_REQUIRED=20130522
+
+
+open(F, "<", "$path/bamclipper.sh") or die "Cannot read $path/bamclipper.sh: $!";
+open(T, ">", "$dest/bin/bamclipper.sh") or die "Cannot write $dest/bin/bamclipper.sh: $!";
+while (<F>)
+{
+    if (/^SAMTOOLS=/)
+    {
+	print T "SAMTOOLS=$dest/samtools-1.9/bin/samtools\n";
+    }
+    elsif (/^PARALLEL=/)
+    {
+	print T "PARALLEL=$dest/bin/parallel\n";
+    }
+    else
+    {
+	print T $_;
+    }
+}
+close(F);
+close(T);
+chmod 0755, "$dest/bin/bamclipper.sh" or die "chmod $dest/bin/bamclipper.sh failed: $!";
+for my $pl (<$path/*pl>)
+{
+    my $b = basename($pl);
+    run("sed -e 's,#!/usr/bin/env.*,#!$dest/bin/perl,' < $pl > $dest/bin/$b");
+    chmod 0755, "$dest/bin/$b" or die "chmod $dest/bin/$b failed: $!";
+
+}
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
