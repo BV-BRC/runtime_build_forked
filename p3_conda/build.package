@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Cannot find $p3\n";
+    }
+}
+my $build_tools = "$p3/build-tools";
+
+#
+# Initialize a conda build setup for tools that use that.
+#
+
+my $app_dest = "$dest/conda";
+
+run("curl", "-O", "-L", "https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh");
+run("sh", "Anaconda3-2020.02-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
