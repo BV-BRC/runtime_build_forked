@@ -1,0 +1,41 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my @parallel = ("-j", 12);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $build_tools = $ENV{BUILD_TOOLS} || "$dest/build-tools";
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+#$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+
+-d $dest || mkdir $dest;
+
+make_path("$dest/bin", "$dest/include", "$dest/lib");
+
+my $dir = "seqtk";
+system("rm", "-rf", $dir);
+run("git", "clone", 'https://github.com/lh3/seqtk', $dir);
+chdir($dir);
+
+run("make", @parallel);
+run("cp", "seqtk", "$dest/bin/seqtk");
+sub run
+{
+    my(@cmd) = @_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    $rc == 0 or die "Cmd failed with rc=$rc: @cmd\n";
+}
