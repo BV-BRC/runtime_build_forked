@@ -30,6 +30,7 @@ my $abs = abs_path($dir);
 
 chdir $dir or die "could not chdir $dir: $!";
 run("patch -p0 < ../patches");
+run("patch -p1 < ../patch.narrowing");
 
 run("./configure", "--prefix", $dest);
 run("make", "-j", "6");
