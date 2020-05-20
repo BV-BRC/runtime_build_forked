@@ -33,6 +33,12 @@ run("rm", "-rf", $package_dir);
 run("tar", "xzfp", $package_tar);
 chdir($package_dir) or die "cannot chdir $package_dir: $!";
 
+#
+# coreutils doesn't want to configure if run as root, 
+# which is how the singularity build happens
+#
+$ENV{FORCE_UNSAFE_CONFIGURE} = 1;
+
 run("./configure", "--prefix", $dest);
 run("make", "-j", $parallel);
 
