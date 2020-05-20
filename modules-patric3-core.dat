@@ -51,3 +51,5 @@ kb_daemonize	./install-daemonize.sh
 kb_parallel	./build.package
 # not needed for centos # p3_jq	./build.package
 # not needed # p3_nginx	./nginx_build.sh
+p3_sort	./build.package
+p3_maven	./build.package
