@@ -23,8 +23,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 -d $dest || mkdir $dest;
 
 my $kmer_dir = "close_kmers";
-#system("rm", "-rf", $kmer_dir);
-#run("git", "clone", "-b", "mem_dev_1", 'https://github.com/olsonanl/close_kmers.git', $kmer_dir);
+system("rm", "-rf", $kmer_dir);
+run("git", "clone", 'https://github.com/olsonanl/close_kmers.git', $kmer_dir);
 
 chdir($kmer_dir);
 
