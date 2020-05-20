@@ -17,7 +17,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $vers = "1.0.2s";
+my $vers = "1.0.2u";
 
 my $openssl_dir = "openssl-$vers";
 my $openssl_tar = "openssl-$vers.tar.gz";

@@ -31,13 +31,15 @@ if (! -d $p3)
 }
 my $build_tools = "$p3/build-tools";
 
-my $app_dest = "$dest/artic";
+my $app_dest = "$dest/artic-ncov2019";
 
 #
 # For artic we need to rely on the conda configuration that was set up by p3_conda
 #
 
-run(". $dest/conda/bin/activate; conda create -y -p $app_dest -c conda-forge -c bioconda artic");
+run('rm', "-rf", "artic-ncov2019");
+run("git", "clone", "--recursive", "https://github.com/artic-network/artic-ncov2019.git");
+run(". $dest/conda/bin/activate; conda env create -p $app_dest -f artic-ncov2019/environment.yml");
 
 run("ln -s $app_dest/bin/artic* $dest/bin");
 

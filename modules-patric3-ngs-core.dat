@@ -41,3 +41,16 @@ p3_raxml	./build.package
 p3_capnproto	./build.package
 p3_mash	./build.package
 p3_muscle_36	./build.package
+p3_conda	./build.package
+p3_medaka	./build.package
+p3_artic	./build.package
+p3_bgp3_conda	./build.package
+p3_medaka	./build.package
+p3_artic	./build.package
+p3_bgp3_conda	./build.package
+p3_medaka	./build.package
+p3_artic	./build.package
+p3_bcftools	./build.package
+p3_bamclipper	./build.package
+p3_cdc_sars2	./build.package
+p3_seqtk	./build.package

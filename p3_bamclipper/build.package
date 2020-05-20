@@ -20,29 +20,36 @@ if (@ARGV)
     $runtime = shift;
 }
 
-run("curl", "-o", "bamclipper.zip", "-L", "https://github.com/tommyau/bamclipper/zipball/master");
-
-open(P, "-|", "unzip", "-v", "bamclipper.zip") or die "Cannot unzip bamclipper.zip: $!";
-my $path;
-while (<P>)
+if (0)
 {
-    print;
-    last if /^---/;
-}
-while (<P>)
-{
-    if (m,Stored.*?(\S+)/\s*,)
+    run("curl", "-o", "bamclipper.zip", "-L", "https://github.com/tommyau/bamclipper/zipball/master");
+    
+    open(P, "-|", "unzip", "-v", "bamclipper.zip") or die "Cannot unzip bamclipper.zip: $!";
+    my $path;
+    while (<P>)
     {
-	$path = $1;
-	print "Found unzipped path $path\n";
-	last;
+	print;
+	last if /^---/;
     }
+    while (<P>)
+    {
+	if (m,Stored.*?(\S+)/\s*,)
+	{
+	    $path = $1;
+	    print "Found unzipped path $path\n";
+	    last;
+	}
+    }
+    close(P);
+    $path or die "could not find path\n";
+    
+    run("rm", "-rf", $path);
+    run("unzip", "bamclipper.zip");
 }
-close(P);
-$path or die "could not find path\n";
 
-run("rm", "-rf", $path);
-run("unzip", "bamclipper.zip");
+run("rm", "-rf", "bamclipper");
+run("git", "clone", "https://github.com/PATRIC3/bamclipper.git");
+my $path = "bamclipper";
 
 #
 # Install needs to modify this
