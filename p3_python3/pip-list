@@ -11,3 +11,4 @@ sphinxcontrib-httpdomain
 sphinxcontrib-newsfeed
 sphinxcontrib-spelling
 sphinxcontrib-websupport
+matplotlib
