@@ -40,7 +40,8 @@ chdir($dir) or die "cannot chdir $dir: $!";
 $ENV{CPPFLAGS} = "-Wl,-rpath -Wl,$build_tools/lib64 -Wl,-rpath -Wl,$build_tools/lib -static-libstdc++";
 run("./bootstrap.sh");
 run("./configure", "--prefix=$dest", "--with-capnp=$build_tools");
-run("make", @parallel);
+run("sed", "-i", "-e", "/-o mash/s!\$! -lrt $ENV{CPPFLAGS}!", "Makefile");
+run("make", @parallel, "LIBS=-lrt");
 run("make", "install");
 
 sub download_tool

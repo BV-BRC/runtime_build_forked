@@ -29,13 +29,14 @@ $dest .= "/" . $opt->subdir if $opt->subdir;
 
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
+system("gcc", "-v");
 
 my $dir;
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
 # https://capnproto.org/capnproto-c++-0.5.3.tar.gz
 
-my $vers = "0.5.3";
+my $vers = "0.8.0";
 
 my $app = "capnproto-c++";
 my $package_dir = "$app-$vers";
@@ -47,7 +48,7 @@ $ENV{CXXFLAGS} = '-static-libstdc++';
 $ENV{LDFLAGS} = "-Wl,-rpath -Wl,$dest/lib64 -Wl,-rpath -Wl,$dest/lib -static-libstdc++";
 chdir($dir) or die "cannot chdir $package_dir: $!";
 run("./configure", "--prefix=$dest");
-run("make", @parallel);
+run("make", @parallel, "LIBS=-lrt");
 # 
 # We get a failure on the make check that appears to be related
 # to the definition of localhost.

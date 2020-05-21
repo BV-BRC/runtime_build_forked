@@ -15,49 +15,52 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-my $url = "https://github.com/deprekate/PHANOTATE.git";
-
-my $dir = "PHANOTATE";
-
-run("rm", "-rf", $dir);
-run("git", "clone", "--recursive", $url, $dir);
-
-chdir $dir or die "could not chdir $dir: $!";
-run("make");
-
-chdir($cwd);
-#
-# set up installation.
-#
-my $vers;
-if (open(V, "<", "$dir/VERSION"))
-{
-    $vers = <V>;
-    chomp $vers;
-    $vers =~ s/^\s+//;
-    $vers =~ s/\s+$//;
-    close(V);
-}
-$vers ||= "unknown";
-
-my $pdest = "$dest/phanotate-$vers";
-
-make_path($pdest);
-run("rsync", "-arv", "$dir/.", "$pdest/.");
-    
-open(F, ">", "$dest/bin/phanotate") or die "Cannot write $dest/bin/phanotate: $!";
-print F <<END;
-#!/bin/sh
-export PATH=\$PATH:$dest/search_for_rnas/programs/bin
-if [ \$# -eq 1 -a "\$1" = "-v" ] ; then
-    echo "$vers"
-    exit 0
-fi
-exec $dest/bin/python $pdest/phanotate.py \$*
-END
-close(F);
-run("chmod", "+x", "$dest/bin/phanotate");
-
+run("$dest/bin/pip3", "install", "phanotate");
+unlink("$dest/bin/phanotate");
+symlink("$dest/bin/phanotate.py", "$dest/bin/phanotate");
+# my $url = "https://github.com/deprekate/PHANOTATE.git";
+# 
+# my $dir = "PHANOTATE";
+# 
+# run("rm", "-rf", $dir);
+# run("git", "clone", "--recursive", $url, $dir);
+# 
+# chdir $dir or die "could not chdir $dir: $!";
+# run("make");
+# 
+# chdir($cwd);
+# #
+# # set up installation.
+# #
+# my $vers;
+# if (open(V, "<", "$dir/VERSION"))
+# {
+#     $vers = <V>;
+#     chomp $vers;
+#     $vers =~ s/^\s+//;
+#     $vers =~ s/\s+$//;
+#     close(V);
+# }
+# $vers ||= "unknown";
+# 
+# my $pdest = "$dest/phanotate-$vers";
+# 
+# make_path($pdest);
+# run("rsync", "-arv", "$dir/.", "$pdest/.");
+#     
+# open(F, ">", "$dest/bin/phanotate") or die "Cannot write $dest/bin/phanotate: $!";
+# print F <<END;
+# #!/bin/sh
+# export PATH=\$PATH:$dest/search_for_rnas/programs/bin
+# if [ \$# -eq 1 -a "\$1" = "-v" ] ; then
+#     echo "$vers"
+#     exit 0
+# fi
+# exec $dest/bin/python $pdest/phanotate.py \$*
+# END
+# close(F);
+# run("chmod", "+x", "$dest/bin/phanotate");
+# 
 sub run
 {
     my(@cmd) =@_;
