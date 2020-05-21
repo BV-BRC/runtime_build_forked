@@ -49,5 +49,6 @@ p3_bamclipper	./build.package
 p3_cdc_sars2	./build.package
 p3_seqtk	./build.package
 p3_samstat	./build.package
+p3_exonerate	./build.package
 p3_vigor4	./build.package
 p3_nanopolish	./build.package
