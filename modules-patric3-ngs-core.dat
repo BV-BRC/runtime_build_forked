@@ -34,7 +34,7 @@ p3_hmmer3	./build.package
 kb_mafft	./build.mafft
 kb_circos	./build.circos
 p3_figtree	./build.package
-p3_phanotate	./build.package
+# p3_phanotate	./build.package
 p3_mosaik	./build.package
 p3_mcl	./build.package
 p3_raxml	./build.package
