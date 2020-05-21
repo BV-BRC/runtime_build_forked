@@ -18,6 +18,8 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
+$ENV{JAVA_HOME} = "/etc/alternatives/jre";
+
 my $repo = "https://github.com/JCVenterInstitute/VIGOR4";
 #my $commit = "831e8ba95664804d270a96dabe16052f97ce43c0";
 

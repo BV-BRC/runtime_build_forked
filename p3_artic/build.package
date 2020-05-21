@@ -33,6 +33,7 @@ my $build_tools = "$p3/build-tools";
 
 my $app_dest = "$dest/artic-ncov2019";
 
+$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 #
 # For artic we need to rely on the conda configuration that was set up by p3_conda
 #
