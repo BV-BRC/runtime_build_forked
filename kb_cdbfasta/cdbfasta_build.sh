@@ -16,7 +16,7 @@ CURL="http://sourceforge.net/projects/cdbfasta/files/latest/download?source=file
 CBASE="cdbfasta"
 
 echo "###### downloading $CBASE ######"
-curl -L $CURL > $CBASE".tar.gz"
+curl --retry 30 -L $CURL > $CBASE".tar.gz"
 tar zxf $CBASE".tar.gz"
 
 echo "###### installing $CBASE ######"
