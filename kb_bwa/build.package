@@ -33,7 +33,7 @@ my $package_url = "http://downloads.sourceforge.net/project/bio-bwa/$package_tar
 
 if (! -s $package_tar)
 {
-    system("curl", "-o", $package_tar, "-L", $package_url);
+    system("curl", "--retry", "30", "-o", $package_tar, "-L", $package_url);
 }
 
 run("rm", "-rf", $package_dir);
