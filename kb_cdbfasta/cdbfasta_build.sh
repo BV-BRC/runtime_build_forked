@@ -25,6 +25,4 @@ make
 cp cdbfasta $IDIR/bin/.
 cp cdbyank $IDIR/bin/.
 popd
-rm $CBASE".tar.gz"
-rm -rf $CBASE
 
