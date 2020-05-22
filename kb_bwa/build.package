@@ -19,7 +19,7 @@ if (@ARGV)
 
 # http://downloads.sourceforge.net/project/bio-bwa/bwa-0.7.12.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbio-bwa%2Ffiles%2F&ts=1459276259&use_mirror=liquidtelecom
 
-my $vers = "0.7.15";
+my $vers = "0.7.17";
 
 my $mirror = "";
 if ($ENV{SF_MIRROR})
