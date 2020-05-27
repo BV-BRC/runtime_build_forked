@@ -33,9 +33,10 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
-my $url = 'https://downloads.sourceforge.net/project/boost/boost/1.66.0/boost_1_66_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.66.0%2Fboost_1_66_0.tar.gz%2Fdownload&ts=1581374367';
+my $url = 'https://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.59.0%2Fboost_1_59_0.tar.gz%2Fdownload&ts=1590611264';
+#my $url = 'https://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.59.0%2Fboost_1_59.tar.gz%2Fdownload&ts=1581374367';
 my $tar = "boost.tar.gz";
-my $dir = "boost_1_66_0";
+my $dir = "boost_1_59_0";
 run("curl", "-o", $tar, "-L", $url);
 run("tar", "xzfp", $tar);
 
