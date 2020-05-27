@@ -1,10 +1,10 @@
+biopython==1.76
 oauth2
 setuptools
 MySQL-python
 SQLAlchemy
 python-novaclient
 numpy
-biopython
 matplotlib
 sphinx
 tornado
