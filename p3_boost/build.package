@@ -25,23 +25,34 @@ if (@ARGV)
     $top_dest = shift;
 }
 
+my $vers = "1.73.0";
+(my $versu = $vers) =~ s/\./_/g;
+
 my $dest = $top_dest;
-$dest .= "/" . $opt->subdir if $opt->subdir;
+$dest .= "/boost-$vers";
+
+my $build_tools = $top_dest . "/" . $opt->subdir;
 
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-$ENV{PATH} = "$dest/bin:$ENV{PATH}";
-my $dir = download_tool("https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2");
+$ENV{PATH} = "$dest/bin:$build_tools/bin:$ENV{PATH}";
+system("printenv|sort");
+my $dir = download_tool("https://dl.bintray.com/boostorg/release/$vers/source/boost_$versu.tar.bz2");
+#my $dir = download_tool("https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2");
 #my $dir = download_tool("http://downloads.sourceforge.net/project/boost/boost/1.69.0/boost_1_69_0.tar.bz2");
 $dir = abs_path($dir);
 do_chdir($dir);
 do_chdir("tools/build");
 run("./bootstrap.sh");
+$ENV{LD_LIBRARY_PATH} = "$build_tools/lib:$build_tools/lib64";
 run("./b2", "install", "--prefix=$dest");
 do_chdir($dir);
 run("b2", "-j", 6, "toolset=gcc", "stage");
 run("b2", "toolset=gcc", "--prefix=$dest", "install");
+
+unlink("$top_dest/boost-latest");
+symlink("boost-$vers", "$top_dest/boost-latest");
 
 sub download_tool
 {
