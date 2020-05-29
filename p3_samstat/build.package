@@ -25,7 +25,7 @@ my $location = "https://sourceforge.net/projects/samstat/files/samstat-$ver.tar.
 my $file = "samstat-$ver.tar.gz";
 my $dir= "samstat-$ver";
 my $url = $location;
-run("curl", "-o", $file, "-L", $url);
+run("curl", "--retry", 10, "-o", $file, "-L", $url);
 
 system("rm", "-rf", $dir);
 run("tar",  "xvfz",  $file);
