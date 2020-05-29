@@ -19,8 +19,9 @@ if (@ARGV)
 
 run("curl", "-O", "-L", "http://www.microbesonline.org/fasttree/FastTree.c");
 run("gcc -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm");
+run("gcc -O3 -DUSE_DOUBLE -finline-functions -funroll-loops -Wall -o FastTree.double FastTree.c -lm");
 
-for my $prog (qw(FastTree))
+for my $prog (qw(FastTree FastTree.double))
 {
     run("/bin/cp", $prog, "$dest/bin/$prog");
 }
