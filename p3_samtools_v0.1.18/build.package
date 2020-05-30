@@ -85,7 +85,7 @@ sub download_tool
 
     if (! -s $file)
     {
-	run("curl", "-o", $file, "-L", $url);
+	run("curl", "--retry", 10, "-o", $file, "-L", $url);
     }
 
     my @dirs_before = grep { -d $_ } <*>;
