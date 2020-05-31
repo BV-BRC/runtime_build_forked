@@ -21,7 +21,7 @@ dst=$target/data
 # wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
 # unzip snpEff_latest_core.zip
 
-curl -O -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_0_core.zip
+curl -v --retry 10 -O -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_0_core.zip
 rm -rf snpEff
 unzip snpEff_v4_0_core.zip
 
