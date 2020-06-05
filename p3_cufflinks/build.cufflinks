@@ -19,10 +19,14 @@ if (@ARGV)
 
 my $samtools = "$dest/samtools-1.9";
 
+#
+# Cufflinks needs the older (1.59) Boost that is installed in $build_tools.
+#
+my $boost = $build_tools;
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 $ENV{CFLAGS} = "-I$dest/include";
-$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -Wl,-rpath,$samtools/lib -lrt";
+$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -Wl,-rpath,$samtools/lib -Wl,-rpath,$boost/lib -lrt";
 
 -d $dest || mkdir $dest;
 
@@ -44,7 +48,7 @@ chdir($cuff_dir) || die "cannot chdir $cuff_dir: $!";
 run("./autogen.sh");
 run("./configure", "--with-bam=$samtools", "--prefix=$dest", 
 	#"--with-boost-thread=$build_tools/lib/libboost_thread-mt.so", 
-	"--with-boost=$build_tools", "--with-boost-libdir=$build_tools/lib");
+	"--with-boost=$boost", "--with-boost-libdir=$boost/lib");
 run("make", @parallel);
 run("make", "install");
 
