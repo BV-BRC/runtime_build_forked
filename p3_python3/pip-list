@@ -12,3 +12,4 @@ sphinxcontrib-newsfeed
 sphinxcontrib-spelling
 sphinxcontrib-websupport
 matplotlib
+biopython
