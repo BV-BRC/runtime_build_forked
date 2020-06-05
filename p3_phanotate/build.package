@@ -18,6 +18,7 @@ system ("mkdir", "-p", $dest) unless -e $dest;
 run("$dest/bin/pip3", "install", "phanotate");
 unlink("$dest/bin/phanotate");
 symlink("$dest/bin/phanotate.py", "$dest/bin/phanotate");
+# 
 # my $url = "https://github.com/deprekate/PHANOTATE.git";
 # 
 # my $dir = "PHANOTATE";
@@ -26,6 +27,7 @@ symlink("$dest/bin/phanotate.py", "$dest/bin/phanotate");
 # run("git", "clone", "--recursive", $url, $dir);
 # 
 # chdir $dir or die "could not chdir $dir: $!";
+# run("git", "checkout", "cacd67a63c0efafd2f38c658d5abb2422720334f");
 # run("make");
 # 
 # chdir($cwd);
