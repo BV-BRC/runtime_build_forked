@@ -37,7 +37,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 my $dir = $module;
 
 run("rm", "-rf", $dir);
-run("git", "clone", "https://github.com/FelixKrueger/TrimGalore", $dir);
+#run("git", "clone", "https://github.com/FelixKrueger/TrimGalore", $dir);
+run("git", "clone", "https://github.com/aswarren/TrimGalore", $dir);
 
 chdir($dir) or die "cannot chdir $dir: $!";
 run("git", "checkout", $tag) if $tag;
