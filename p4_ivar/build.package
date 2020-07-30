@@ -1,0 +1,78 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Can't find $p3\n";
+    }
+}
+
+my $vers = "1.2.2";
+
+my $app_dest = "$dest/ivar-$vers";
+make_path($app_dest);
+
+my $build_tools = $ENV{BUILD_TOOLS} //  "$p3/build-tools";
+$ENV{PATH} = "$build_tools/bin:$p3/bin:$ENV{PATH}";
+
+my $rpath = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -Wl,-rpath,$app_dest/lib";
+
+my $htslib = "https://github.com/samtools/htslib/releases/download/1.10.2/htslib-1.10.2.tar.bz2";
+run("curl", "-O", "-L", $htslib);
+system("rm", "-rf", "htslib-1.10.2");
+
+run("tar", "xjfp", "htslib-1.10.2.tar.bz2");
+
+chdir("htslib-1.10.2");
+run("./configure", "--prefix", $app_dest);
+run("make", "-j12");
+run("make", "install");
+
+chdir("..");
+
+my $dir = "ivar";
+system("rm", "-rf", $dir);
+my $url = "https://github.com/andersen-lab/ivar.git";
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "cannot chdir $dir: $!";
+run("git", "checkout", "v$vers");
+
+run("./autogen.sh");
+run("./configure", "--with-hts=$app_dest", "--prefix=$app_dest", "LDFLAGS=$rpath");
+run("make", "-j12");
+
+run("make", "install");
+
+unlink("$dest/bin/ivar");
+symlink("$app_dest/bin/ivar", "$dest/bin/ivar");
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
