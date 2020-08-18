@@ -15,17 +15,25 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-$ENV{PATH} = "$dest/build-tools/bin:$ENV{PATH}";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
+
+$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+$ENV{CC} = "$build_tools/bin/gcc";
+$ENV{CXX} = "$build_tools/bin/g++";
+$ENV{LDFLAGS} = "-lrt -Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
 
 # https://nodejs.org/dist/v6.9.1/node-v6.9.1.tar.gz
 
 my $ver6 = "v6.17.1";
 my $ver8 = "v8.16.2";
+my $ver12 = "v12.18.3";
 
+#chdir $cwd;
+#build($ver6);
+#chdir $cwd;
+#build($ver8);
 chdir $cwd;
-build($ver6);
-chdir $cwd;
-build($ver8);
+build($ver12);
 
 sub build
 {
@@ -44,14 +52,15 @@ sub build
     }
 
     system("rm", "-rf", $dir);
-    run("tar",  "xvfz",  $file);
+    run("tar",  "xfz",  $file);
 
     chdir $dir or die "could not chdir $dir: $!";
 
     my $node_dest = "$dest/node-$ver";
 
-    run("./configure", "--prefix", $node_dest, "--partly-static");
-    run("make", "-j", "24");
+    run("./configure", "--prefix", $node_dest);
+    #run("./configure", "--prefix", $node_dest, "--partly-static");
+    run("make", "-j", "20");
     run("make", "install");
 
     for my $bin (<$node_dest/bin/*>)
