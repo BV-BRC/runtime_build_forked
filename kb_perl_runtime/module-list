@@ -204,3 +204,4 @@ Plack::Middleware::Access
 Plack::Middleware::ReverseProxy
 DBIx::Class
 Text::Table::Tiny
+HTML::TableContentParser
