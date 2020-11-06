@@ -38,6 +38,12 @@ run("tar",  "xvfz",  "$dir.tar.gz");
 
 chdir $dir or die "could not chdir $dir: $!";
 
+#
+# patch sequence lengths
+#
+
+run("sed", "-i", "-e", "s/NAMELEN 64/NAMELEN 500/", "-e", "s/DESCLEN 500/DESCLEN 1000/", "squid.h");
+
 my @make_opts = ("PERLDIR=$dest/bin", "HOME=$app_path");
 
 run("make", @make_opts);
