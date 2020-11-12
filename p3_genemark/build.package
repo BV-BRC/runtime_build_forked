@@ -1,0 +1,46 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+
+if (@ARGV != 2)
+{
+    die "Usage: $0 [dest] tarfile keyfile\n";
+}
+
+my $tar = shift;
+my $key = shift;
+
+make_path("$dest/bin");
+
+my $app_path = "$dest/genemark";
+make_path($app_path);
+
+my $dir = "genemark_suite_linux_64";
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  $tar);
+
+run("rsync", "-arv", $dir, $app_path);
+
+run("zcat $key > $app_path/$dir/gmsuite/.gm_key");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
