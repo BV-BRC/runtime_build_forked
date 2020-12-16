@@ -1,0 +1,77 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Copy qw(copy);
+use Cwd qw(getcwd abs_path);
+use File::Path qw(make_path);
+
+my @parallel = ("-j", 4);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $vers = "1.34";
+my $repo = "https://github.com/BV-BRC/vipr_mat_peptide.git";
+my $commit = $vers;
+
+my $app_dest = "$dest/vipr_mat_peptide-$vers";
+
+run("rm", "-rf", "vipr_mat_peptide");
+run("git", "clone", $repo);
+do_chdir("vipr_mat_peptide");
+run("git", "checkout", $commit);
+
+make_path($app_dest);
+
+for my $b (glob("*.pl"))
+{
+    my $f = basename($b, ".pl");
+    open(D, ">", "$app_dest/$f") or die "Cannot write $app_dest/$f: $!";
+    print D "#!$dest/bin/perl\n";
+    open(B, "<", $b) or die "Cannot open $b: $!";
+    while (<B>)
+    {
+
+	s/(use lib.*prog.*)/# $1/;
+	print D $_;
+    }
+    close(D);
+    close(B);
+    chmod(0755, "$app_dest/$f") or die "chmod $app_dest/$f failed: $!";
+}
+
+run("rsync", "-arv", glob("*.pm"), glob("*.gbk"), glob("*.txt"), "refseq", "$app_dest");
+
+unlink("$dest/bin/vipr_mat_peptide");
+symlink("$app_dest/vipr_mat_peptide", "$dest/bin/vipr_mat_peptide") or die "Symlink $app_dest/vipr_mat_peptide $dest/bin/vipr_mat_peptide failed: $!";
+
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
