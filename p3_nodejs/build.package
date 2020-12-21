@@ -26,7 +26,7 @@ $ENV{LDFLAGS} = "-lrt -Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib"
 
 my $ver6 = "v6.17.1";
 my $ver8 = "v8.16.2";
-my $ver12 = "v12.18.3";
+my $ver12 = "v12.20.0";
 
 #chdir $cwd;
 #build($ver6);
@@ -58,6 +58,7 @@ sub build
 
     my $node_dest = "$dest/node-$ver";
 
+    local $ENV{LD_LIBRARY_PATH} = "$build_tools/lib64";
     run("./configure", "--prefix", $node_dest);
     #run("./configure", "--prefix", $node_dest, "--partly-static");
     run("make", "-j", "20");
