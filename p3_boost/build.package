@@ -14,6 +14,7 @@ my $cwd = getcwd();
 use Getopt::Long::Descriptive;
 
 my($opt, $usage) = describe_options("%c %o [target]",
+				    ["valgrind", "Install with valgrind support"],
 				    ["subdir=s", "Install into this subdirectory of the target", { default => "build-tools" }],
 				    ["help|h", "Show this usage message"]);
 print($usage->text), exit if $opt->help;
@@ -30,6 +31,13 @@ my $vers = "1.73.0";
 
 my $dest = $top_dest;
 $dest .= "/boost-$vers";
+
+my @opts;
+if ($opt->valgrind)
+{
+    $dest .= "-valgrind";
+    push(@opts, "valgrind=on");
+}
 
 my $build_tools = $top_dest . "/" . $opt->subdir;
 
@@ -48,8 +56,10 @@ run("./bootstrap.sh");
 $ENV{LD_LIBRARY_PATH} = "$build_tools/lib:$build_tools/lib64";
 run("./b2", "install", "--prefix=$dest");
 do_chdir($dir);
-run("b2", "-j", 6, "toolset=gcc", "stage");
-run("b2", "toolset=gcc", "--prefix=$dest", "install");
+
+
+run("b2", "-j", 6, @opts, "toolset=gcc", "stage");
+run("b2", @opts, "toolset=gcc", "--prefix=$dest", "install");
 
 unlink("$top_dest/boost-latest");
 symlink("boost-$vers", "$top_dest/boost-latest");

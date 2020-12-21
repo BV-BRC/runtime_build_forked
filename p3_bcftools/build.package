@@ -15,9 +15,9 @@ if (@ARGV)
     $top_dest = shift;
 }
 
-my $dest = $top_dest;
-
 my $tag = "1.9";
+
+my $dest = $top_dest;
 
 my $build_tools = "$dest/build-tools";
 

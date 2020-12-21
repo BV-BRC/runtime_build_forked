@@ -13,3 +13,4 @@ sphinxcontrib-spelling
 sphinxcontrib-websupport
 matplotlib
 biopython
+pandas

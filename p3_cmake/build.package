@@ -19,11 +19,11 @@ if (@ARGV)
 
 # http://downloads.sourceforge.net/project/bio-bwa/bwa-0.7.12.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbio-bwa%2Ffiles%2F&ts=1459276259&use_mirror=liquidtelecom
 
-my $vers = "3.6.2";
+my $vers = "3.19.2";
 
 my $package_dir = "cmake-$vers";
 my $package_tar = "cmake-$vers.tar.gz";
-my $package_url = "https://cmake.org/files/v3.6/cmake-$vers.tar.gz";
+my $package_url = "https://cmake.org/files/v3.19/cmake-$vers.tar.gz";
 
 if (! -s $package_tar)
 {
@@ -34,7 +34,7 @@ run("rm", "-rf", $package_dir);
 run("tar", "xzfp", $package_tar);
 chdir($package_dir) or die "cannot chdir $package_dir: $!";
 run("./bootstrap", "--prefix=$dest");
-run("make");
+run("make", "-j12");
 run("make", "install");
 
 sub run
