@@ -7,7 +7,7 @@
 ## rpm-build-dep gmp-devel
 ## rpm-build-dep libmpc-devel
 ## rpm-dep bzip2
+p3_nodejs	./build.package
 p3_boost	./build.package --subdir build-tools
 p3_tbb	./build.tbb
-p3_nodejs	./build.package
 p3_valgrind	./build.package
