@@ -26,7 +26,7 @@ if (! -d $p3)
 	die "Cannot find $p3\n";
     }
 }
-my $build_tools = "$p3/gcc-9.3.0";
+my $build_tools = "$p3/build-tools";
 
 $ENV{PATH} = "$build_tools/bin:$p3/bin:$ENV{PATH}";
 $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
@@ -36,7 +36,7 @@ $ENV{CXX} = "$build_tools/bin/g++";
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
 
-my $vers = "3.16.0";
+my $vers = "3.16.1";
 my $dir = "valgrind-$vers";
 my $url = "https://sourceware.org/pub/valgrind/valgrind-$vers.tar.bz2";
 
