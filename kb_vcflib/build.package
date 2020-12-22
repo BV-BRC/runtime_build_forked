@@ -25,13 +25,20 @@ else
 
 $ENV{CC} = "$build_tools/bin/gcc";
 $ENV{CXX} = "$build_tools/bin/g++";
+$ENV{CPPFLAGS} = "-I$dest/include";
 
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 system("rm", "-rf", "vcflib");
-run("git", "clone", "--recursive", "https://github.com/vcflib/vcflib.git");
+run("git", "clone", "https://github.com/vcflib/vcflib.git");
+
 chdir "vcflib" or die "cannot chdir vcflib: $!";
+run("git", "checkout", "cbb6c119c35094a7058ad51e6e0bc460aa4b7732");
+run("git", "submodule", "update", "--init", "--recursive");
+#run("mkdir", "-p", "build");
+#chdir "build" or die "cannot chdir build: $!";
+#run("cmake", "..");
 run("make -j 6");
 run("cp -v bin/* $dest/bin/.");
 
