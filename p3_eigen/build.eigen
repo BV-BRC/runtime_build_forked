@@ -26,7 +26,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 my $vers = "3.2.5";
 my $dir = "eigen-3.2.5";
 my $tarfile = "$vers.tar.gz";
-my $url = "http://bitbucket.org/eigen/eigen/get/$tarfile";
+#my $url = "http://bitbucket.org/eigen/eigen/get/$tarfile";
+my $url = "https://gitlab.com/libeigen/eigen/-/archive/$vers/eigen-$vers.tar.gz";
 
 run("curl", "-L", "-o", $tarfile, $url);
 system("rm", "-rf", $dir);
