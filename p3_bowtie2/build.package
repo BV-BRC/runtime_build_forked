@@ -13,13 +13,15 @@ if (@ARGV)
     $dest = shift;
 }
 
-my $gcc = "/disks/patric-common/runtime/gcc-4.9.4";
+#my $gcc = "/disks/patric-common/runtime/gcc-4.9.4";
+my $gcc = "$dest/build-tools";
 $ENV{PATH} = "$gcc/bin:$ENV{PATH}";
 print "using $dest as installation directory\n";
 
 my $url = "https://github.com/BenLangmead/bowtie2";
 #my $tag = "v2.3.4.3";
-my $tag = "v2.2.9";
+#my $tag = "v2.2.9";
+my $tag = "v2.4.2";
 
 my $app_dest = "$dest/bowtie2-$tag";
 make_path($app_dest);
@@ -35,7 +37,7 @@ run("git", "checkout", $tag);
 my $rp_flags = "-Wl,-rpath,$gcc/lib64 -Wl,-rpath,$gcc/lib";
 run("make", "LDFLAGS=$rp_flags", "EXTRA_FLAGS=$rp_flags");
 
-run("make", "prefix=$app_dest", "install");
+run("make", "bindir=$app_dest/bin", "prefix=$app_dest", "install");
 
 sub run
 {

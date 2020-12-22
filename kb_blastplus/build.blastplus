@@ -26,7 +26,7 @@ else
 	warn "No build tools in $build_tools\n";
 }
 
-my $vers = "2.9.0";
+my $vers = "2.11.0";
 my $tar = "ncbi-blast-${vers}+-src.tar.gz";
 my $dir = "ncbi-blast-${vers}+-src";
 my $url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$vers/$tar";

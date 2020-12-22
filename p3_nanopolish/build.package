@@ -24,7 +24,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
 
 my $repo = "https://github.com/jts/nanopolish";
-my $commit = "v0.13.2";
+my $commit = "ab9722b59b487fa9a3d2184fb3dd1b93002d2b6c";
+#my $commit = "v0.13.2";
 
 run("rm", "-rf", "nanopolish");
 run("git", "clone", "--recursive", $repo);
