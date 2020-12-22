@@ -52,3 +52,4 @@ p3_exonerate	./build.package
 p3_vigor4	./build.package
 p3_nanopolish	./build.package
 p3_stringtie	./build.package
+p3_phispy	./build.package

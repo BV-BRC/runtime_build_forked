@@ -8,7 +8,7 @@ kb_glimmer	./build.glimmer
 kb_elph	./build.elph
 kb_search_for_rnas	./build.search_for_rnas
 kb_circonspect	./build.circonspect
-kb_phispy_runtime	./build.phispy
+#kb_phispy_runtime	./build.phispy
 kb_prinseq_runtime	./build.prinseq
 p3_close_kmers	./build.close_kmers
 p3_seedtk	./build.package
