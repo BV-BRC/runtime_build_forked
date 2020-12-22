@@ -9,7 +9,6 @@ p3_eigen	./build.eigen
 p3_cufflinks	./build.cufflinks
 p3_plasmidfinder	./build.package
 p3_kraken2	./build.package
-p3_tnseq_transit	./build.package
 p3_kma	./build.package
 p3_krona	./build.package
 p3_bowtie2	./build.package
