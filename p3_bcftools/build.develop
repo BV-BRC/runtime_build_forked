@@ -36,6 +36,9 @@ run("rm", "-rf", $dir, "htslib");
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
 run("git", "clone", "https://github.com/samtools/htslib.git");
+chdir("htslib");
+run("git", "checkout", "481bd2226195d3d6f9bc79f9b80d9750b2b43b76");
+chdir("..");
 run("git", "clone", "https://github.com/samtools/bcftools.git");
 chdir($dir) or die "Cannot chdir $dir: $!";
 #
