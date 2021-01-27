@@ -38,7 +38,10 @@ print "using $dest as installation directory path=$ENV{PATH}\n";
 run("git", "clone", "https://github.com/samtools/htslib.git");
 run("git", "clone", "https://github.com/samtools/bcftools.git");
 chdir($dir) or die "Cannot chdir $dir: $!";
-run("git", "checkout", "develop");
+#
+# develop broke in our build between jan 27 and jan 18.
+run("git", "checkout", "d31436da69714cf432a850597d9ece9076fbed9e");
+#run("git", "checkout", "develop");
 
 my $tag = `git describe --tags`;
 chomp $tag;
