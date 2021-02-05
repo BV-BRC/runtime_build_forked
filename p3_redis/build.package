@@ -14,11 +14,21 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
+if (-d $build_tools)
+{
+    $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+
+    $ENV{CC} = "$build_tools/bin/gcc";
+    $ENV{CXX} = "$build_tools/bin/g++";
+}
+
+
 #$ENV{PATH} = "$dest/build-tools/bin:$ENV{PATH}";
 
 # http://download.redis.io/releases/redis-3.2.5.tar.gz
 
-my $ver = "4.0.2";
+my $ver = "6.0.9";
 my $location = "http://download.redis.io/releases";
 my $file = "redis-$ver.tar.gz";
 my $dir= "redis-$ver";
