@@ -30,9 +30,10 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
-my $tag = "v0.9.24";
+my $tag = "v2.0.4";
+#my $tag = "v0.9.24";
 
-my $build_tools = "$dest/build-tools";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 
 
 # this version will not build with the latest compiler.
