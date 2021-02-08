@@ -17,7 +17,7 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $vers="3.2";
+my $vers="3.3.2";
 my $tar = "hmmer-$vers.tar.gz";
 my $dir = "hmmer-$vers";
 my $url = "http://eddylab.org/software/hmmer/hmmer-$vers.tar.gz";
@@ -26,8 +26,9 @@ run("rm", "-rf", $dir);
 run("curl", "-O", "-L", $url);
 run("tar", "xpfvz", $tar);
 chdir($dir) or die "cannot chdir $dir: $!";;
-run("./configure");
+run("./configure", "--prefix", $dest);
 run("make", "-j", $parallel);
+run("make", "install");
 
 sub run
 {
