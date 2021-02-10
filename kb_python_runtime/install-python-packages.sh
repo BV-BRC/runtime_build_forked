@@ -65,9 +65,17 @@ else
 	easy_install="easy_install"
 fi
 
+
 if  mysql_config --version >/dev/null 2>/dev/null ; then
 	have_mysql=1
 else
+	have_mysql=0
+fi
+
+# 
+# Mysql build doesn't work on Centos*
+#
+if grep -s 'release 8' /etc/centos-release > /dev/null; then
 	have_mysql=0
 fi
 
