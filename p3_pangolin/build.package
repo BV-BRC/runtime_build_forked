@@ -1,0 +1,66 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Cannot find $p3\n";
+    }
+}
+my $build_tools = "$p3/build-tools";
+
+my $app_dest = "$dest/pangolin";
+my $vers = "v2.2.2";
+
+system("rm", "-rf", $app_dest);
+system("rm", "-rf", "pangolin");
+
+#
+# For medaka we need to rely on the conda configuration that was set up by p3_conda
+#
+
+run("git", "clone", "https://github.com/cov-lineages/pangolin");
+chdir "pangolin";
+run("git", "checkout", $vers);
+
+run(". $dest/conda/bin/activate; conda env create -p $app_dest -f ./environment.yml");
+$ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
+run("pip", "install", ".");
+unlink("$dest/bin/pangolin");
+open(P, ">", "$dest/bin/pangolin") or die "Cannot write $dest/bin/pangolin: $!";
+print P <<END;
+#!/bin/sh
+export PATH=$app_dest/bin:\$PATH
+$app_dest/bin/pangolin "\$@"
+END
+
+run("chmod", "+x", "$dest/bin/pangolin");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
