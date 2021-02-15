@@ -19,13 +19,6 @@ my $parallel = "-j12";
 my $here = abs_path(".");
 my $dest = $ENV{TARGET} ? $ENV{TARGET} : "/kb/runtime";
 
-my $os_rel = `cat /etc/redhat-release`;
-if ($os_rel =~ /CentOS Linux release 8/)
-{
-    warn "Skipping openssl build on centos 8";
-    exit 0;
-}
-
 if (@ARGV)
 {
     $dest = shift;

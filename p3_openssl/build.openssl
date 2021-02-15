@@ -15,6 +15,15 @@ if (@ARGV)
     print STDERR "Overriding destination to $dest\n";
 }
 
+
+my $os_rel = `cat /etc/redhat-release`;
+if ($os_rel =~ /CentOS Linux release 8/)
+{
+    warn "Skipping openssl build on centos 8";
+    exit 0;
+}
+
+
 -d $dest || mkdir $dest;
 
 my $vers = "1.0.2u";
