@@ -36,6 +36,8 @@ chdir($kmc_dir);
 system("printenv | sort");
 run("sed", "-i.bak", "-e", "s/-static//g", "makefile");
 run("sed", "-i.bak2", "-e", "/CLINK\\s*=/s:\$: -Wl,-rpath -Wl,$build_tools/lib64 -Wl,-rpath -Wl,$build_tools/lib:", "makefile");
+run("sed", "-i.bak3", "-e", "2adebug:\\n	printenv", "makefile");
+run("make", "debug");
 run("make", @parallel);
 run("ar", "r", "$dest/lib/libkmc_api.a", <kmc_api/*.o>);
 run("cp", "-r", "kmc_api", "$dest/include");
