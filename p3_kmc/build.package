@@ -33,6 +33,7 @@ chdir($kmc_dir);
 #
 # don't build with -static.
 #
+system("printenv | sort");
 run("sed", "-i.bak", "-e", "s/-static//g", "makefile");
 run("sed", "-i.bak2", "-e", "/CLINK\\s*=/s:\$: -Wl,-rpath -Wl,$build_tools/lib64 -Wl,-rpath -Wl,$build_tools/lib:", "makefile");
 run("make", @parallel);
