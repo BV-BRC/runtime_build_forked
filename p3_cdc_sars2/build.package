@@ -42,7 +42,7 @@ for my $pl (<protocols/CDC-Comprehensive/scripts/*pl>)
     open(T, ">", "$dest/bin/$b") or die "Cannot write $dest/bin/$b: $!";
     $_ = <F>;
     print T "#!$dest/bin/perl\n";
-    print T qq(\$ENV{PATH} = "$dest/samtools-1.9/bin:$dest/bcftools-1.9/bin:\$ENV{PATH}";\n);
+    print T qq(\$ENV{PATH} = "$dest/samtools-1.11/bin:$dest/bcftools-1.9/bin:\$ENV{PATH}";\n);
     print T $_ while (<F>);
     close(T);
     close(F);

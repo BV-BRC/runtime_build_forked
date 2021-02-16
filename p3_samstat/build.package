@@ -15,7 +15,7 @@ print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 # https://sourceforge.net/projects/samstat/files/samstat-1.5.1.tar.gz/download
-my $sam = "$dest/samtools-1.9";
+my $sam = "$dest/samtools-1.11";
 $ENV{CPPFLAGS} = "-I$sam/include";
 $ENV{LDFLAGS} = "-L$sam/lib";
 $ENV{PATH} = "$sam/bin:$ENV{PATH}";
