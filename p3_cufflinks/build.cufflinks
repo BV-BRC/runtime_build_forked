@@ -17,7 +17,7 @@ if (@ARGV)
     print STDERR "Overriding destination to $dest\n";
 }
 
-my $samtools = "$dest/samtools-1.9";
+my $samtools = "$dest/samtools-1.11";
 
 #
 # Cufflinks needs the older (1.59) Boost that is installed in $build_tools.
