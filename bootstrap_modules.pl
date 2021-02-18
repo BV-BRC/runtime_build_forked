@@ -45,8 +45,10 @@ my $install_build_dependencies;
 
 my($help, $dest, $module_dat);
 my @added_path;
+my $fail_ok = 0;
 GetOptions('h'    => \$help,
 	   'help' => \$help,
+	   'fail-ok' => \$fail_ok,
 	   'd=s'    => \$dest,
 	   'm=s'    => \$module_dat,
 	   "build-rpm" => \$build_rpm,
@@ -115,6 +117,8 @@ my @modules;
 my %modules;
 my %attribs;
 my %meta;
+
+my @fails;
 
 while (<DAT>)
 {
@@ -236,11 +240,27 @@ for my $mod (@modules)
 	}
 	else
 	{
-	    die "Command $to_run failed with nonzero status $?\n";
+	    if ($fail_ok)
+	    {
+		my $msg = "Command $to_run failed with nonzero status $?\n";
+		warn $msg;
+		push(@fails, $msg);
+	    }
+	    else
+	    {
+		die "Command $to_run failed with nonzero status $?\n";
+	    }
 	}
     }
     system("touch", "$log_dir/built.$tag");
     close(LOG);
+}
+
+if (@fails)
+{
+    warn scalar(@fails) . " failures found:\n";
+    warn $_ foreach @fails;
+    die "Build failed";
 }
 
 system("git describe --always --tags > $dest/VERSION") == 0 or die "could not write VERSION file to $dest";
