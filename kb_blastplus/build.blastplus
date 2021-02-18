@@ -16,10 +16,10 @@ if (@ARGV)
 }
 
 
-my $build_tools = "$dest/build-tools/bin";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 if (-d $build_tools)
 {
-	$ENV{PATH} = "$build_tools:$ENV{PATH}";
+	$ENV{PATH} = "$build_tools/bin:$ENV{PATH}"
 }
 else
 {
