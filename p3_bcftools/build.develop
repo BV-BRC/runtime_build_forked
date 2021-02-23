@@ -43,8 +43,8 @@ run("git", "clone", "https://github.com/samtools/bcftools.git");
 chdir($dir) or die "Cannot chdir $dir: $!";
 #
 # develop broke in our build between jan 27 and jan 18.
-run("git", "checkout", "8a744dd8591946f6ae013fe8d18b6f7101f06da3");
-#run("git", "checkout", "develop");
+#run("git", "checkout", "8a744dd8591946f6ae013fe8d18b6f7101f06da3");
+run("git", "checkout", "develop");
 
 my $tag = `git describe --tags`;
 chomp $tag;
