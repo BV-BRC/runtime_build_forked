@@ -37,6 +37,7 @@ p3_figtree	./build.package
 p3_mosaik	./build.package
 p3_mcl	./build.package
 p3_raxml	./build.package
+p3_phyml	./build.package
 p3_capnproto	./build.package
 p3_mash	./build.package
 p3_muscle_36	./build.package
