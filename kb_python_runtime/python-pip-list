@@ -24,7 +24,7 @@ certifi
 chardet
 oauthlib
 pyasn1
-rsa
+rsa==4.5
 pyyaml
 jsonschema
 poster
