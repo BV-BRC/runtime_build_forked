@@ -51,7 +51,9 @@ fi
 
 #curl -k -L https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | $python
 
-curl -k -L https://bootstrap.pypa.io/2.7/get-pip.py | $python
+# curl -k -L https://bootstrap.pypa.io/2.7/get-pip.py | $python
+
+curl -k -L https://bootstrap.pypa.io/pip/2.7/get-pip.py | $python
 
 if [ -x $target/bin/pip ] ; then
 	pip="$target/bin/pip"
