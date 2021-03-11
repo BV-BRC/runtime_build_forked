@@ -38,7 +38,8 @@ $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 $ENV{AS} = "$dest/bin/as";
 $ENV{AS_FOR_TARGET} = "$dest/bin/as";
 
-my $vers = "9.3.0";
+my $vers = "10.2.0";
+#my $vers = "9.3.0";
 #my $vers = "4.9.4";
 $dir = download_tool("http://mirror.team-cymru.org/gnu/gcc/gcc-$vers/gcc-$vers.tar.gz", $dest);
 mkdir("gcc-build") or die "mkdir gcc-build failed: $!";
