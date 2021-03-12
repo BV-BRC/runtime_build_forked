@@ -25,7 +25,7 @@ my $samtools = "$dest/samtools-1.11";
 my $boost = $build_tools;
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
-$ENV{CFLAGS} = "-I$dest/include";
+$ENV{CFLAGS} = "-I$dest/include -D__STDC_LIMIT_MACROS -fcommon";
 $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -Wl,-rpath,$samtools/lib -Wl,-rpath,$boost/lib -lrt";
 
 -d $dest || mkdir $dest;
