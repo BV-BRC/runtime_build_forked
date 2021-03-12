@@ -1,4 +1,6 @@
-# use system cmake3 (from epel) # p3_cmake	./build.package
+# use system cmake3 (from epel) (no, need ours since epel not new enough in CentOS6)
+p3_cmake	./build.package
+p3_autoconf	./build.package
 kb_bwa	./build.package
 p3_samtools	./build.package
 p3_samtools_v0.1.18	./build.package
