@@ -43,6 +43,8 @@ run("./configure", "--prefix", $app_dest);
 run("make", @parallel, "all", "all-htslib");
 run("make", @parallel, "install", "install-htslib");
 system("cp *.h $app_dest/include/bam/.");
+system("cp", "libbam.a", "$app_dest/lib");
+system("ranlib", "$app_dest/lib/libbam.a");
 
 sub download_tool
 {
