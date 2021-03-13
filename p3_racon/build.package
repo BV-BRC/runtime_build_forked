@@ -63,6 +63,9 @@ chdir($dir) or die "cannot chdir $dir: $!";
 run("git", "checkout", $tag) if $tag;
 run("git", "submodule", "update", "--init", "--recursive");
 
+run("sed", "-i", "-e", "/<exception>/a#include <stdexcept>", "vendor/spoa/src/alignment_engine.cpp");
+run("sed", "-i", "-e", "/<exception>/a#include <stdexcept>", "vendor/ClaraGenomicsAnalysis/3rdparty/spoa/src/alignment_engine.cpp");
+
 make_path("build");
 chdir("build") or die "cannot chdir build: $!";
 
