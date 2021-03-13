@@ -18,10 +18,10 @@ if (@ARGV)
 my $dest = $top_dest;
 
 my $cmake = "cmake";
-if (-x "/usr/bin/cmake3")
-{
-    $cmake = "/usr/bin/cmake3";
-}
+#if (-x "/usr/bin/cmake3")
+#{
+#    $cmake = "/usr/bin/cmake3";
+#}
 
 my $module = "racon";
 my $tag = "1.4.13";
@@ -43,6 +43,7 @@ $ENV{CC} = "$build_tools/bin/gcc";
 $ENV{CXX} = "$build_tools/bin/g++";
 
 print "using $dest as installation directory path=$ENV{PATH}\n";
+system("cmake", "--version");
 
 #my $app_dest = "$dest/$module";
 #$app_dest .= "-$tag" if $tag;
@@ -54,11 +55,13 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 my $dir = $module;
 
 run("rm", "-rf", $dir);
-run("git", "clone", "--recursive", "https://github.com/lbcb-sci/racon", $dir);
+#run("git", "clone", "--recursive", "https://github.com/lbcb-sci/racon", $dir);
+run("git", "clone", "https://github.com/lbcb-sci/racon", $dir);
 #run("git", "clone", "--recursive", "https://github.com/isovic/racon", $dir);
 
 chdir($dir) or die "cannot chdir $dir: $!";
 run("git", "checkout", $tag) if $tag;
+run("git", "submodule", "update", "--init", "--recursive");
 
 make_path("build");
 chdir("build") or die "cannot chdir build: $!";
