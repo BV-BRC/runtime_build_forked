@@ -22,6 +22,7 @@ $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 #$ENV{CFLAGS} = "-I$dest/include -D__STDC_LIMIT_MACROS -fcommon";
 $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$dest/lib -Wl,-rpath,$build_tools/lib -lrt";
 $ENV{LD_LIBRARY_PATH} = join(":", "$dest/lib", "$build_tools/lib64", "$build_tools/lib");
+$ENV{LD_RUN_PATH} = join(":", "$dest/lib", "$build_tools/lib64", "$build_tools/lib");
 
 -d $dest || mkdir $dest;
 
