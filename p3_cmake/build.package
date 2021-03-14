@@ -41,7 +41,10 @@ if (! -s $package_tar)
 run("rm", "-rf", $package_dir);
 run("tar", "xzfp", $package_tar);
 chdir($package_dir) or die "cannot chdir $package_dir: $!";
-run("./bootstrap", "--prefix=$dest", "--", "-DCMAKE_PREFIX_PATH=$dest");
+run("./bootstrap", "--prefix=$dest", 
+	"--",
+	"-DCMAKE_PREFIX_PATH=$dest",
+	"-DCMAKE_INSTALL_RPATH=$dest/lib");
 run("make", "-j12");
 run("make", "install");
 

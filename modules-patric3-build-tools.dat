@@ -7,11 +7,11 @@
 ## rpm-build-dep gmp-devel
 ## rpm-build-dep libmpc-devel
 ## rpm-dep bzip2
+# use system cmake3 (from epel) (no, need ours since epel not new enough in CentOS6)
+p3_cmake	./build.package
+p3_autoconf	./build.package
 p3_valgrind	./build.package
 p3_nodejs	./build.package
 p3_boost	./build.package --subdir build-tools
 p3_boost_1.59	./build.package --subdir build-tools
 p3_tbb	./build.tbb
-# use system cmake3 (from epel) (no, need ours since epel not new enough in CentOS6)
-p3_cmake	./build.package
-p3_autoconf	./build.package
