@@ -15,11 +15,11 @@ print($usage->text), exit if $opt->help;
 die($usage->text) if @ARGV > 1;
 
 my $cmake = "cmake";
-if (-x "/usr/bin/cmake3")
-{
-    $cmake = "/usr/bin/cmake3";
-}
-
+#if (-x "/usr/bin/cmake3")
+#{
+#    $cmake = "/usr/bin/cmake3";
+#}
+#
 my @parallel = ("-j", 8);
 
 my $top_dest = $ENV{TARGET} || "/kb/runtime";

@@ -4,7 +4,7 @@ use strict;
 
 use Carp;
 use File::Basename;
-use Cwd 'abs_path';
+use Cwd qw(getcwd abs_path);
 
 my $dest = $ENV{TARGET} || "/kb/runtime";
 my $parallel = 12;
@@ -14,6 +14,29 @@ if (@ARGV)
     $dest = shift;
     print STDERR "Overriding destination to $dest\n";
 }
+
+#
+# use src build.
+#
+#
+#
+
+my $vers = "3.19.6";
+my $base = "cmake-$vers-Linux-x86_64";
+my $url = "https://github.com/Kitware/CMake/releases/download/v$vers/cmake-$vers-Linux-x86_64.tar.gz";
+
+my $here = getcwd;
+run("curl", "-L", "-o", "$base.tar.gz", $url);
+chdir $dest;
+run("rm", "-rf", $base);
+run("tar", "xzfp", "$here/$base.tar.gz");
+chdir("$base/bin");
+for my $f (<*>)
+{
+    unlink("$dest/bin/$f");
+    symlink("$dest/$base/bin/$f", "$dest/bin/$f");
+}
+exit 0;
 
 my $build_tools = $ENV{BUILD_TOOLS} || "/disks/patric-common/runtime/gcc-4.9.3";
 
