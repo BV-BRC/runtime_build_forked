@@ -19,12 +19,10 @@ my $dest = $top_dest;
 
 my $module = "phyml";
 
-my $build_tools = "$dest/build-tools";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 
-#$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
-#$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
-$ENV{CFLAGS} = "-march=sandybridge";
-$ENV{LDFLAGS} = "-march=sandybridge";
+$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
 
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
@@ -47,6 +45,9 @@ run("git", "checkout", $tag) if $tag;
 
 run("sh", "./autogen.sh");
 run("./configure", "--prefix", $dest, "--disable-native");
+
+run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=sandybridge/", "Makefile");
+run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=sandybridge/", "src/Makefile");
 run("make", @parallel);
 run("make", "install");
 
