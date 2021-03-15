@@ -46,8 +46,8 @@ run("git", "checkout", $tag) if $tag;
 run("sh", "./autogen.sh");
 run("./configure", "--prefix", $dest, "--disable-native");
 
-run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=sandybridge/", "Makefile");
-run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=sandybridge/", "src/Makefile");
+run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=westmere/", "Makefile");
+run("sed", "-i", "-e", "/^CFLAGS/s/\$/ -march=westmere/", "src/Makefile");
 run("make", @parallel);
 run("make", "install");
 
