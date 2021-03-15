@@ -45,6 +45,7 @@ run("tar",  "xvfz",  $file);
 chdir $dir or die "could not chdir $dir: $!";
 run("make");
 run("make", "install", "PREFIX=$dest");
+run("$dest/bin/pip3", "install", "redis");
 
 sub run
 {
