@@ -26,15 +26,15 @@ $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$dest/lib -Wl,-rpath,$
 #
 
 my $vers = "v2.30.0";
-my $url = "https://github.com/arq5x/bedtools2"
+my $url = "https://github.com/arq5x/bedtools2";
 
 my $dir = "bedtools2";
 
 run("rm", "-rf", $dir);
-run("git", "clone", "-b", $vers, $dir);
+run("git", "clone", "-b", $vers, $url, $dir);
 
 chdir($dir);
-run("make");
+run("make", "-j", 8);
 
 sub run
 {
