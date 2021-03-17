@@ -1,0 +1,79 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my @parallel = ("-j", 4);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+$ENV{JAVA_HOME} = "/etc/alternatives/jre";
+
+my $repo = "https://github.com/JCVenterInstitute/VIGOR4";
+#my $commit = "831e8ba95664804d270a96dabe16052f97ce43c0";
+
+run("rm", "-rf", "VIGOR4");
+run("git", "clone", $repo);
+do_chdir("VIGOR4");
+#run("git", "checkout", $commit);
+
+run("mvn", "package");
+
+#
+# Find the packaged zip file, and unzip into the destination. We leave
+# the directory structure in place and symlink the executables. We'll put
+# the database in there too, and create the config file accordingly.
+#
+
+my ($zip) = <target/vigor*zip>;
+-f $zip or die "Zip file not found\n";
+
+my $path = basename($zip, ".zip");
+
+run("rm", "-rf", "$dest/$path");
+run("unzip", "-d", $dest, $zip);
+for my $exe (<$dest/$path/bin/*>)
+{
+    my $b = basename($exe);
+    unlink("$dest/bin/$b");
+    symlink($exe, "$dest/bin/$b");
+}
+run("git", "clone", "https://github.com/JCVenterInstitute/VIGOR_DB.git", "$dest/$path/VIGOR_DB");
+open(C, ">", "$dest/$path/config/vigor.ini") or die "Cannot write $dest/$path/config/vigor.ini: $!";
+print C <<END;
+reference_database_path=$dest/$path/VIGOR_DB/Reference_DBs
+temporary_directory=/tmp
+exonerate_path=$dest/bin/exonerate
+END
+
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
