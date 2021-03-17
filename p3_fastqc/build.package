@@ -1,0 +1,46 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 12;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $vers = "0.11.9";
+my $archive = "fastqc_v$vers.zip";
+my $url = "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/$archive";
+my $app_dest = "FastQC-$vers";
+
+my $here = getcwd;
+
+if (! -s $archive)
+{
+    run("curl", "--retry", 5, "-L", "-o", $archive, $url);
+}
+my $here = getcwd;
+run("rm", "-rf", "FastQC");
+run("unzip", $archive);
+run("rm", "-rf", "$dest/$app_dest");
+run("rsync", "-arv", "$here/FastQC/.", "$dest/$app_dest");
+run("chmod", "+x", "$dest/$app_dest/fastqc");
+for my $f ("fastqc")
+{
+    unlink("$dest/bin/$f");
+    symlink("../$app_dest/$f", "$dest/bin/$f");
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
