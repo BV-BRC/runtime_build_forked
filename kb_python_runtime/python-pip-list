@@ -55,7 +55,7 @@ cherrypy
 ipython
 pycolor
 requests_toolbelt
-pandas
+pandas==0.16
 sklearn
 yapsy
 treeinterpreter
