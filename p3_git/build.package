@@ -31,8 +31,8 @@ run("git", "checkout", $vers);
 #         $ make prefix=/usr all doc info ;# as yourself
 #                 # make prefix=/usr install install-doc install-html install-info ;# as root
 
-run("make", "prefix=$dest", "PERL_PATH=$dest/bin/perl", $parallel, "all");
-run("make", "prefix=$dest", "PERL_PATH=$dest/bin/perl", "doc");
+run("make", "prefix=$dest", "PERL_PATH=$dest/bin/perl", $parallel, "all", "doc");
+#run("make", "prefix=$dest", "PERL_PATH=$dest/bin/perl", "doc");
 run("make", "prefix=$dest", "PERL_PATH=$dest/bin/perl", "install", "install-doc");
 #run("make install");
 
