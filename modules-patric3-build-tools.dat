@@ -9,6 +9,7 @@
 ## rpm-dep bzip2
 # use system cmake3 (from epel) (no, need ours since epel not new enough in CentOS6)
 p3_cmake	./build.package
+p3_git	./build.package
 p3_autoconf	./build.package
 p3_valgrind	./build.package
 p3_nodejs	./build.package
