@@ -1,5 +1,6 @@
 p3_fastqc	./build.package
 p3_bedtools	./build.package
+p3_hisat	./build.package
 kb_bwa	./build.package
 p3_samtools	./build.package
 p3_samtools_v0.1.18	./build.package
