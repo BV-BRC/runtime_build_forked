@@ -17,6 +17,7 @@ print($usage->text), exit if $opt->help;
 die($usage->text) if @ARGV > 1;
 
 my @parallel = ("-j", 8);
+@parallel = ();
 
 my $top_dest = $ENV{TARGET} || "/kb/runtime";
 if (@ARGV)
