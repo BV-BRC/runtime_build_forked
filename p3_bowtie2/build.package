@@ -14,7 +14,7 @@ if (@ARGV)
 }
 
 #my $gcc = "/disks/patric-common/runtime/gcc-4.9.4";
-my $gcc = "$dest/build-tools";
+my $gcc = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 $ENV{PATH} = "$gcc/bin:$ENV{PATH}";
 print "using $dest as installation directory\n";
 
