@@ -49,7 +49,7 @@ run("../$dir/contrib/download_prerequisites");
 do_chdir($cwd);
 do_chdir("gcc-build");
 run("../$dir/configure", 
-	"--with-specs=%{shared:-Wl,-rpath -Wl,$dest/lib}%{!shared:-Wl,-rpath -Wl,$dest/lib}",
+	"--with-specs=%{shared:-Wl,-rpath -Wl,$dest/lib -Wl,-rpath -Wl,$dest/lib64}%{!shared:-Wl,-rpath -Wl,$dest/lib -Wl,-rpath -Wl,$dest/lib64}",
 	"--prefix", $dest, 
 	"--disable-multilib");
 run("make", "-j", 20);
