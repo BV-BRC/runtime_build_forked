@@ -28,6 +28,8 @@ if (@ARGV)
 my $dest = $top_dest;
 $dest .= "/" . $opt->subdir if $opt->subdir;
 
+my $build_tools = $dest;
+
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 system("gcc", "-v");
@@ -45,6 +47,9 @@ my $package_tar = "$app-$vers.tar.gz";
 my $package_url = "https://capnproto.org/$package_tar";
 
 my $dir = download_tool($package_url, $dest);
+
+$ENV{CXX} = "$build_tools/bin/g++";
+$ENV{CC} = "$build_tools/bin/gcc";
 $ENV{CXXFLAGS} = '-static-libstdc++';
 $ENV{LDFLAGS} = "-Wl,-rpath -Wl,$dest/lib64 -Wl,-rpath -Wl,$dest/lib -static-libstdc++";
 chdir($dir) or die "cannot chdir $package_dir: $!";
