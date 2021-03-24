@@ -35,7 +35,7 @@ run("git", "clone", "-b", $vers, $url, $dir);
 
 chdir($dir);
 run("make", "-j", 8);
-run("make", "DESTDIR=$dest", "install");
+run("make", "prefix=$dest", "install");
 
 sub run
 {
