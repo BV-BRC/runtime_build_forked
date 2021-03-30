@@ -20,7 +20,7 @@ if (@ARGV)
     $runtime = shift;
 }
 
-my $vers;
+my $vers = "43a65f86bf1387f619a148cd2a7f8785b52513c4";
 my $url = "https://github.com/CDCgov/SARS-CoV-2_Sequencing";
 
 $ENV{PATH} = "$runtime/build-tools/bin:$runtime/bin:$ENV{PATH}";
