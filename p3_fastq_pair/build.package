@@ -20,6 +20,10 @@ my $dest = $top_dest;
 my $build_tools = $ENV{BUILD_TOOLS} || "$dest/build-tools";
 
 my $cmake = "$build_tools/bin/cmake";
+if (! -x $cmake)
+{
+    $cmake = "$dest/bin/cmake";
+}
 
 print "using $dest as installation directory path=$ENV{PATH}\n";
 
