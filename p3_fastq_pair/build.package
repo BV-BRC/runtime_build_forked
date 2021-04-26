@@ -42,7 +42,7 @@ chdir("build") or die "cannot chdir build: $!";
 
 run($cmake, "..", "-DCMAKE_INSTALL_PREFIX=$dest");
 run("make", @parallel);
-
+run("make", "install");
 
 sub download_tool
 {
