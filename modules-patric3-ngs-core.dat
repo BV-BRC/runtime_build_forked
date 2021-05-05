@@ -62,3 +62,4 @@ p3_phispy	./build.package
 p4_ivar	./build.package
 p3_fastq_pair	./build.package
 p3_bedops	./build.package
+p3_tpmcalculator	./build.package
