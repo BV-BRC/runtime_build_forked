@@ -14,3 +14,6 @@ sphinxcontrib-websupport
 matplotlib
 biopython
 pandas
+multiqc
+HTSeq
+RSeQC
