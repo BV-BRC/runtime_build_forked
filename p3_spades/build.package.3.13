@@ -1,0 +1,61 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $parallel = 4;
+
+my $build_tools = "$dest/build-tools";
+if (-d $build_tools)
+{
+    $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+
+    $ENV{CC} = "$build_tools/bin/gcc";
+    $ENV{CXX} = "$build_tools/bin/g++";
+}
+
+#
+# 3.12 requires gcc >= 5.3
+# so we will install from binaries instead for now
+#
+
+my $vers = "3.13.0";
+$dest = "$dest/spades-$vers";
+
+-d $dest || mkdir $dest;
+
+# http://cab.spbu.ru/files/release3.12.0/SPAdes-3.12.0-Linux.tar.gz
+# http://cab.spbu.ru/files/release3.12.0/SPAdes-3.12.0.tar.gz
+
+my $hosttype = "Linux";
+my $package_dir = "SPAdes-${vers}-Linux";
+my $package_tar = "$package_dir.tar.gz";
+my $package_url = "http://cab.spbu.ru/files/release${vers}/$package_tar";
+
+if (! -s $package_tar)
+{
+    system("curl", "-o", $package_tar, "-L", $package_url);
+}
+
+run("rm", "-rf", $package_dir);
+run("tar", "xzfp", $package_tar);
+chdir($package_dir) or die "cannot chdir $package_dir: $!";
+
+run("rsync", "-arv", ".", "$dest/.");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
