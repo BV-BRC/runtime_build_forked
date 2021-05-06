@@ -23,7 +23,7 @@ if (-d "/Library" && $ENV{MAC_32BIT})
     $ENV{CXX} = "g++ -m32";
 }
 
-my $vers = "2.5.0";
+my $vers = "2.10.4";
 my $freetype_dir = "freetype-$vers";
 my $freetype_tar = "freetype-${vers}.tar.gz";
 my $freetype_url = "http://download.savannah.gnu.org/releases/freetype/$freetype_tar";
@@ -37,7 +37,7 @@ run("rm", "-rf", $freetype_dir);
 run("tar", "xzfp", $freetype_tar);
 
 chdir("$freetype_dir");
-run("./configure", "--prefix", "$dest");
+run("./configure", "--prefix", "$dest", "--enable-freetype-config");
 run("make");
 run("make", "install");
 
