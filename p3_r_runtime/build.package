@@ -24,6 +24,7 @@ print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
 my $dir;
+my $top = getcwd();
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
 my $tag = "3.6.3";
@@ -36,11 +37,14 @@ $ENV{CC} = "$build_tools/bin/gcc";
 $ENV{CXX} = "$build_tools/bin/g++";
 
 $ENV{PKG_CONFIG_PATH} = "$dest/lib/pkgconfig";
-$ENV{R_LIBS} = "$dest/lib/R/library";
+
+my $r_libdir = "$dest/lib/R/library";
+$ENV{R_LIBS} = $r_libdir;
 
 my $dir = download_tool($url);
 
 run("rm", "-rf", "$dest/lib/R");
+make_path($r_libdir);
 
 my @opts = ("--enable-R-shlib", "--with-x=no", "--prefix=$dest");
 
@@ -50,7 +54,8 @@ run("./configure", @opts);
 run("make", @parallel);
 run("make", "install");
 
-tpage --define rlib=$dest/lib/R/library r-packages.R  | $dest/bin/R --vanilla --slave
+do_chdir($top);
+run("tpage --define rlib=$dest/lib/R/library r-packages.R  | $dest/bin/R --vanilla --slave");
 
 sub download_tool
 {
