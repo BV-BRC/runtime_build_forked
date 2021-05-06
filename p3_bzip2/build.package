@@ -14,8 +14,8 @@ if (@ARGV)
 print "using $dest as installation directory\n";
 system ("mkdir", "-p", $dest) unless -e $dest;
 
-my $ver = "1.0.6";
-my $url = "https://downloads.sourceforge.net/project/bzip2/bzip2-$ver.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbzip2%2Ffiles%2Fbzip2-$ver.tar.gz%2Fdownload%3Fuse_mirror%3Dnewcontinuum&ts=1566324269&use_mirror=newcontinuum";
+my $ver = "1.0.8";
+my $url = "https://sourceware.org/pub/bzip2/bzip2-$ver.tar.gz";
 
 my $dir = "bzip2-$ver";
 run("curl", "-o", "$dir.tar.gz", "-L", $url);
@@ -28,7 +28,8 @@ run("make", "-j", "6");
 run("make", "install", "PREFIX=$dest");
 run("make", "clean");
 run("make", "-f", "Makefile-libbz2_so", "-j", "6");
-run("rsync", "-arv", "libbz2.so.1.0.6", "libbz2.so.1.0", "$dest/lib");
+run("rsync", "-arv", "libbz2.so.$ver", "libbz2.so.1.0", "$dest/lib");
+symlink("libbz2.so.1.0", "$dest/lib/libbz2.so");
 
 sub run
 {
