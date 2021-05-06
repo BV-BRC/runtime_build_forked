@@ -26,7 +26,7 @@ system("rm", "-rf", $dir);
 run("tar",  "xvfz",  "$dir.tar.gz");
 
 chdir $dir or die "could not chdir $dir: $!";
-run("./configure", "--static", "--prefix", $dest);
+run("./configure", "--prefix", $dest);
 run("make", "-j", "6");
 run("make", "install");
 
