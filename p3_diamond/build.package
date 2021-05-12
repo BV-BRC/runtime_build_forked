@@ -7,13 +7,6 @@ use File::Path qw(make_path);
 use Cwd qw(abs_path getcwd);
 my $cwd = getcwd();
 
-use Getopt::Long::Descriptive;
-
-my($opt, $usage) = describe_options("%c %o [target]",
-				    ["help|h", "Show this usage message"]);
-print($usage->text), exit if $opt->help;
-die($usage->text) if @ARGV > 1;
-
 my $cmake = "cmake";
 #if (-x "/usr/bin/cmake3")
 #{
@@ -30,7 +23,7 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
-my $tag = "v2.0.4";
+my $tag = "v2.0.9";
 #my $tag = "v0.9.24";
 
 my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
