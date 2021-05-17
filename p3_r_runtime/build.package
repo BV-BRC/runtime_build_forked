@@ -27,8 +27,8 @@ my $dir;
 my $top = getcwd();
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
-my $tag = "3.6.3";
-my $url = "http://cran.r-project.org/src/base/R-3/R-$tag.tar.gz";
+my $tag = "4.0.5";
+my $url = "http://cran.r-project.org/src/base/R-4/R-$tag.tar.gz";
 
 $ENV{PATH} = "$build_tools/bin:$top_dest/bin:$ENV{PATH}";
 $ENV{CPPFLAGS} = "-I$dest/include";
