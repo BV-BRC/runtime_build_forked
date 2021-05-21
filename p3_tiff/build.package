@@ -1,0 +1,46 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+# https://ftp.pcre.org/pub/pcre/pcre-8.43.tar.gz
+#
+
+$ENV{CPPFLAGS} = "-I$dest/include";
+$ENV{LDFLAGS} = "-L$dest/lib";
+
+my $ver = "4.3.0";
+my $url = "http://download.osgeo.org/libtiff/tiff-4.3.0.tar.gz";
+run("curl", "-O", "-L", $url);
+
+my $dir = "tiff-$ver";
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfz",  "$dir.tar.gz");
+
+chdir $dir or die "could not chdir $dir: $!";
+run("./configure", "--prefix", $dest, "--enable-utf");
+run("make", "-j", "6");
+run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
