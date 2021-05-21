@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+use File::Find;
+use File::Path qw(make_path);
+use Cwd;
+my $cwd = getcwd();
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+if (@ARGV)
+{
+    $dest = shift;
+}
+print "using $dest as installation directory\n";
+system ("mkdir", "-p", $dest) unless -e $dest;
+
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
+
+$ENV{PKG_CONFIG_PATH} = "$dest/lib/pkgconfig";
+$ENV{PATH} = "$build_tools/bin:$dest/bin:$ENV{PATH}";
+$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib -Wl,-rpath,$dest/lib";
+$ENV{CC} = "$build_tools/bin/gcc";
+$ENV{CXX} = "$build_tools/bin/g++";
+
+
+my $ver = "1.0.10";
+my $dir = "fribidi-$ver";
+my $url = "https://github.com/fribidi/fribidi/releases/download/v$ver/fribidi-$ver.tar.xz";
+run("curl", "-O", "-L", $url);
+
+system("rm", "-rf", $dir);
+run("tar",  "xvfJ",  "$dir.tar.xz");
+
+chdir $dir or die "could not chdir $dir: $!";
+run("./configure", "--prefix", $dest, "--enable-utf");
+run("make", "-j", "6");
+run("make", "install");
+
+sub run
+{
+    my(@cmd) =@_;
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
+
