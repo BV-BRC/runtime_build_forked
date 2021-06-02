@@ -35,10 +35,14 @@ my $build_tools = "$p3/build-tools";
 # Initialize a conda build setup for tools that use that.
 #
 
-my $app_dest = "$dest/conda";
+my $vers = "Anaconda3-2021.05";
+my $app_dest = "$dest/conda-$vers";
+run("rm", "-rf", $app_dest, "$dest/conda");
 
-run("curl", "-O", "-L", "https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh");
-run("sh", "Anaconda3-2020.02-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
+run("curl", "-O", "-L", "https://repo.anaconda.com/archive/$vers-Linux-x86_64.sh");
+run("sh", "$vers-2020.02-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
+
+symlink("conda-$vers", "$app_dest/conda");
 
 sub run
 {
