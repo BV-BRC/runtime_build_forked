@@ -35,12 +35,17 @@ my $build_tools = "$p3/build-tools";
 # Initialize a conda build setup for tools that use that.
 #
 
-my $vers = "Anaconda3-2021.05";
+my $vers = "Miniconda3-py39_4.9.2";
+#my $vers = "Anaconda3-2021.05";
+
 my $app_dest = "$dest/conda-$vers";
 run("rm", "-rf", $app_dest, "$dest/conda");
 
-run("curl", "-O", "-L", "https://repo.anaconda.com/archive/$vers-Linux-x86_64.sh");
+#run("curl", "-O", "-L", "https://repo.anaconda.com/archive/$vers-Linux-x86_64.sh");
+run("curl", "-O", "-L", "https://repo.anaconda.com/miniconda/$vers-Linux-x86_64.sh");
 run("sh", "$vers-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
+
+run(". $app_dest/bin/activate; conda update -y -n base -c defaults conda; conda install -y mamba -n base -c conda-forge");
 
 symlink("conda-$vers", "$dest/conda");
 
