@@ -45,7 +45,7 @@ run("git", "clone", "https://github.com/cov-lineages/pangolin");
 chdir "pangolin";
 run("git", "checkout", $vers);
 
-run(". $dest/conda/bin/activate; conda env create -p $app_dest -f ./environment.yml");
+run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
 run("pip", "install", ".");
 unlink("$dest/bin/pangolin");

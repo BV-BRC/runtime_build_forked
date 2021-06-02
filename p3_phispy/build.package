@@ -38,7 +38,7 @@ run("rm", "-rf", $app_dest);
 # For medaka we need to rely on the conda configuration that was set up by p3_conda
 #
 
-run(". $dest/conda/bin/activate; conda create -y -p $app_dest -c conda-forge -c bioconda phispy");
+run(". $dest/conda/bin/activate; mamba create -y -p $app_dest -c conda-forge -c bioconda phispy");
 
 run("ln -s $app_dest/bin/[Pp]hi* $dest/bin");
 

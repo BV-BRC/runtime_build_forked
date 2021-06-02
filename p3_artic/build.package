@@ -40,9 +40,15 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
 run('rm', "-rf", "artic-ncov2019", $app_dest);
 run("git", "clone", "--recursive", "https://github.com/artic-network/artic-ncov2019.git");
-run(". $dest/conda/bin/activate; conda env create -p $app_dest -f artic-ncov2019/environment.yml");
+run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f artic-ncov2019/environment.yml");
 
-run("ln -s $app_dest/bin/artic* $dest/bin");
+for my $p (<$app_dest/bin/artic*>)
+{
+    my $f = basename($p);
+    my $d = "$dest/bin/$f";
+    unlink($d);
+    symlink($p, $d) or die "Cannot symlink $p $d: $!";
+}
 
 sub run
 {

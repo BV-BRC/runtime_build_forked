@@ -38,7 +38,7 @@ my $app_dest = "$dest/medaka";
 #
 
 run("rm", "-rf", $app_dest);
-run(". $dest/conda/bin/activate; conda create -y -p $app_dest -c conda-forge -c bioconda medaka");
+run(". $dest/conda/bin/activate; mamba create -y -p $app_dest -c conda-forge -c bioconda medaka");
 
 run("ln -s $app_dest/bin/medaka* $dest/bin");
 
