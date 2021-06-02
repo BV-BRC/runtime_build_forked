@@ -40,7 +40,14 @@ my $app_dest = "$dest/medaka";
 run("rm", "-rf", $app_dest);
 run(". $dest/conda/bin/activate; mamba create -y -p $app_dest -c conda-forge -c bioconda medaka");
 
-run("ln -s $app_dest/bin/medaka* $dest/bin");
+for my $p (<$app_dest/bin/medaka*>)
+{
+    my $f = basename($p);
+    my $d = "$dest/bin/$f";
+    unlink($d);
+    symlink($p, $d) or die "Cannot symlink $p $d: $!";
+}
+
 
 sub run
 {

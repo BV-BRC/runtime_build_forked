@@ -40,7 +40,15 @@ run("rm", "-rf", $app_dest);
 
 run(". $dest/conda/bin/activate; mamba create -y -p $app_dest -c conda-forge -c bioconda phispy");
 
-run("ln -s $app_dest/bin/[Pp]hi* $dest/bin");
+for my $p (<$app_dest/bin/[Pp]hi*>)
+{
+    my $f = basename($p);
+    my $d = "$dest/bin/$f";
+    unlink($d);
+    print "Link $p $d\n";
+    symlink($p, $d) or die "Cannot symlink $p $d: $!";
+}
+
 
 sub run
 {
