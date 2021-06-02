@@ -42,7 +42,7 @@ run("rm", "-rf", $app_dest, "$dest/conda");
 run("curl", "-O", "-L", "https://repo.anaconda.com/archive/$vers-Linux-x86_64.sh");
 run("sh", "$vers-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
 
-symlink("conda-$vers", "$app_dest/conda");
+symlink("conda-$vers", "$dest/conda");
 
 sub run
 {
