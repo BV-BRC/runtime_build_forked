@@ -38,7 +38,7 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 # For artic we need to rely on the conda configuration that was set up by p3_conda
 #
 
-run('rm', "-rf", "artic-ncov2019");
+run('rm', "-rf", "artic-ncov2019", $app_dest);
 run("git", "clone", "--recursive", "https://github.com/artic-network/artic-ncov2019.git");
 run(". $dest/conda/bin/activate; conda env create -p $app_dest -f artic-ncov2019/environment.yml");
 

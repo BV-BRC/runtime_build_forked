@@ -37,6 +37,7 @@ my $app_dest = "$dest/medaka";
 # For medaka we need to rely on the conda configuration that was set up by p3_conda
 #
 
+run("rm", "-rf", $app_dest);
 run(". $dest/conda/bin/activate; conda create -y -p $app_dest -c conda-forge -c bioconda medaka");
 
 run("ln -s $app_dest/bin/medaka* $dest/bin");

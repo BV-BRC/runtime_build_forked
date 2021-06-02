@@ -32,6 +32,7 @@ if (! -d $p3)
 my $build_tools = "$p3/build-tools";
 
 my $app_dest = "$dest/phispy";
+run("rm", "-rf", $app_dest);
 
 #
 # For medaka we need to rely on the conda configuration that was set up by p3_conda
