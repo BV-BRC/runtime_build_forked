@@ -206,3 +206,5 @@ DBIx::Class
 Text::Table::Tiny
 HTML::TableContentParser
 Text::CSV_XS
+IO::AIO
+Statistics::LineFit
