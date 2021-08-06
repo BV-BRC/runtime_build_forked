@@ -32,7 +32,7 @@ if (! -d $p3)
 my $build_tools = "$p3/build-tools";
 
 my $app_dest = "$dest/pangolin";
-my $vers = "v3.1.5";
+my $vers = "v3.1.9";
 
 system("rm", "-rf", $app_dest);
 system("rm", "-rf", "pangolin");
@@ -41,11 +41,14 @@ system("rm", "-rf", "pangolin");
 # For medaka we need to rely on the conda configuration that was set up by p3_conda
 #
 
+run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
+run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
+
 run("git", "clone", "https://github.com/cov-lineages/pangolin");
 chdir "pangolin";
 run("git", "checkout", $vers);
 
-run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
+run(". $dest/conda/bin/activate; mamba env update -p $app_dest -f ./environment.yml");
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
 run("pip", "install", ".");
 unlink("$dest/bin/pangolin");

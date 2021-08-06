@@ -1,0 +1,57 @@
+Extracted data into interproscan-data, created interproscan-5.52-86.0.codeonly.tgz
+
+find bin/  -type f -perm /111 -print | xargs file | grep execut | cut -d: -f1 > exes
+(for i in `cat exes`; do ldd $i > /dev/null; done ) 2>&1 | grep 'not found' | cut -d: -f1 > bad.exes
+
+cp /scratch/olson/xbuild/hmmer-3.3/bin/* bin/hmmer/hmmer3/3.3/
+
+easel:
+https://github.com/EddyRivasLab/easel/archive/refs/tags/Bio-Easel-0.15.tar.gz
+unzip
+autoconf
+configure 
+make
+make install
+
+
+cp /scratch/olson/xbuild/bin/esl-translate bin/hmmer/hmmer3/3.3/
+cp /scratch/olson/xbuild/bin/esl-translate interproscan-5.52-86.0/bin/nucleotide/esl-translate
+
+
+/disks/patric-common/bootstrap/p3_pftools3/pftools3
+
+/disks/patric-common/bootstrap/p3_pftools3/pftools3/build/src/C
+$ cp pfscanV3 pfsearchV3 /disks/patric-common/bootstrap/p3_interproscan/interproscan-5.52-86.0/bin/prosite
+
+
+---
+
+export CPPFLAGS="-I/disks/patric-common/runtime/include"
+export CFLAGS="-I/disks/patric-common/runtime/include"
+/disks/patric-common/runtime/bin/cmake .. -DCMAKE_INSTALL_RPATH=/disks/patric-common/runtime/lib -DCMAKE_PREFIX_PATH=/disks/patric-common/runtime -DSTANDALONE=1
+make
+cp pfscanV3 pfsearchV3 /disks/patric-common/bootstrap/p3_interproscan/interproscan-5.52-86.0/bin/prosite
+
+
+---
+
+
+curl -O -L ftp://ftp.ncbi.nlm.nih.gov/pub/mmdb/cdd/rpsbproc/RpsbProc-src.tar.gz
+
+
+curl -O -L ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+cd EMBOSS-6.6.0
+./configure --prefix /scratch/olson/xbuild --enable-static --disable-shared
+cp emboss/getorf ../interproscan-5.52-86.0/bin/nucleotide/
+
+sfld: cd to the src/sfld/1 dir. Rename eslx to esl in the c files. Link to easel dir from hmmer build. make.
+cp sfld_postprocess sfld_preprocess ../../../bin/sfld/
+
+--
+
+blast 2.10.1 - install src, integrate rpsblast from its release, build.
+
+
+cp ../ncbi-blast-2.10.1+-src/c++/ReleaseMT/build/app/blast/rpsblast bin/blast/ncbi-blast-2.10.1+/rpsblast 
+cp ../ncbi-blast-2.10.1+-src/c++/ReleaseMT/build/app/RpsbProc/rpsbproc bin/blast/ncbi-blast-2.10.1+/rpsbproc 
+
