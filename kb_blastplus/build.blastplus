@@ -26,7 +26,7 @@ else
 	warn "No build tools in $build_tools\n";
 }
 
-my $vers = "2.11.0";
+my $vers = "2.12.0";
 my $tar = "ncbi-blast-${vers}+-src.tar.gz";
 my $dir = "ncbi-blast-${vers}+-src";
 my $url = "ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/$vers/$tar";
@@ -39,8 +39,9 @@ if (! -s $tar)
 run("rm", "-rf", "$dir");
 run("tar", "xzfp", $tar);
 chdir("$dir/c++") or die "cannot chdir $dir/c++: $!";
-run("./configure", "--prefix=$dest", "--without-debug", "--with-mt", "--without-boost");
-#run("./configure", "--prefix=$dest", "--without-debug", "--with-mt", "--with-boost=$dest/build-tools");
+run("./configure", "--prefix=$dest", "--without-debug", "--with-mt", 
+"--without-sse42",
+    "--without-boost", "--without-gui", "--with-static");
 
 #
 # Use config.log to determine the build directory as configured here.
