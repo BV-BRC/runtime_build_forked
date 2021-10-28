@@ -73,11 +73,16 @@ opendir(B, "$build_root/bin") or die "Cannot opendir $build_root/bin: $!";
 for my $f (sort grep { $_ !~ /^\./ && -x "$build_root/bin/$_" } readdir(B))
 {
     my $dest_file = "$dest/bin/$f";
-    if (-f "$dest_file")
+
+    #
+    # Only rpsblast and seedtop are names that came thru from old blast.
+    # Leave the original versions alone; we will use rpsblast+ and seedtop+ where needed.
+    #
+    unless ($f eq 'seedtop' || $f eq 'rpsblast')
     {
-	$dest_file = "$dest/bin/${f}+";
+	run("cp", "$build_root/bin/$f", $dest_file);
     }
-    run("cp", "$build_root/bin/$f", $dest_file);
+    run("cp", "$build_root/bin/$f", "${dest_file}+");
 }
 
 sub run
