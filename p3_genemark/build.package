@@ -28,7 +28,7 @@ make_path($app_path);
 
 my $dir = "genemark_suite_linux_64";
 system("rm", "-rf", $dir);
-run("tar",  "xvfz",  $tar);
+run("tar",  "xfz",  $tar);
 
 run("rsync", "-arv", $dir, $app_path);
 
