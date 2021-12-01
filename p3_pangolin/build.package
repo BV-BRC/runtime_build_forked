@@ -52,6 +52,13 @@ run(". $dest/conda/bin/activate; mamba env update -p $app_dest -f ./environment.
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
 run("pip", "install", ".");
 unlink("$dest/bin/pangolin");
+
+#
+# More hacking for CentOS6
+#
+run("$app_dest/bin/pip", "uninstall", "pysam");
+run("$app_dest/bin/pip", "install", "pysam");
+run("sed", "-i.bak", "-e", "/^from sqlite3/s/^/#/", "$app_dest/lib/python3.8/site-packages/Bio/AlignIO/MafIO.py");
 open(P, ">", "$dest/bin/pangolin") or die "Cannot write $dest/bin/pangolin: $!";
 print P <<END;
 #!/bin/sh
