@@ -56,8 +56,11 @@ unlink("$dest/bin/pangolin");
 #
 # More hacking for CentOS6
 #
-run("$app_dest/bin/pip", "uninstall", "pysam");
-run("$app_dest/bin/pip", "install", "pysam");
+run("$app_dest/bin/pip", "uninstall", "-y", "pysam");
+{
+    local $ENV{PIP_CACHE_DIR} = "/tmp";
+    run("$app_dest/bin/pip", "install", "pysam");
+}
 run("sed", "-i.bak", "-e", "/^from sqlite3/s/^/#/", "$app_dest/lib/python3.8/site-packages/Bio/AlignIO/MafIO.py");
 open(P, ">", "$dest/bin/pangolin") or die "Cannot write $dest/bin/pangolin: $!";
 print P <<END;
