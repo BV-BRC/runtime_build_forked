@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $build_tools = "$dest/build-tools";
+
+$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+
+my $app_dest = "$dest/delve";
+
+system("rm", "-rf", $app_dest);
+
+$ENV{GOPATH} = $app_dest;
+my $url = 'github.com/go-delve/delve/cmd/dlv@latest';
+
+my @exes = qw(dlv);
+
+run("$build_tools/go/bin/go", "install", "-modcacherw", $url);
+run("$build_tools/go/bin/go", "clean", "-modcache");
+
+for my $exe (@exes)
+{
+    my $p = "$app_dest/bin/$exe";
+    if (! -x $p)
+    {
+	die "Exe $p did not build properly";
+    }
+    unlink("$dest/bin/$exe");
+    symlink($p, "$dest/bin/$exe");
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
