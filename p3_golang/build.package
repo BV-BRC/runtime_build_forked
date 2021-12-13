@@ -1,0 +1,33 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $build_tools = "$dest/build-tools";
+
+my $vers = "1.17.5";
+
+my $url = "https://go.dev/dl/go$vers.linux-amd64.tar.gz";
+
+run("curl", "-L", "-o", "go-$vers.tgz", $url);
+run("rm", "-rf", "$build_tools/go");
+run("tar", "-C", $build_tools, "-x", "-z", "-v", "-f", "go-$vers.tgz");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
