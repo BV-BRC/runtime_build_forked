@@ -41,6 +41,7 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 run("patchelf", "--print-interpreter", "$dest/conda/bin/python");
 run("ls $dest/conda/bin");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/python");
+run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/mamba-package");
 
 run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
