@@ -38,6 +38,10 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 # For artic we need to rely on the conda configuration that was set up by p3_conda
 #
 
+run("patchelf", "--print-interpreter", "$dest/conda/bin/python");
+run("ls $dest/conda/bin");
+run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/python");
+
 run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
 
