@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+my $build_tools = "$dest/build-tools";
+
+my $app_dest = "$dest/seqkit";
+
+system("rm", "-rf", $app_dest);
+
+$ENV{GOPATH} = $app_dest;
+my $url = 'github.com/shenwei356/seqkit/v2/seqkit@latest';
+
+run("$build_tools/go/bin/go", "install", "-modcacherw", $url);
+run("$build_tools/go/bin/go", "clean", "-modcache");
+
+unlink("$dest/bin/seqkit");
+symlink("$app_dest/bin/seqkit", "$dest/bin/seqkit");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
