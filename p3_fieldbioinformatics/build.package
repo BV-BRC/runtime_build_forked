@@ -53,7 +53,7 @@ chdir("fieldbioinformatics") or die;
 run("git", "checkout", "23a8460f5b881c5b2712c0381e0ec4dc84d38359");
 run(". $dest/conda/bin/activate; mamba env update -p $app_dest -f ./environment.yml");
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
-run("python", "setup.py", "install")
+run("python", "setup.py", "install");
 
 
 #
