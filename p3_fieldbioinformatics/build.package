@@ -38,6 +38,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 # For artic we need to rely on the conda configuration that was set up by p3_conda
 #
 
+run('rm', "-rf", "fieldbioinformatics", $app_dest);
+
 run("patchelf", "--print-interpreter", "$dest/conda/bin/python");
 run("ls $dest/conda/bin");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/python");
@@ -46,11 +48,13 @@ run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2"
 run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
 
-run('rm', "-rf", "fieldbioinformatics", $app_dest);
 run("git", "clone", "https://github.com/artic-network/fieldbioinformatics.git");
 chdir("fieldbioinformatics") or die;
 run("git", "checkout", "23a8460f5b881c5b2712c0381e0ec4dc84d38359");
 run(". $dest/conda/bin/activate; mamba env update -p $app_dest -f ./environment.yml");
+$ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
+run("python", "setup.py", "install")
+
 
 #
 #for my $p (<$app_dest/bin/artic*>)
