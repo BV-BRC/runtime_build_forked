@@ -52,6 +52,7 @@ open(OUT, ">", "$fdest/bin/figtree") or die "Cannot write $fdest/bin/figtree: $!
 while (<IN>)
 {
     s,lib/figtree.jar,"$fdest/lib/figtree.jar",e;
+    s,\$\*,"\$@",;
     print OUT;
 }
 close(IN);
