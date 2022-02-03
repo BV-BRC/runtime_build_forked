@@ -42,8 +42,24 @@ run('rm', "-rf", "fieldbioinformatics", $app_dest);
 
 run("patchelf", "--print-interpreter", "$dest/conda/bin/python");
 run("ls $dest/conda/bin");
-run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/python");
-run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$dest/conda/bin/mamba-package");
+
+for my $exe ( "$dest/conda/bin/python", "$dest/conda/bin/mamba-package")
+{
+    if (-x $exe)
+    {
+	my @cmd = ("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", $exe);
+	print "Patch: @cmd\n";
+	my $rc = system(@cmd);
+	if ($rc != 0)
+	{
+	    print "warn - patch failed @cmd\n";
+	}
+    }
+    else
+    {
+	print "$exe is missing\n";
+    }
+}
 
 run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
 run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
