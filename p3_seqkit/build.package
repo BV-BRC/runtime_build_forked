@@ -22,7 +22,9 @@ my $app_dest = "$dest/seqkit";
 system("rm", "-rf", $app_dest);
 
 $ENV{GOPATH} = $app_dest;
-my $url = 'github.com/shenwei356/seqkit/v2/seqkit@latest';
+my $url = 'github.com/shenwei356/seqkit/v2/seqkit@v2.1.0';
+#my $url = 'github.com/shenwei356/seqkit/seqkit@latest';
+
 
 run("$build_tools/go/bin/go", "install", "-modcacherw", $url);
 run("$build_tools/go/bin/go", "clean", "-modcache");
