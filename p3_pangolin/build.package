@@ -32,7 +32,7 @@ if (! -d $p3)
 my $build_tools = "$p3/build-tools";
 
 my $app_dest = "$dest/pangolin";
-my $vers = "v4.0.2";
+my $vers = "v4.0.3";
 #my $vers = "v3.1.20";
 
 system("rm", "-rf", $app_dest);
