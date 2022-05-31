@@ -51,6 +51,7 @@ run("sh", "$vers-Linux-x86_64.sh", "-p", $app_dest, "-b", "-s");
 #run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
 
 #run(". $app_dest/bin/activate; conda update  -y -n base -c defaults conda; conda install -y mamba -n base -c conda-forge");
+run(". $app_dest/bin/activate;  conda install -y mamba -n base -c conda-forge; conda update  -y -n base -c defaults conda");
 
 symlink("conda-$vers", "$dest/conda");
 
