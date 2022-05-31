@@ -36,7 +36,8 @@ my $build_tools = "$p3/build-tools";
 #
 
 #my $vers = "Miniconda3-py38_4.8.2";
-my $vers = "Miniconda3-py39_4.9.2";
+my $vers = "Miniconda3-py39_4.12.0";
+#my $vers = "Miniconda3-py39_4.9.2";
 #my $vers = "Miniconda3-py39_4.10.3";
 #my $vers = "Anaconda3-2021.05";
 
