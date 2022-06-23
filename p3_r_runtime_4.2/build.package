@@ -16,7 +16,7 @@ if (@ARGV)
     $top_dest = shift;
 }
 
-my $tag = "4.2.0";
+my $tag = "4.2.1";
 my $dest = "$top_dest/R-$tag";
 
 my $build_tools = $ENV{BUILD_TOOLS} // "$top_dest/build-tools";
