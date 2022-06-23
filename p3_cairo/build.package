@@ -32,7 +32,7 @@ system("rm", "-rf", $dir);
 run("tar",  "xvfJ",  "$dir.tar.xz");
 
 chdir $dir or die "could not chdir $dir: $!";
-run("./configure", "--prefix", $dest);
+run("./configure", "--enable-xlib=no", "--prefix", $dest);
 run("make", "-j", "6");
 run("make", "install");
 
