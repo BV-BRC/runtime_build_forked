@@ -6,7 +6,7 @@ use Carp;
 use File::Basename;
 use Cwd 'abs_path';
 
-my $parallel = "-j4";
+my $parallel = "-j24";
 
 my $here = abs_path(".");
 my $dest = $ENV{TARGET} ? $ENV{TARGET} : "/kb/runtime";
@@ -23,7 +23,7 @@ if (@ARGV)
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.16.2.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.20.2.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.30.2.tar.gz";
-my $perl_url = "http://www.cpan.org/src/5.0/perl-5.32.1.tar.gz";
+my $perl_url = "http://www.cpan.org/src/5.0/perl-5.34.0.tar.gz";
 
 my $perl_tgz = basename($perl_url);
 my $perl_vers = basename($perl_tgz, ".tar.gz");
@@ -49,6 +49,15 @@ chdir $perl_vers;
 
 my @reloc = ();
 
+my @thread = ('-Dusethreads');
+
+my @opts;
+
+if (0)
+{
+    push(@opts, @thread);
+}
+
 #
 # If we're on a mac, assume we are building for the mac DMG.
 #
@@ -58,13 +67,13 @@ if (-d "/Library")
     my @startperl = ('-Dstartperl=#!/usr/bin/env kbperl');
     my @for32;
     #@for32 = ("-A", "ld=-m32", "-Dcc=cc -m32"); 
-    run("./Configure", "-de", "-Dprefix=$dest", @for32, @reloc, @startperl);
+    run("./Configure", "-de", "-Dprefix=$dest", @for32, @reloc, @startperl, @opts);
 
     # run("./Configure", "-de", "-Dprefix=$dest", );
 }
 else
 {
-    run("./Configure", "-de", "-Dprefix=$dest", @reloc);
+    run("./Configure", "-de", "-Dprefix=$dest", @reloc, @opts);
 }
 
 run("make", $parallel);
