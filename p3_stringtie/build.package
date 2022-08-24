@@ -30,7 +30,8 @@ $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$dest/lib -Wl,-rpath,$
 #
 
 my $repo = "https://github.com/gpertea/stringtie";
-my $commit = "v2.1.7";
+my $commit = "v2.2.1";
+#my $commit = "v2.1.7";
 #my $commit = "831e8ba95664804d270a96dabe16052f97ce43c0";
 
 run("rm", "-rf", "stringtie");
