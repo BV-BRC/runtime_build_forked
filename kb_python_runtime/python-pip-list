@@ -10,7 +10,6 @@ sphinx
 tornado
 rpy2
 beautifulsoup
-pika
 httplib2
 flup
 yolk

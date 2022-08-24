@@ -80,6 +80,9 @@ fi
 if grep -s 'release 8' /etc/centos-release > /dev/null; then
 	have_mysql=0
 fi
+if grep -s 'Ubuntu' /etc/lsb-release > /dev/null; then
+	have_mysql=0
+fi
 
 save_cflags=$CFLAGS
 save_ldflags=$LDFLAGS
