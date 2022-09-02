@@ -1,0 +1,10 @@
+#!/bin/sh
+export LD_LIBRARY_PATH=[% build_tools %]/lib64
+export PATH=[% flye %]/bin:$PATH
+
+pversion=`[% runtime %]/bin/python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")'`
+
+export PYTHONPATH=[% flye %]/lib/python$pversion/site-packages
+
+exec flye "$@"
+

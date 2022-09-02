@@ -1,0 +1,80 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my @parallel = ("-j", 4);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+my $build_tools = $ENV{BUILD_TOOLS} || "/disks/patric-common/runtime/gcc-9.3.0";
+
+$ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+#$ENV{CFLAGS} = "-I$dest/include -D__STDC_LIMIT_MACROS -fcommon";
+$ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$dest/lib -Wl,-rpath,$build_tools/lib -lrt";
+#$ENV{EXTRA_FLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$dest/lib -Wl,-rpath,$build_tools/lib";
+##$ENV{LD_LIBRARY_PATH} = join(":", "$dest/lib", "$build_tools/lib64", "$build_tools/lib");
+##$ENV{LD_RUN_PATH} = join(":", "$dest/lib", "$build_tools/lib64", "$build_tools/lib");
+#
+
+my $repo = "https://github.com/fenderglass/Flye.git";
+my $commit = "2.9.1";
+
+my $app_dest = "$dest/flye-$commit";
+
+run("rm", "-rf", "Flye");
+run("git", "clone", $repo);
+do_chdir("Flye");
+run("git", "checkout", $commit);
+
+run("rm", "-rf", $app_dest);
+run("python3", "setup.py", "install", "--prefix", $app_dest);
+
+
+do_chdir("..");
+
+unlink("$dest/bin/flye");
+open(F, ">", "$dest/bin/flye") or die "Cannot write $dest/bin/flye: $!";
+
+open(P, "-|", "$dest/bin/tpage", "--define", "flye=$app_dest", "--define", "runtime=$dest", "--define", "build_tools=$build_tools", "flye.tt") or die "Cannot open pipe: $!";
+while (<P>)
+{
+    print F $_;
+}
+close(P);
+
+chmod(0755, \*F) or die "chmod $dest/bin/flye failed: $!";
+close(F);
+
+sub do_chdir
+{
+    my($dir) = @_;
+    if (!chdir($dir))
+    {
+	my $here = getcwd();
+	die "chdir $dir from $here failed: $!";
+    }
+}
+
+sub run
+{
+    my(@cmd) =@_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\npath=$ENV{PATH}\n";
+    }
+}
