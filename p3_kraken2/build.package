@@ -24,9 +24,10 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
-my $tag = "v2.0.7-beta";
+my $tag = "v2.1.2-olson";
+#my $tag = "v2.0.7-beta";
 
-my $build_tools = "$dest/build-tools";
+my $build_tools = $ENV{BUILD_TOOLS} // "$dest/build-tools";
 
 $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 $ENV{LDFLAGS} = "-Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib";
@@ -42,7 +43,8 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 my $dir = "kraken2";
 
 run("rm", "-rf", $dir);
-run("git", "clone", "https://github.com/DerrickWood/kraken2", $dir);
+run("git", "clone", "https://github.com/olsonanl/kraken2", $dir);
+#run("git", "clone", "https://github.com/DerrickWood/kraken2", $dir);
 
 chdir($dir) or die "cannot chdir $dir: $!";
 run("git", "checkout", $tag);
