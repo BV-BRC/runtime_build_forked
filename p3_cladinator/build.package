@@ -1,0 +1,74 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+use File::Path qw(make_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+$ENV{PATH} = "$dest/bin:$ENV{PATH}";
+
+my $repo = "https://github.com/cmzmasek/forester.git";
+my $commit = "0c25a6508818ebae41aa892f3e392835108e922f"; 
+# commit 0c25a6508818ebae41aa892f3e392835108e922f
+# Author: Christian Zmasek <chris.zma@outlook.com>
+# Date:   Tue May 3 13:33:00 2022 -0700
+#
+#     in progress
+
+my $dir = "forester";
+
+system("rm", "-rf", $dir);
+run("git", "clone", $repo, $dir);
+chdir($dir) or die "Cannot chdir $dir: $!";
+
+my $brief = `git log -n 1 --pretty='tformat:%h'`;
+chomp $brief;
+my $app_dest = "$dest/forester-$brief";
+run("rm", "-rf", $app_dest);
+make_path("$app_dest/bin", "$app_dest/lib");
+
+chdir("forester/java") or die "Cannot chdir $dir: $!";
+unlink("forester.jar");
+run("ant");
+
+run('cp', 'forester.jar', "$app_dest/lib/forester.jar");
+
+#
+# Create cladinator wrapper.
+# 
+
+my $wrap = "$app_dest/bin/cladinator";
+open(F, ">", $wrap) or die "Cannot write $wrap: $!";
+print F <<END;
+#!/bin/sh
+
+java -Xmx8048m -cp "$app_dest/lib/forester.jar" org.forester.application.cladinator "$@"
+
+END
+
+chmod(0755, \*F) or die "Cannot chmod $wrap: $!";
+close(F);
+
+my $dbin = "$dest/bin/cladinator";
+unlink($dbin);
+symlink($wrap, $dbin) or die "Cannot symlink $wrap $dbin:$ !";
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
