@@ -20,8 +20,8 @@ if (@ARGV)
 
 $ENV{PATH} = "$dest/bin:$ENV{PATH}";
 
-my $repo = "https://github.com/cmzmasek/forester.git";
-my $commit = "0c25a6508818ebae41aa892f3e392835108e922f"; 
+my $repo = "https://github.com/BV-BRC-dependencies/forester.git";
+my $commit = "b0cf72076d3e4ee76ba1625ab533ecb6ed5a00a8"; 
 # commit 0c25a6508818ebae41aa892f3e392835108e922f
 # Author: Christian Zmasek <chris.zma@outlook.com>
 # Date:   Tue May 3 13:33:00 2022 -0700
@@ -55,7 +55,7 @@ open(F, ">", $wrap) or die "Cannot write $wrap: $!";
 print F <<END;
 #!/bin/sh
 
-java -Xmx8048m -cp "$app_dest/lib/forester.jar" org.forester.application.cladinator "$@"
+java -Xmx8048m -cp "$app_dest/lib/forester.jar" org.forester.application.cladinator "\$@"
 
 END
 
