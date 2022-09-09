@@ -7,13 +7,6 @@ use File::Path qw(make_path);
 use Cwd qw(abs_path getcwd);
 my $cwd = getcwd();
 
-use Getopt::Long::Descriptive;
-
-my($opt, $usage) = describe_options("%c %o [target]",
-				    ["help|h", "Show this usage message"]);
-print($usage->text), exit if $opt->help;
-die($usage->text) if @ARGV > 1;
-
 my @parallel = ("-j", 8);
 
 my $top_dest = $ENV{TARGET} || "/kb/runtime";
@@ -56,15 +49,8 @@ for my $f (<$app_dest/kraken*>)
     next unless -x $f;
     my $b = basename($f);
     my $destlnk = "$dest/bin/$b";
-    if (readlink($destlnk))
-    {
-	unlink $destlnk;
-	symlink($f, $destlnk) or die "cannot symlink $f $destlnk: $!";
-    }
-    else
-    {
-	warn "$destlnk was not a symlink\n";
-    }
+    unlink $destlnk;
+    symlink($f, $destlnk) or die "cannot symlink $f $destlnk: $!";
 }
 
 sub download_tool
