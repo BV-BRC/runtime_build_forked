@@ -27,13 +27,14 @@ $ENV{LDFLAGS} = "-lrt -Wl,-rpath,$build_tools/lib64 -Wl,-rpath,$build_tools/lib"
 my $ver6 = "v6.17.1";
 my $ver8 = "v8.16.2";
 my $ver12 = "v12.20.0";
+my $ver14 = "v14.18.0";
 
 #chdir $cwd;
 #build($ver6);
 #chdir $cwd;
 #build($ver8);
 chdir $cwd;
-build($ver12);
+build($ver14);
 
 sub build
 {
