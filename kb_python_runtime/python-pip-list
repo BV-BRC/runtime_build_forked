@@ -48,7 +48,6 @@ configobj
 paramiko
 python-dateutil
 requests
-pysam
 qcli
 cherrypy
 ipython
