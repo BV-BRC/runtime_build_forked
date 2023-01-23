@@ -1,0 +1,53 @@
+Bootstrap: localimage
+From: bvbrc-ubuntu-1.sif
+
+%post
+
+BASE=/opt/patric-common
+RT=$BASE/runtime
+
+if [[ ! -d $RT ]] ; then
+   echo "Missing runtime (bad source image?)" 1>&2
+   exit 1
+fi
+
+bash -c "export PATH=/opt/patric-common/runtime/bin:$PATH; cpanm Bio::Tools::Run::Alignment::Clustalw"
+
+cd /bootstrap
+git pull
+
+cd /bootstrap/p3_redis
+./build.package /opt/patric-common/runtime
+
+/opt/patric-common/runtime/bin/pip3 install redis
+
+mkdir -p $BASE/app-runtime/variation
+
+export BUILD_TOOLS=$RT/build-tools
+
+cd /bootstrap
+./bootstrap_modules.pl -d $BASE/app-runtime/variation -m modules-app-variation.dat 
+
+cd /bootstrap/kb_prok_tuxedo
+./install_prok_tuxedo.sh /opt/patric-common/runtime
+
+cd /bootstrap
+git clone --recursive https://github.com/PATRIC3/freebayes.git
+cd freebayes
+make
+cp bin/freebayes bin/bamleftalign /opt/patric-common/app-runtime/variation/bin/
+cp scripts/freebayes-parallel /opt/patric-common/app-runtime/variation/bin/freebayes-parallel
+chmod +x /opt/patric-common/app-runtime/variation/bin/freebayes-parallel
+
+#
+# Patch for variation: build develop version of bcftools, and link that bcftools into the
+# app-runtime/variation bin dir.
+#
+
+cd /bootstrap/p3_bcftools
+./build.develop /opt/patric-common/runtime
+
+bdir=/opt/patric-common/app-runtime/variation/bin
+mv -f $bdir/bcftools $bdir/bcftools.old
+ln -s /opt/patric-common/runtime/bcftools-develop/bin/bcftools $bdir/bcftools
+cd ..

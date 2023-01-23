@@ -1,0 +1,4 @@
+kb_seed_kmers	./build.seed_kmers
+kb_search_for_rnas	./build.search_for_rnas
+kb_prinseq_runtime	./build.prinseq
+p3_close_kmers	./build.close_kmers
