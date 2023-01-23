@@ -1,0 +1,32 @@
+diff -u -r blatSrc/inc/common.mk blatSrc-mod/inc/common.mk
+--- blatSrc/inc/common.mk	2022-01-08 16:12:10.000000000 +0000
++++ blatSrc-mod/inc/common.mk	2023-01-23 19:50:14.281046389 +0000
+@@ -143,28 +143,8 @@
+    L+=/hive/groups/browser/freetype/freetype-2.10.0/objs/.libs/libfreetype.a -lbz2
+    L+=/usr/lib64/libssl.a /usr/lib64/libcrypto.a -lkrb5 -lk5crypto -ldl
+ else
+-   ifneq ($(wildcard /opt/local/lib/libssl.a),)
+-       L+=/opt/local/lib/libssl.a
+-   else
+-     ifneq ($(wildcard /usr/lib/x86_64-linux-gnu/libssl.a),)
+-	L+=/usr/lib/x86_64-linux-gnu/libssl.a
+-     else
+-        ifneq ($(wildcard /usr/local/opt/openssl/lib/libssl.a),)
+-           L+=/usr/local/opt/openssl/lib/libssl.a
+-        else
+            L+=-lssl
+-        endif
+-     endif
+-   endif
+-   ifneq ($(wildcard /opt/local/lib/libcrypto.a),)
+-       L+=/opt/local/lib/libcrypto.a
+-   else
+-        ifneq ($(wildcard /usr/local/opt/openssl/lib/libcrypto.a),)
+-           L+=/usr/local/opt/openssl/lib/libcrypto.a
+-        else
+            L+=-lcrypto
+-        endif
+-   endif
+ endif
+ 
+ # autodetect where libm is installed
