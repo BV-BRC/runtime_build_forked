@@ -17,9 +17,9 @@ if (@ARGV)
 -d $dest || mkdir $dest;
 
 #my $blat_url = "http://users.soe.ucsc.edu/~kent/src/blatSrc36.zip";
-my $blat_url = "https://genome-test.gi.ucsc.edu/~kent/src/blatSrc36.zip";
+my $blat_url = "https://genome-test.gi.ucsc.edu/~kent/src/blatSrc37.zip";
 
-my $blat_zip = "blatSrc36.zip";
+my $blat_zip = "blatSrc37.zip";
 my $blat_dir = "blatSrc";
 
 $ENV{C_INCLUDE_PATH} = "$dest/include";
@@ -30,11 +30,18 @@ if (!$ENV{MACHTYPE})
 
 if (! -s $blat_zip)
 {
-    system("curl", "-o", $blat_zip, "-L", $blat_url);
+    run("curl", "-o", $blat_zip, "-L", $blat_url);
 }
 
 system("rm", "-rf", $blat_dir);
-system("unzip", $blat_zip);
+run("unzip", $blat_zip);
 
-chdir($blat_dir);
+chdir($blat_dir) or die "Cannot chdir $blat_dir: $!";
+run("patch", "-p", "1", "-i", "../blat37.patch");
 system("make", "BINDIR=$dest/bin");
+
+sub run
+{
+    my $rc = system(@_);
+    $rc == 0 or die "Error $rc running @_\n";
+}
