@@ -17,28 +17,16 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-# http://downloads.sourceforge.net/project/bio-bwa/bwa-0.7.12.tar.bz2?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbio-bwa%2Ffiles%2F&ts=1459276259&use_mirror=liquidtelecom
+my $url = "https://github.com/BV-BRC-dependencies/bwa.git";
+my $release = "139f68fc4c3747813783a488aef2adc86626b01b";
 
 my $vers = "0.7.17";
 
-my $mirror = "";
-if ($ENV{SF_MIRROR})
-{
-	$mirror = "?use_mirror=$ENV{SF_MIRROR}";
-}
+my $dir = "bwa";
 
-my $package_dir = "bwa-$vers";
-my $package_tar = "bwa-$vers.tar.bz2";
-my $package_url = "http://downloads.sourceforge.net/project/bio-bwa/$package_tar$mirror";
-
-if (! -s $package_tar)
-{
-    system("curl", "--retry", "30", "-o", $package_tar, "-L", $package_url);
-}
-
-run("rm", "-rf", $package_dir);
-run("tar", "xjfp", $package_tar);
-chdir($package_dir) or die "cannot chdir $package_dir: $!";
+run("git", "clone", "$url", $dir);
+chdir($dir) or die "cannot chdir $dir: $!";
+run("git", "checkout", $release) if $release;
 run("make -j $parallel");
 run("cp", "bwa", "$dest/bin/bwa");
 
