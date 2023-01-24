@@ -22,6 +22,16 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 
 -d $dest || mkdir $dest;
 
+my @kmc;
+if (-f "/usr/include/kmc/kmc_file.h")
+{
+    @kmc = ("KMC_LIB=-lkmc", "KMC_INC=-I/usr/include/kmc");
+}
+else
+{
+    @kmc = ("KMC_LIB=$dest/lib/libkmc_api.a", "KMC_INC=-I$dest/include/kmc_api");
+}
+
 my $kmer_dir = "close_kmers";
 system("rm", "-rf", $kmer_dir);
 run("git", "clone", 'https://github.com/olsonanl/close_kmers.git', $kmer_dir);
@@ -31,7 +41,7 @@ chdir($kmer_dir);
 run("make", @parallel, "BUILD_TOOLS=$build_tools", "OPT=-O3", 
     "LOG4CPP_DIR=$dest",
     "BOOST=$dest/boost-1.73.0",
-    "KMC_LIB=$dest/lib/libkmc_api.a", "KMC_INC=-I$dest/include/kmc_api", 
+    @kmc,
     "kser", "kmerge");
 run("cp", "kser", "$dest/bin/kser");
 run("cp", "kmerge", "$dest/bin/kmerge");
