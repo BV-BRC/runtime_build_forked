@@ -40,6 +40,7 @@ chdir($kmer_dir);
 
 run("make", @parallel, "BUILD_TOOLS=$build_tools", "OPT=-O3", 
     "LOG4CPP_DIR=$dest",
+    "CXX=g++",
     "BOOST=$dest/boost-1.73.0",
     @kmc,
     "kser", "kmerge");
