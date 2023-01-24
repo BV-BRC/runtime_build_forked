@@ -1,0 +1,26 @@
+diff -r -u oneTBB.orig/src/tbbmalloc/proxy.cpp oneTBB/src/tbbmalloc/proxy.cpp
+--- oneTBB.orig/src/tbbmalloc/proxy.cpp	2023-01-23 21:22:20.495619250 +0000
++++ oneTBB/src/tbbmalloc/proxy.cpp	2023-01-23 21:20:49.407900264 +0000
+@@ -231,20 +231,12 @@
+ 
+ #include <new>
+ 
+-void * operator new(size_t sz) throw (std::bad_alloc) {
++void * operator new(size_t sz) {
+     void *res = scalable_malloc(sz);
+-#if TBB_USE_EXCEPTIONS
+-    if (NULL == res)
+-        throw std::bad_alloc();
+-#endif /* TBB_USE_EXCEPTIONS */
+     return res;
+ }
+-void* operator new[](size_t sz) throw (std::bad_alloc) {
++void* operator new[](size_t sz) {
+     void *res = scalable_malloc(sz);
+-#if TBB_USE_EXCEPTIONS
+-    if (NULL == res)
+-        throw std::bad_alloc();
+-#endif /* TBB_USE_EXCEPTIONS */
+     return res;
+ }
+ void operator delete(void* ptr) throw() {

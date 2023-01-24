@@ -48,14 +48,13 @@ configobj
 paramiko
 python-dateutil
 requests
-pysam
 qcli
 cherrypy
 ipython
 pycolor
 requests_toolbelt
 pandas==0.16
-sklearn
+scikit-learn
 yapsy
 treeinterpreter
 bayesian-optimization

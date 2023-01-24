@@ -1,0 +1,11 @@
+Bootstrap: library
+From: ubuntu:22.04
+
+%post
+apt-get -y update
+apt-get -y install build-essential
+
+apt-get -y install cmake  autoconf automake valgrind nodejs libboost-dev libtbb-dev \
+    kmc libkmc-dev prodigal tigr-glimmer liblog4cxx-dev elph trnascan-se progressivemauve git zlib1g-dev \
+    curl  csh unzip libpng-dev libmysqlclient-dev daemonize parallel maven libbz2-dev lzma-dev liblzma-dev \
+    locales libffi-dev libreadline-dev libncurses5-dev libsqlite3-dev libdb-dev rsync

@@ -1,0 +1,10 @@
+p3_cdbfasta	./build.package
+kb_blat	./build.blat
+kb_blast	./build.blast
+kb_blastplus	./build.blastplus
+kb_muscle		./build.muscle
+kb_clustalw		./build.clustalw
+kb_clustalw		./build.clustalw2
+kb_mafft	./build.mafft
+kb_ssed		./build.ssed
+kb_circos	./build.circos
