@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+
+my $rel = "1.3.6";
+my $url = "https://github.com/freebayes/freebayes/releases/download/v$rel/freebayes-$rel-linux-amd64-static.gz";
+
+make_path("$dest/bin");
+
+my $dest_exe = "$dest/bin/freebayes";
+
+unlink($dest_exe);
+
+run("curl", "--retry", 5, "-o", "freebayes.gz", "-L", $url);
+run("gunzip", "freebayes.gz");
+run("cp", "freebayes", $dest_exe);
+chmod(0755, $dest_exe) or die "Cannot chmod $dest_exe: $!";
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
