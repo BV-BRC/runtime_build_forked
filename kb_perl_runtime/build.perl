@@ -6,7 +6,7 @@ use Carp;
 use File::Basename;
 use Cwd 'abs_path';
 
-my $parallel = "-j24";
+my $parallel = "-j6";
 
 my $here = abs_path(".");
 my $dest = $ENV{TARGET} ? $ENV{TARGET} : "/kb/runtime";

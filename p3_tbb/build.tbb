@@ -34,6 +34,7 @@ chdir($dir) or die "Cannot chdir $dir $!";
 
 run("git", "checkout", "2018_U2");
 
+run("patch", "-p", "1", "-i", "../tbb.patch");
 my $build_prefix;
 open(P, "-|", "make", "info") or die "Cannot open make pipe: $!";
 while (<P>)

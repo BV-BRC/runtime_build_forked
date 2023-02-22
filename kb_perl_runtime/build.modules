@@ -67,7 +67,7 @@ my @failures;
 my @prereqs = qw(XML::NamespaceSupport XML::Parser XML::SAX XML::SAX::Base);
 print "Install prereqs\n";
 install_modules(\@modules, \@prereqs);
-install_module('http://www.cpan.org/authors/id/B/BJ/BJOERN/XML-SAX-Expat-0.50.tar.gz');
+install_module('http://www.cpan.org/authors/id/B/BJ/BJOERN/XML-SAX-Expat-0.51.tar.gz');
 
 print "Install all\n";
 install_modules(\@modules);

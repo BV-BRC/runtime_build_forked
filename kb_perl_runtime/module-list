@@ -194,7 +194,6 @@ DateTime
 DateTime::Format::ISO8601
 DateTime::Format::Strptime
 Proc::ProcessTable
-Slurm
 WWW::Search
 WWW::Search::PubMed
 DateTime::Format::Duration
