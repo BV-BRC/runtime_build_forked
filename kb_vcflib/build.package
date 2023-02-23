@@ -41,8 +41,8 @@ run("mkdir", "-p", "build");
 run("patch", "-p0", "-i", "../cmake.diff");
 chdir "build" or die "cannot chdir build: $!";
 run("cmake", "-DCMAKE_INSTALL_PREFIX=$dest", "-DZIG=OFF", "..");
-run("make -j 6");
-run("cp -v bin/* $dest/bin/.");
+run("make -j 6 install");
+#run("cp -v bin/* $dest/bin/.");
 
 sub run
 {
