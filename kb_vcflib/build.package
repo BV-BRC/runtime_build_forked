@@ -40,7 +40,7 @@ run("git", "submodule", "update", "--init", "--recursive");
 run("mkdir", "-p", "build");
 run("patch", "-p0", "-i", "../cmake.diff");
 chdir "build" or die "cannot chdir build: $!";
-run("cmake", "-DCMAKE_INSTALL_PREFIX=$dest", "-DZIG=OFF", "..");
+run("cmake", "-DCMAKE_INSTALL_RPATH=$build_tools/lib64", "-DCMAKE_INSTALL_PREFIX=$dest", "-DZIG=OFF", "..");
 run("make -j 6 install");
 #run("cp -v bin/* $dest/bin/.");
 
