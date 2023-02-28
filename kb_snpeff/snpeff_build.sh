@@ -22,9 +22,10 @@ dst=$target/data
 # unzip snpEff_latest_core.zip
 
 #curl -b -c -k -v --retry 10 -O -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_0_core.zip
-rm -rf snpEff
-unzip snpEff_v4_0_core.zip
+rm -rf snpEff clinEff
+unzip snpEff_v4_3t_core.zip
 
+rm -rf $target/snpEff
 cp -r snpEff $target 
 pushd $target/snpEff
 
