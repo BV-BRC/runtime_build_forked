@@ -27,11 +27,13 @@ if (@ARGV)
 
 #http://last.cbrc.jp/last-731.zip
 
-my $vers = "731";
+my $vers = "1450";
 
 my $package_dir = "last-$vers";
 my $package_tar = "last-$vers.zip";
-my $package_url = "http://last.cbrc.jp/$package_tar";
+#my $package_url = "http://last.cbrc.jp/$package_tar";
+#
+my $package_url = "https://gitlab.com/mcfrith/last/-/archive/$vers/last-$vers.tar.gz";
 
 if (! -s $package_tar)
 {
@@ -39,7 +41,7 @@ if (! -s $package_tar)
 }
 
 system("rm", "-rf", $package_dir);
-run("unzip", $package_tar);
+run("tar", "xzfp", $package_tar);
 chdir($package_dir) or die "Cannot chdir $package_dir: $!";
 my $ldflags = "-Wl,-rpath,$build_tools/lib64";
 run("make", "prefix=$dest", "LDFLAGS=$ldflags", "-j", $parallel);
