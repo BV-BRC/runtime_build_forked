@@ -20,6 +20,7 @@ if (@ARGV)
 #http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2
 
 my $vers = "20160322";
+my $vers = "20230222";
 
 my $package_dir = "parallel-$vers";
 my $package_tar = "parallel-$vers.tar.bz2";
