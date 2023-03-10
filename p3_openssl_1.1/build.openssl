@@ -1,0 +1,41 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+-d $dest || mkdir $dest;
+
+
+my $vers = "1.1.1t";
+
+my $ssl_dest = "$dest/ssl_$vers";
+
+my $openssl_dir = "openssl-$vers";
+my $openssl_tar = "openssl-$vers.tar.gz";
+my $openssl_url = "https://www.openssl.org/source/openssl-$vers.tar.gz";
+
+if (! -s $openssl_tar)
+{
+    system("curl", "-o", $openssl_tar, "-L", $openssl_url);
+}
+
+system("rm", "-rf", $openssl_dir);
+system("tar", "xzfp", $openssl_tar);
+chdir($openssl_dir);
+# mac64 
+# $ENV{KERNEL_BITS} = 64;
+system("./config", "--prefix=$ssl_dest", "--openssldir=$ssl_dest/ssl", "shared");
+system("make");
+system("make", "install");
