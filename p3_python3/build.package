@@ -40,7 +40,7 @@ if ($os_rel =~ /CentOS release 6/)
     # Use internal openssl
     #
 	
-    push(@opts, "--with-openssl=$dest");
+    push(@opts, "--with-openssl=$dest/ssl_1.1.1t");
 
     #
     # The internal install of openssl requires LD_LIBRARY_PATH to be set.
