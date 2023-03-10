@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Copy;
+use File::Basename;
+use File::Path 'make_path';
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $vers = "1.2";
+
+my $repo = "https://github.com/jenniferlu717/KrakenTools";
+
+my $dir = "KrakenTools";
+
+system("rm", "-rf", $dir);
+run("git", "clone", $repo, $dir);
+chdir($dir) or die "cannot chdir $dir: $!";
+run("git", "checkout", "v$vers");
+for my $file (<*.py>, <DiversityTools/*.py>)
+{
+    my $f = basename($file);
+    print "Install $file\n";
+    copy($file, "$dest/bin/$f") or die "Cannot copy $file to $dest/bin/$f: $!";
+    chmod(0755, "$dest/bin/$f") or die "Cannot chmod $dest/bin/$f: $!";
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
