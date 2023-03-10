@@ -27,6 +27,10 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
+my $build_tools = $ENV{BUILD_TOOLS} //  "$dest/build-tools";
+$ENV{PATH} = "$build_tools/bin:$dest/bin:$ENV{PATH}";
+
+
 my @opts;
 
 my $os_rel = `cat /etc/redhat-release`;
