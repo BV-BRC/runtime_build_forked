@@ -45,7 +45,11 @@ run("$app_dest/bin/pip3", "install", "checkv==$version");
 # doesn't build it correctly. Checkv does not use sqlite3.
 #
 
-run("sed", "-ibak", "-e", '/from sqlite3 import dbapi2/s/^/#/', "$app_dest/lib/python3.7/site-packages/Bio/AlignIO/MafIO.py");
+if (-f  "$app_dest/lib/python3.7/site-packages/Bio/AlignIO/MafIO.py")
+{
+    run("sed", "-ibak", 
+        "-e", '/from sqlite3 import dbapi2/s/^/#/', "$app_dest/lib/python3.7/site-packages/Bio/AlignIO/MafIO.py");
+}
 
 unlink("$dest/bin/checkv");
 symlink("$app_dest/bin/checkv", "$dest/bin/checkv");
