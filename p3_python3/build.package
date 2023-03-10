@@ -53,7 +53,7 @@ if ($os_rel =~ /CentOS release 6/)
     $ENV{LDFLAGS} = "-L$dest/lib64 -Wl,-rpath,$dest/lib64 -Wl,-rpath,$dest/lib";
 }
 
-my $ver = "3.11.2";
+my $ver = "3.10.8";
 my $python_url = "https://www.python.org/ftp/python/$ver/Python-$ver.tgz";
 
 my $python_tgz = basename($python_url);

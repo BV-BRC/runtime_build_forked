@@ -1,5 +1,5 @@
 cython
-sklearn
+scikit-learn
 keras
 tensorflow
 sklearn
@@ -17,3 +17,5 @@ pandas
 multiqc
 HTSeq
 RSeQC
+umap
+xgboost
