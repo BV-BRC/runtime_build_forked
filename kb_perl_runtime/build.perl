@@ -59,6 +59,8 @@ if (0)
     push(@opts, @thread);
 }
 
+push(@opts, "-Dcc=gcc");
+
 #
 # If we're on a mac, assume we are building for the mac DMG.
 #
