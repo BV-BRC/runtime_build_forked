@@ -208,3 +208,4 @@ Text::CSV_XS
 IO::AIO
 Statistics::LineFit
 Algorithm::Numerical::Shuffle
+PDL::Stats
