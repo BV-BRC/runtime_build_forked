@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+# https://downloads.sourceforge.net/project/bbmap/BBMap_39.01.tar.gz 
+
+my $vers = "39.01";
+my $url = "https://downloads.sourceforge.net/project/bbmap/BBMap_$vers.tar.gz"; 
+
+my $app_dest = "$dest/bbmap-$vers";
+run("rm", "-rf", $app_dest);
+
+run("curl", "-o", "bbmap-$vers.tar.gz", "-L", $url);
+
+#
+# This currently unpacks into "bbmap"
+#
+
+run("rm", "-rf", "bbmap");
+run("tar", "xzfp", "bbmap-$vers.tar.gz");
+
+mkdir($app_dest) or die "Cannot mkdir app_dest: $!";
+run("rsync", "-arv", "bbmap/.", "$app_dest/.");
+unlink("$dest/bbmap");
+symlink($app_dest, "$dest/bbmap") or die "Cannot symlink $app_dest to $dest/bbmap: $!";
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
