@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Can't find $p3\n";
+    }
+}
+#$ENV{PATH} = "$p3/bin:$ENV{PATH}";
+my $build_tools = "$p3/build-tools";
+
+my $vers = "v2.1.5";
+my $url = "https://github.com/CSB5/lofreq";
+
+my $rpath = "-Wl,-rpath,$dest/htslib/lib";
+
+my $dir = "lofreq";
+
+-d $dest || mkdir $dest;
+
+run("rm", "-rf", $dir);
+
+run("git", "clone", $url, $dir);
+
+chdir $dir or die "cannot chdir $dir: $!";
+run("git", "checkout", $vers);
+#run("autoupdate");
+run("printenv|sort");
+run("./bootstrap");
+run("./configure", "--with-htslib=$dest/htslib", "--prefix=$dest");
+run("make", "LDFLAGS=$rpath");
+run("make", "install");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
