@@ -37,6 +37,11 @@ run("curl", "-o", "bbmap-$vers.tar.gz", "-L", $url);
 run("rm", "-rf", "bbmap");
 run("tar", "xzfp", "bbmap-$vers.tar.gz");
 
+#
+# calcmem has a bug
+# 
+run("sed", "-e", 's/-v "$EC2_HOME"/-d "$EC2_HOME"/', "-i", "bbmap/calcmem.sh");
+
 mkdir($app_dest) or die "Cannot mkdir app_dest: $!";
 run("rsync", "-arv", "bbmap/.", "$app_dest/.");
 unlink("$dest/bbmap");
