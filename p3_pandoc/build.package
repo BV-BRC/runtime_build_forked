@@ -1,0 +1,51 @@
+#!/usr/bin/env perl
+
+#
+# Install the precompiled pandoc
+#
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd 'abs_path';
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+
+
+# https://github.com/jgm/pandoc/releases/download/3.1.2/pandoc-3.1.2-linux-amd64.tar.gz
+
+
+my $which = "linux-amd64";
+
+my $vers = "3.1.2";
+my $tar = "pandoc-${vers}-${which}.tar.gz";
+my $dir = "pandoc-${vers}";
+my $url = "https://github.com/jgm/pandoc/releases/download/$vers/$tar";
+
+if (! -s $tar)
+{
+    run("curl", "-o", $tar, "-L", $url);
+}
+
+run("tar", "-x", "-z", "-f", $tar);
+-d $dir or die "Extract didn't create $dir\n";
+run("rsync", "-arv", "$dir/.", $dest);
+
+sub run
+{
+    my(@cmd) = @_;
+    print "@cmd\n";
+    my $rc = system(@cmd);
+    if ($rc != 0)
+    {
+	die "Command failed with rc=$rc: @cmd\n";
+    }
+}
