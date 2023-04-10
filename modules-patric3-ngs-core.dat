@@ -19,7 +19,8 @@ p3_fasttree_stock	./build.package
 p3_fasttree	./build.package
 p3_gblocks	./build.package
 p3_cluster	./build.package
-p3_quast	./build.package
+# Quast comes from pip now
+#p3_quast	./build.package
 p3_spades	./build.package.3.12
 p3_spades	./build.package.3.13
 p3_spades	./build.package.3.15
