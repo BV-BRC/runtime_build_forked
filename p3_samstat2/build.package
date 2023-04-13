@@ -31,7 +31,9 @@ if (! -d $p3)
     }
 }
 
-my $vers = "2.0.0";
+#my $vers = "2.0.0";
+# 2.2.2 commit hash; not tagged in the repo
+my $vers = "df971dba3072f434284604c088eee1c5ecb86760";
 
 my $build_tools = $ENV{BUILD_TOOLS} //  "$p3/build-tools";
 $ENV{PATH} = "$build_tools/bin:$p3/bin:$ENV{PATH}";
@@ -46,7 +48,7 @@ my $url = "https://github.com/TimoLassmann/samstat";
 run("git", "clone", $url, $dir);
 
 chdir $dir or die "cannot chdir $dir: $!";
-run("git", "checkout", "v$vers");
+run("git", "checkout", "$vers");
 
 run("mkdir", "build");
 chdir("build");
