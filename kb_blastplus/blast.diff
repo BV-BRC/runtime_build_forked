@@ -1,0 +1,11 @@
+--- c++/src/algo/blast/core/blast_setup.c.orig	2023-04-12 16:15:06.938309897 -0500
++++ c++/src/algo/blast/core/blast_setup.c	2023-04-12 15:59:50.407767411 -0500
+@@ -970,6 +970,8 @@
+        min_subject_length = BlastSeqSrcGetMinSeqLen(seq_src);
+        if (Blast_SubjectIsTranslated(program_number)) {
+            min_subject_length/=3;
++	   if (min_subject_length <= 0)
++	       min_subject_length = 1;
+        }
+    } else {
+        min_subject_length = (Int4) (total_length/num_seqs);
