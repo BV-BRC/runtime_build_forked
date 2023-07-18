@@ -22,7 +22,7 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
-my $tag = "v2.7";
+my $tag = "v2.8.1";
 
 my $app_dest = "$dest/KronaTools-$tag";
 make_path("$app_dest");
@@ -42,7 +42,7 @@ chdir($app_dest) or die "cannot chdir $app_dest $!";
 mkdir("taxonomy");
 run('./install.pl', '-prefix', $dest);
 run("./updateTaxonomy.sh");
-#run("./updateAccessions.sh");
+run("./updateAccessions.sh");
 
 sub download_tool
 {
