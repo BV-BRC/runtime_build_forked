@@ -29,10 +29,13 @@ if (! -d $p3)
 	die "Cannot find $p3\n";
     }
 }
+
+my $perform_patch;
 my $build_tools = "$p3/build-tools";
 
 my $app_dest = "$dest/pangolin";
-my $vers = "v4.0.3";
+my $vers = "v4.3.1";
+#my $vers = "v4.0.3";
 #my $vers = "v3.1.20";
 
 system("rm", "-rf", $app_dest);
@@ -43,7 +46,7 @@ system("rm", "-rf", "pangolin");
 #
 
 run(". $dest/conda/bin/activate; mamba env create -p $app_dest -f ./environment.yml");
-run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python");
+run("patchelf", "--set-interpreter", "$dest/glibc-2.17/lib/ld-linux-x86-64.so.2", "$app_dest/bin/python") if $perform_patch;
 
 run("git", "clone", "https://github.com/cov-lineages/pangolin");
 chdir "pangolin";
