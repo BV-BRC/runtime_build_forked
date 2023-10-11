@@ -4,7 +4,7 @@ use strict;
 
 use Carp;
 use File::Basename;
-use Cwd 'abs_path';
+use Cwd qw(getcwd abs_path);
 
 my $dest = $ENV{TARGET} || "/kb/runtime";
 my $parallel = 4;
@@ -42,6 +42,25 @@ system("rm", "-rf", $app_dest);
 system("rm", "-rf", "pangolin");
 
 #
+# We need to have libarchive.so.13 in our LD_LIBRARY_PATH for the builds. Create a local copy
+#
+
+
+my $here = getcwd;
+my $libarchive_vers = "3.7.2";
+my $libarchive_install = "$here/libarchive";
+my $libarchive = "libarchive-$libarchive_vers";
+run("rm", "-rf", $libarchive, $libarchive_install);
+run("curl", "-O", "-L", "https://github.com/libarchive/libarchive/releases/download/v$libarchive_vers/$libarchive.tar.gz");
+run("tar", "xzfp", "$libarchive.tar.gz");
+chdir($libarchive) or die "cannot chdir $libarchive: $!";
+run("./configure", "--prefix", $libarchive_install);
+run("make", "-j12");
+run("make", "install");
+$ENV{LD_LIBRARY_PATH} = "$libarchive_install/lib";
+chdir("..");
+
+#
 # For medaka we need to rely on the conda configuration that was set up by p3_conda
 #
 
@@ -55,17 +74,20 @@ run("git", "checkout", $vers);
 run(". $dest/conda/bin/activate; mamba env update -p $app_dest -f ./environment.yml");
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
 run("pip", "install", ".");
-unlink("$dest/bin/pangolin");
 
 #
 # More hacking for CentOS6
 #
-run("$app_dest/bin/pip", "uninstall", "-y", "pysam");
+if (0)
 {
-    local $ENV{PIP_CACHE_DIR} = "/tmp";
-    run("$app_dest/bin/pip", "install", "pysam");
+    run("$app_dest/bin/pip", "uninstall", "-y", "pysam");
+    {
+	local $ENV{PIP_CACHE_DIR} = "/tmp";
+	run("$app_dest/bin/pip", "install", "pysam");
+    }
+    run("sed", "-i.bak", "-e", "/^from sqlite3/s/^/#/", "$app_dest/lib/python3.8/site-packages/Bio/AlignIO/MafIO.py");
 }
-run("sed", "-i.bak", "-e", "/^from sqlite3/s/^/#/", "$app_dest/lib/python3.8/site-packages/Bio/AlignIO/MafIO.py");
+unlink("$dest/bin/pangolin");
 open(P, ">", "$dest/bin/pangolin") or die "Cannot write $dest/bin/pangolin: $!";
 print P <<END;
 #!/bin/sh
