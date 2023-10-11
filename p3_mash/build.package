@@ -34,12 +34,24 @@ $ENV{PATH} = "$build_tools/bin:$ENV{PATH}";
 my $dir = "Mash";
 
 run("rm", "-rf", $dir);
-run("git", "clone", "https://github.com/marbl/Mash.git", $dir);
+run("git", "clone", "https://github.com/BV-BRC-dependencies/Mash", $dir);
+#run("git", "clone", "https://github.com/marbl/Mash.git", $dir);
 
 chdir($dir) or die "cannot chdir $dir: $!";
 $ENV{CPPFLAGS} = "-Wl,-rpath -Wl,$build_tools/lib64 -Wl,-rpath -Wl,$build_tools/lib -static-libstdc++";
 run("./bootstrap.sh");
-run("./configure", "--prefix=$dest", "--with-capnp=$build_tools");
+
+my @params = ("--prefix=$dest");
+if (-x "$build_tools/bin/capnp")
+{
+    push(@params, "--with-capnp=$build_tools");
+}
+else
+{
+    push(@params, "--with-capnp=/usr/bin");
+}
+
+run("./configure", @params);
 run("sed", "-i", "-e", "/-o mash/s!\$! -lrt $ENV{CPPFLAGS}!", "Makefile");
 run("make", @parallel, "LIBS=-lrt");
 run("make", "install");
