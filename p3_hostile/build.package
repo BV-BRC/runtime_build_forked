@@ -39,7 +39,7 @@ my $app_dest = "$dest/$app_name";
 system("rm", "-rf", $app_dest);
 system("rm", "-rf", "$app_name");
 
-run("$dest/conda/bin/conda run mamba env create -p $app_dest -c conda-forge -c bioconda hostile");
+run("$dest/conda/bin/conda run mamba env create -p $app_dest -f ./environment.yml");
 
 $ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
 
