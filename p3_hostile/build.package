@@ -48,8 +48,8 @@ unlink("$app_wrapper");
 open(P, ">", "$app_wrapper") or die "Cannot write $app_wrapper: $!";
 print P <<END;
 #!/bin/sh
-export PATH=$app_dest/bin:\$PATH
-$app_dest/bin/$app_name "\$@"
+$dest/conda/bin/conda run mamba run -p $app_dest $app_name "\$@"
+
 END
 
 run("chmod", "+x", "$app_wrapper");
