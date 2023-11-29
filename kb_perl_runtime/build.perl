@@ -24,8 +24,9 @@ if (@ARGV)
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.20.2.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.30.2.tar.gz";
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.36.0.tar.gz";
-my $perl_url = "http://www.cpan.org/src/5.0/perl-5.38.0.tar.gz";
+# 26.3 is needed for the older Gary alignment manipulation code
 #my $perl_url = "http://www.cpan.org/src/5.0/perl-5.26.3.tar.gz";
+my $perl_url = "http://www.cpan.org/src/5.0/perl-5.38.0.tar.gz";
 
 my $perl_tgz = basename($perl_url);
 my $perl_vers = basename($perl_tgz, ".tar.gz");
