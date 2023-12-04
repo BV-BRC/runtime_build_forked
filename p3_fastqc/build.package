@@ -15,7 +15,7 @@ if (@ARGV)
     print STDERR "Overriding destination to $dest\n";
 }
 
-my $vers = "0.11.9";
+my $vers = "0.12.1";
 my $archive = "fastqc_v$vers.zip";
 my $url = "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/$archive";
 my $app_dest = "FastQC-$vers";
