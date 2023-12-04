@@ -1,0 +1,6 @@
+name: hostile
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - hostile=0.1.0
