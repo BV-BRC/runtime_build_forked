@@ -22,7 +22,11 @@ if (@ARGV)
     $runtime = shift;
 }
 
-my $vers = "1.2";
+# d4a2fbe2833c2392a724697c0c97a3014e748474 is commit as of November 2023 with
+# krona report fix.
+my $tag = "d4a2fbe2833c2392a724697c0c97a3014e748474";
+#my $vers = "1.2";
+#my $tag = "v$vers";
 
 my $repo = "https://github.com/jenniferlu717/KrakenTools";
 
@@ -31,7 +35,7 @@ my $dir = "KrakenTools";
 system("rm", "-rf", $dir);
 run("git", "clone", $repo, $dir);
 chdir($dir) or die "cannot chdir $dir: $!";
-run("git", "checkout", "v$vers");
+run("git", "checkout", "$tag");
 for my $file (<*.py>, <DiversityTools/*.py>)
 {
     my $f = basename($file);
