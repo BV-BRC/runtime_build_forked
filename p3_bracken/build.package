@@ -17,7 +17,7 @@ if (@ARGV)
 
 my $dest = $top_dest;
 
-my $vers = '2.7';
+my $vers = '2.9';
 my $url = "https://github.com/jenniferlu717/Bracken/archive/v$vers.tar.gz";
 
 my $p3 = "/disks/patric-common/runtime";
