@@ -9,11 +9,6 @@ if (@ARGV)
     $dest = shift;
     print STDERR "Overriding destination to $dest\n";
 }
-my $runtime = $dest;
-if (@ARGV)
-{
-    $runtime = shift;
-}
 
 run("rm", "-rf", "$dest/micromamba");
 
