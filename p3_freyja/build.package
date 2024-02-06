@@ -37,20 +37,28 @@ my $app_name = "frejya";
 my $app_dest = "$dest/$app_name";
 
 system("rm", "-rf", $app_dest);
-system("rm", "-rf", "$app_name");
-
 
 run("$runtime/conda/bin/mamba", "create", "-p", $app_dest);
 run("$runtime/conda/bin/mamba", "install", "-y", "freyja", "-p", $app_dest);
-#run("$runtime/conda/bin/conda", "create", "-y", "-p", $app_dest);
-#run("bash", "-c", "/opt/patric-common/runtime/conda/bin/conda shell.bash activate > conda.activate");
-#run("bash", "-c", "source conda.activate; conda install freyja");
+
+#
+# We remove the default data files so that we can ensure we only use the ones we expect
+#
+
+my $bcpath = `find $app_dest -name usher_barcodes.csv -print`;
+chomp $bcpath;
+my $data = dirname($bcpath);
+for my $to_delete (qw(usher_barcodes.csv curated_lineages.json))
+{
+    unlink("$data/$to_delete") || die "Cannot delete $data/$to_delete: $!";
+}
 
 for my $exe (qw(freyja))
 {
     my $src = "$app_dest/bin/$exe";
     -x $src or die "Src $src does not exist\n";
     my $dest = "$dest/bin/$exe";
+    unlink($dest);
     symlink($src, $dest) or die "Error symlinking $exe => $dest: $!";
 }
 
