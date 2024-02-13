@@ -39,7 +39,12 @@ my $app_dest = "$dest/$app_name";
 system("rm", "-rf", $app_dest);
 
 run("$runtime/conda/bin/mamba", "create", "-p", $app_dest);
-run("$runtime/conda/bin/mamba", "install", "-y", "freyja", "-p", $app_dest, "-c", "bioconda", "-c", "conda-forge");
+run("$runtime/conda/bin/mamba", "install", "-y",
+    "-p", $app_dest,
+    "-c", "bioconda",
+    "-c", "conda-forge",
+    "freyja",
+    "pandas>=2.2.0");
 
 #
 # We remove the default data files so that we can ensure we only use the ones we expect
