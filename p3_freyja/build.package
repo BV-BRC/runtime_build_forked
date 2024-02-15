@@ -30,11 +30,12 @@ if (! -d $p3)
     }
 }
 
-my $perform_patch;
+
 my $build_tools = "$p3/build-tools";
 
 my $app_name = "frejya";
-my $app_dest = "$dest/$app_name";
+my $vers = "1.4.9";
+my $app_dest = "$dest/$app_name-$vers";
 
 system("rm", "-rf", $app_dest);
 
@@ -43,7 +44,7 @@ run("$runtime/conda/bin/mamba", "install", "-y",
     "-p", $app_dest,
     "-c", "bioconda",
     "-c", "conda-forge",
-    "freyja",
+    "freyja==$vers",
     "pandas>=2.2.0");
 
 #
