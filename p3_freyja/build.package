@@ -54,7 +54,7 @@ run("$runtime/conda/bin/mamba", "install", "-y",
 my $bcpath = `find $app_dest -name usher_barcodes.csv -print`;
 chomp $bcpath;
 my $data = dirname($bcpath);
-for my $to_delete (qw(usher_barcodes.csv curated_lineages.json))
+for my $to_delete (qw(usher_barcodes.csv curated_lineages.json lineages.yml last_barcode_update.txt))
 {
     unlink("$data/$to_delete") || die "Cannot delete $data/$to_delete: $!";
 }
