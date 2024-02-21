@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Cannot find $p3\n";
+    }
+}
+
+my $perform_patch;
+my $build_tools = "$p3/build-tools";
+
+my $app_name = "hostile";
+my $app_dest = "$dest/$app_name";
+
+system("rm", "-rf", $app_dest);
+system("rm", "-rf", "$app_name");
+
+#
+# We need to have libarchive.so.13 in our LD_LIBRARY_PATH for the builds. Create a local copy
+#
+
+
+my $here = getcwd;
+my $libarchive_vers = "3.7.2";
+my $libarchive_install = "$here/libarchive";
+my $libarchive = "libarchive-$libarchive_vers";
+run("rm", "-rf", $libarchive, $libarchive_install);
+run("curl", "-O", "-L", "https://github.com/libarchive/libarchive/releases/download/v$libarchive_vers/$libarchive.tar.gz");
+run("tar", "xzfp", "$libarchive.tar.gz");
+chdir($libarchive) or die "cannot chdir $libarchive: $!";
+run("./configure", "--prefix", $libarchive_install);
+run("make", "-j12");
+run("make", "install");
+system("ls", "-l", "$libarchive_install/lib");
+$ENV{LD_LIBRARY_PATH} = "$libarchive_install/lib";
+chdir("..");
+
+run("$dest/conda/bin/conda run mamba env create -p $app_dest -f ./environment.yml");
+
+$ENV{PATH} = "$app_dest/bin:$ENV{PATH}";
+
+my $app_wrapper = "$dest/bin/$app_name";
+unlink("$app_wrapper");
+open(P, ">", "$app_wrapper") or die "Cannot write $app_wrapper: $!";
+print P <<END;
+#!/bin/sh
+$dest/conda/bin/conda run mamba run -p $app_dest $app_name "\$@"
+
+END
+
+run("chmod", "+x", "$app_wrapper");
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
