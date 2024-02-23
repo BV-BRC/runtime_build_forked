@@ -1,0 +1,87 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $p3 = "/disks/patric-common/runtime";
+if (! -d $p3)
+{
+    $p3 = $dest;
+    if (! -d $p3)
+    {
+	die "Cannot find $p3\n";
+    }
+}
+
+
+my $build_tools = "$p3/build-tools";
+
+my $app_name = "frejya";
+my $vers = "1.4.9";
+my $app_dest = "$dest/$app_name-$vers";
+
+system("rm", "-rf", $app_dest);
+
+run("$runtime/conda/bin/mamba", "create", "-p", $app_dest);
+run("$runtime/conda/bin/mamba", "install", "-y",
+    "-p", $app_dest,
+    "-c", "bioconda",
+    "-c", "conda-forge",
+    "freyja==$vers",
+    "pandas>=2.2.0");
+
+#
+# We remove the default data files so that we can ensure we only use the ones we expect
+#
+
+my $bcpath = `find $app_dest -name usher_barcodes.csv -print`;
+chomp $bcpath;
+my $data = dirname($bcpath);
+for my $to_delete (qw(usher_barcodes.csv curated_lineages.json lineages.yml last_barcode_update.txt))
+{
+    unlink("$data/$to_delete") || die "Cannot delete $data/$to_delete: $!";
+}
+
+for my $exe (qw(freyja))
+{
+    my $src = "$app_dest/bin/$exe";
+    -x $src or die "Src $src does not exist\n";
+    my $edest = "$dest/bin/$exe";
+    if (-e $edest)
+    {
+	unlink($edest) or die "Cannot unlink $edest: $!";
+    }
+    open(F, ">", $edest) or die "Error opening $edest: $!";
+    print F <<END;
+#!/bin/bash
+export PATH=$app_dest/bin:\$PATH
+$src "\$\@"
+END
+    close(F) or die "Error closing $edest: $!";
+    chmod(0755, $edest) or die "chmod $edest failed: $!";
+
+}
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
