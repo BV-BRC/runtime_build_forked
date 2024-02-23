@@ -68,7 +68,8 @@ unlink("$app_wrapper");
 open(P, ">", "$app_wrapper") or die "Cannot write $app_wrapper: $!";
 print P <<END;
 #!/bin/sh
-$dest/conda/bin/conda run mamba run -p $app_dest $app_name "\$@"
+export PATH=$app_dest/bin:\$PATH
+exec hostile "\$@"
 
 END
 
