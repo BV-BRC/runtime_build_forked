@@ -1,4 +1,2 @@
 kb_perl_runtime	./build.runtime
-kb_python_runtime	./build.python
-kb_python_runtime	./install-python-packages.sh
 p3_python3	./build.package
