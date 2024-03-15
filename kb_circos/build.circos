@@ -23,16 +23,17 @@ if (@ARGV)
 
 -d $dest || mkdir $dest;
 
-my $vers = "0.69-6";
+my $vers = "0.69-9";
+#my $vers = "0.69-6";
 #my $vers = "0.67-7";
 
 my $circos_dir = "circos-$vers";
 my $circos_tar = "circos-$vers.tgz";
-my $circos_url = "http://circos.ca/distribution/$circos_tar";
+my $circos_url = "https://circos.ca/distribution/$circos_tar";
 
 if (! -s $circos_tar)
 {
-    system("curl", "-o", $circos_tar, "-L", $circos_url);
+    system("curl", "-k", "-o", $circos_tar, "-L", $circos_url);
 }
 
 run("rm", "-rf", $circos_dir);
