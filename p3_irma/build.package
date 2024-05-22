@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use Carp;
+use File::Basename;
+use Cwd qw(getcwd abs_path);
+
+my $dest = $ENV{TARGET} || "/kb/runtime";
+my $parallel = 4;
+
+if (@ARGV)
+{
+    $dest = shift;
+    print STDERR "Overriding destination to $dest\n";
+}
+my $runtime = $dest;
+if (@ARGV)
+{
+    $runtime = shift;
+}
+
+my $vers = "202402";
+my $url = "https://wonder.cdc.gov/amd/flu/irma/flu-amd-$vers.zip";
+
+my $pigz_url = "https://zlib.net/pigz/pigz-2.8.tar.gz";
+
+my $dir = "flu-amd";
+
+-d $dest || mkdir $dest;
+my $app_dest = "$dest/irma-$vers";
+
+run("rm", "-rf", $dir, $app_dest);
+
+my $file = basename($url);
+run("curl", "-o", $file, "-L", $url);
+system("pwd; ls -l");
+-f $file or die "Cannot find $file\n";
+
+$file = abs_path($file);
+
+my $here = getcwd;
+mkdir $app_dest or die "Cannot mkdir $app_dest: $!";
+chdir $app_dest or die "Cannot chdir $app_dest: $!";
+run("unzip", $file);
+chdir $here or die "Cannot chdir $here:$ !";
+
+run("curl", "-o", "pigz.tgz", "-L", $pigz_url);
+
+run("rm", "-rf", "pigz-2.8");
+run("tar", "xzfp", "pigz.tgz");
+chdir "pigz-2.8" or die "cannot chdir pigz-2.8: $!";
+run("make");
+run("cp", "pigz", "$app_dest/$dir");
+my $pigz_link = "$app_dest/$dir/IRMA_RES/scripts/pigz_Linux";
+unlink $pigz_link or die "cannot unlink $pigz_link: $!";
+symlink "$app_dest/$dir/pigz", $pigz_link or die "Cannot symlink $app_dest/$dir/pigz to $pigz_link : $!";
+
+
+sub run
+{
+    print "@_\n";
+    my $rc = system(@_);
+    $rc == 0 or die "Command failed with rc=$rc: @_\n";
+}
