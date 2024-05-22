@@ -56,6 +56,11 @@ my $pigz_link = "$app_dest/$dir/IRMA_RES/scripts/pigz_Linux";
 unlink $pigz_link or die "cannot unlink $pigz_link: $!";
 symlink "$app_dest/$dir/pigz", $pigz_link or die "Cannot symlink $app_dest/$dir/pigz to $pigz_link : $!";
 
+for my $exe (qw(IRMA LABEL))
+{
+    unlink "$dest/bin/$exe";
+    symlink "$app_dest/$dir/$exe", "$dest/bin/$exe" or die "Cannot symlink $app_dest/$dir/$exe to $dest/bin/$exe: $!";
+}
 
 sub run
 {
