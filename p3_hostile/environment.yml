@@ -3,4 +3,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - hostile=0.1.0
+  - hostile=1.1.0
