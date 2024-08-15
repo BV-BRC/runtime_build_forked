@@ -34,7 +34,7 @@ if (! -d $p3)
 my $build_tools = "$p3/build-tools";
 
 my $app_name = "frejya";
-my $vers = "1.4.9";
+my $vers = "1.5.1";
 my $app_dest = "$dest/$app_name-$vers";
 
 system("rm", "-rf", $app_dest);
